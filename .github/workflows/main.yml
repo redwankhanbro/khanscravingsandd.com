@@ -1,0 +1,21 @@
+name: Continuous Deployment Pipeline to Surge
+
+on:
+  push:
+    branches:
+      - main  # Fires automatically every time you push code updates to your main branch
+
+jobs:
+  deploy_restaurant_site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository files
+        uses: actions/checkout@v4
+
+      - name: Install Surge CLI engine globally
+        run: npm install --global surge
+
+      - name: Push deployment data straight to Surge
+        env:
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: surge --project ./ --domain khans-cravings-dining.surge.sh --token $SURGE_TOKEN
