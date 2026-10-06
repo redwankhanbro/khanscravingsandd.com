@@ -18,4 +18,4 @@ jobs:
       - name: Push deployment data straight to Surge
         env:
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
-        run: surge --project ./ --domain khans-cravings-dining.surge.sh --token $SURGE_TOKEN
+      run: surge --project ./ --domain khans-cravings-dining.surge.sh --email redwankhanbro@gmail.com --password redJ#uih&tyFjh123
