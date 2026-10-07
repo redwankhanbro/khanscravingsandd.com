@@ -1,19 +1,11 @@
-name: Continuous Deployment Pipeline to Surge
+name: Deploy To Surge
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
-  deploy_restaurant_site:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository files
-        uses: actions/checkout@v4
-
-      - name: Install Surge CLI engine globally
-        run: npm install --global surge
-
-      - name: Push deployment data straight to Surge
-       run: surge --project ./ --domain khans-cravings-dining.surge.sh --email redwankhanbro@gmail.com --password 'red]#uih&tyFjh123'
+    - uses: actions/checkout@v4
+    - run: npm install -g surge
+    - run: surge ./ khans-cravings-dining.surge.sh --email redwankhanbro@gmail.com --password "red]#uih&tyFjh123"
