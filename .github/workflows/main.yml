@@ -8,4 +8,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: npm install -g surge
-    - run: surge --project ./ --domain khans-cravings-dining.surge.sh --email redwankhanbro@gmail.com --password "red]#uih&tyFjh123"
+    - run: surge --project ./ --domain khans-cravings-dining.surge.sh --email redwankhanbro@gmail.com --password "KhansCravings2026"
