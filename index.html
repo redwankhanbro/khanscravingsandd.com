@@ -5,46 +5,269 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khan's Cravings & Dinings</title>
     <style>
-        :root { --dark: #121212; --sidebar-bg: #0A0A0A; --card: #1E1E1E; --orange: #FF6B01; --text: #E0E0E0; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--text); display: flex; scroll-behavior: smooth; }
+        :root { 
+            --dark: #121212; 
+            --sidebar-bg: #0A0A0A; 
+            --card: #1E1E1E; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+        }
+        html { 
+            scroll-behavior: smooth; 
+        }
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: var(--dark); 
+            color: var(--text); 
+            display: flex; 
+        }
         
-        /* 🗺️ Left Sidebar Framework Configuration */
-        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #222; display: flex; flex-direction: column; justify-content: space-between; }
-        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
-        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; transition: 0.3s; }
-        .sidebar a:hover { background: var(--orange); color: white; }
-        .cart-status { background: #1A1A1A; border: 1px solid #333; padding: 15px; border-radius: 8px; text-align: center; }
-        .cart-count { color: var(--orange); font-weight: bold; font-size: 18px; }
+        /* 🗺️ Sidebar Navigation Layout Framework */
+        .sidebar { 
+            width: 260px; 
+            height: 100vh; 
+            background: var(--sidebar-bg); 
+            position: fixed; 
+            padding: 30px 20px; 
+            box-sizing: border-box; 
+            border-right: 1px solid #222; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            z-index: 100; 
+        }
+        .sidebar h2 { 
+            color: var(--orange); 
+            font-size: 22px; 
+            margin: 0 0 40px 0; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        .sidebar a { 
+            display: block; 
+            color: var(--text); 
+            text-decoration: none; 
+            padding: 12px 16px; 
+            margin: 6px 0; 
+            border-radius: 6px; 
+            font-weight: 600; 
+            transition: 0.3s; 
+        }
+        .sidebar a:hover { 
+            background: var(--orange); 
+            color: white; 
+        }
+        .cart-status { 
+            background: #1A1A1A; 
+            border: 1px solid #333; 
+            padding: 15px; 
+            border-radius: 8px; 
+            text-align: center; 
+        }
+        .cart-count { 
+            color: var(--orange); 
+            font-weight: bold; 
+            font-size: 18px; 
+        }
 
-        /* 🍱 Main Canvas Panel Content View */
-        .content { margin-left: 260px; padding: 50px; width: calc(100% - 260px); box-sizing: border-box; }
-        .section-block { margin-bottom: 60px; }
-        .category-title { color: white; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 30px; text-transform: uppercase; font-size: 24px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        /* 🍱 Main Display Content View */
+        .content { 
+            margin-left: 260px; 
+            width: calc(100% - 260px); 
+            box-sizing: border-box; 
+        }
+        .section-block { 
+            padding: 60px 50px; 
+        }
+        .category-title { 
+            color: white; 
+            border-left: 4px solid var(--orange); 
+            padding-left: 15px; 
+            margin-bottom: 30px; 
+            text-transform: uppercase; 
+            font-size: 24px; 
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 30px; 
+        }
         
-        /* 🛒 Individual Food Item Card Metrics */
-        .food-card { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #2A2A2A; transition: 0.3s; }
-        .food-card:hover { transform: translateY(-5px); }
-        .food-img { width: 100%; height: 180px; background: #252525; display: flex; align-items: center; justify-content: center; color: #666; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .food-details { padding: 25px; }
-        .food-details h3 { margin: 0 0 10px 0; color: white; font-size: 20px; }
-        .food-details p { font-size: 14px; color: #A0A0A0; line-height: 1.6; margin-bottom: 20px; height: 45px; overflow: hidden; }
-        .price-row { display: flex; justify-content: space-between; align-items: center; }
-        .price { font-size: 20px; color: var(--orange); font-weight: bold; }
-        .btn-cart { background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.3s; }
-        .btn-cart:hover { background: var(--orange); color: white; }
+        /* 🛒 Individual Food Item Card Configurations */
+        .food-card { 
+            background: var(--card); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+            border: 1px solid #2A2A2A; 
+            transition: 0.3s; 
+        }
+        .food-card:hover { 
+            transform: translateY(-5px); 
+        }
+        .food-img-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: #252525;
+        }
+        .food-img-container img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+            transition: 0.5s;
+        }
+        .food-card:hover .food-img-container img {
+            transform: scale(1.08);
+        }
+        .food-details { 
+            padding: 25px; 
+        }
+        .food-details h3 { 
+            margin: 0 0 10px 0; 
+            color: white; 
+            font-size: 20px; 
+        }
+        .food-details p { 
+            font-size: 14px; 
+            color: #A0A0A0; 
+            line-height: 1.6; 
+            margin-bottom: 20px; 
+            height: 45px; 
+            overflow: hidden; 
+        }
+        .price-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .price { 
+            font-size: 20px; 
+            color: var(--orange); 
+            font-weight: bold; 
+        }
+        .btn-cart { 
+            background: transparent; 
+            border: 2px solid var(--orange); 
+            color: var(--orange); 
+            padding: 8px 18px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            transition: 0.3s; 
+        }
+        .btn-cart:hover { 
+            background: var(--orange); 
+            color: white; 
+        }
+
+        /* 🏛️ About Us Section with Darkened Family Gathering Background Overlay */
+        .about-section { 
+            background: linear-gradient(rgba(18, 18, 18, 0.90), rgba(18, 18, 18, 0.90)), 
+                        url("https://unsplash.com"); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            padding: 90px 50px; 
+            text-align: center;
+        }
+        .about-container { 
+            max-width: 850px; 
+            margin: 0 auto; 
+        }
+        .about-title { 
+            color: var(--orange); 
+            font-size: 38px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            margin-bottom: 25px; 
+        }
+        .about-text { 
+            color: #E0E0E0; 
+            font-size: 18px; 
+            line-height: 1.8; 
+            margin-bottom: 60px; 
+            font-style: italic; 
+        }
+
+        /* 📅 Integrated Reservation Booking Form Container Layout */
+        .booking-box { 
+            background: rgba(30, 30, 30, 0.95); 
+            border: 1px solid #333; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+            text-align: left; 
+        }
+        .booking-box h3 { 
+            color: white; 
+            font-size: 24px; 
+            margin-top: 0; 
+            margin-bottom: 25px; 
+            border-left: 4px solid var(--orange); 
+            padding-left: 15px; 
+        }
+        .booking-form { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .form-group.full-width { 
+            grid-column: span 2; 
+        }
+        .booking-form label { 
+            color: #A0A0A0; 
+            font-size: 13px; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+        }
+        .booking-form input, .booking-form select, .booking-form textarea { 
+            padding: 12px; 
+            background: #121212; 
+            border: 1px solid #444; 
+            border-radius: 6px; 
+            color: white; 
+            font-family: inherit; 
+            font-size: 14px; 
+        }
+        .booking-form input:focus, .booking-form select:focus, .booking-form textarea:focus { 
+            border-color: var(--orange); 
+            outline: none; 
+        }
+        .btn-submit { 
+            background: var(--orange); 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            grid-column: span 2; 
+            margin-top: 10px; 
+            text-transform: uppercase; 
+        }
+        .btn-submit:hover { 
+            background: #e05e00; 
+        }
     </style>
 </head>
 <body>
 
-    <!-- 🗺️ Left Sticky Layout Sidebar Options -->
+    <!-- 🗺️ Sidebar Navigation Menu -->
     <nav class="sidebar">
         <div>
             <h2>Khan's Cravings</h2>
-            <a href="#menu">Home</a>
+            <a href="#home">Home</a>
             <a href="#menu">Menu</a>
-            <a href="#menu">About Us</a>
-            <a href="#menu">Private Dining</a>
+            <a href="#about-us">About Us</a>
+            <a href="#about-us">Private Dining</a>
         </div>
         <div class="cart-status">
             <span style="font-size: 13px; color: #888; display:block; margin-bottom:5px;">Shopping Cart</span>
@@ -52,39 +275,59 @@
         </div>
     </nav>
 
-    <!-- 🍱 Main Menu Display Canvas -->
+    <!-- 🍱 Main Content Frame Area -->
     <main class="content">
         
+        <!-- Welcome Title Section -->
+        <div id="home" style="height: 25vh; display: flex; flex-direction: column; justify-content: center; padding-left: 50px; background: #161616; border-bottom: 1px solid #222;">
+            <h1 style="font-size: 42px; margin: 0; color: white; text-transform: uppercase; letter-spacing: 1px;">Khan's Cravings & Dinings</h1>
+            <p style="margin: 10px 0 0 0; color: var(--orange); font-size: 18px; font-style: italic;">Authentic Regional Dishes & Signature Desserts</p>
+        </div>
+
+        <!-- 🍽️ Master Restaurant Food Menu Block -->
         <div id="menu" class="section-block">
-            <!-- 🍲 Category 1: Regional Delicacies (4 Items) -->
+            
+            <!-- 🍲 Category 1: Authentic Regional Delicacies (4 Items) -->
             <h2 class="category-title">Authentic Regional Delicacies</h2>
             <div class="grid">
+                <!-- Item 1 -->
                 <div class="food-card">
-                    <div class="food-img">Korma Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Heritage Spice Korma">
+                    </div>
                     <div class="food-details">
                         <h3>Heritage Spice Korma</h3>
                         <p>A deeply flavorful, slow-simmered regional classic layered with authentic local whole spices.</p>
                         <div class="price-row"><span class="price">$12.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
                     </div>
                 </div>
+                <!-- Item 2 -->
                 <div class="food-card">
-                    <div class="food-img">Platter Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="The Royal Regional Platter">
+                    </div>
                     <div class="food-details">
                         <h3>The Royal Regional Platter</h3>
                         <p>A traditional curation of our area's best slow-cooked meats and fragrant grains.</p>
                         <div class="price-row"><span class="price">$24.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
                     </div>
                 </div>
+                <!-- Item 3 -->
                 <div class="food-card">
-                    <div class="food-img">Chaat Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Fiery Sweet Street Chaat">
+                    </div>
                     <div class="food-details">
                         <h3>Fiery Sweet Street Chaat</h3>
                         <p>Crispy wafers layered with spiced chickpeas, sweet yogurt, and our chili-honey glaze.</p>
                         <div class="price-row"><span class="price">$6.00</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
                     </div>
                 </div>
+                <!-- Item 4 -->
                 <div class="food-card">
-                    <div class="food-img">Dahl Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Aromatic Heritage Dahl">
+                    </div>
                     <div class="food-details">
                         <h3>Aromatic Heritage Dahl</h3>
                         <p>Slow-simmered, velvety local lentils tempered with roasted whole spices and amber honey.</p>
@@ -94,10 +337,12 @@
             </div>
 
             <!-- 🍯 Category 2: Signature Creations (2 Items) -->
-            <h2 class="category-title" style="margin-top: 50px;">Signature Creations</h2>
+            <h2 class="category-title" style="margin-top: 60px;">Signature Creations</h2>
             <div class="grid">
                 <div class="food-card">
-                    <div class="food-img">Skewers Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Honey-Glazed Chili Skewers">
+                    </div>
                     <div class="food-details">
                         <h3>Honey-Glazed Chili Skewers</h3>
                         <p>Tender charred skewers brushed with a spicy pepper reduction and organic wildflower honey.</p>
@@ -105,7 +350,9 @@
                     </div>
                 </div>
                 <div class="food-card">
-                    <div class="food-img">Wings Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Sweet Heat Flame Wings">
+                    </div>
                     <div class="food-details">
                         <h3>Sweet Heat Flame Wings</h3>
                         <p>Crispy glazed wings tossed in a signature blend of fiery habanero spice and warm honey.</p>
@@ -115,10 +362,12 @@
             </div>
 
             <!-- 🍨 Category 3: Artisanal Desserts (3 Items) -->
-            <h2 class="category-title" style="margin-top: 50px;">Artisanal Desserts</h2>
+            <h2 class="category-title" style="margin-top: 60px;">Artisanal Desserts</h2>
             <div class="grid">
                 <div class="food-card">
-                    <div class="food-img">Mousse Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Chili-Honey Infused Mousse">
+                    </div>
                     <div class="food-details">
                         <h3>Chili-Honey Infused Mousse</h3>
                         <p>A premium dark chocolate mousse subtly laced with a warming pinch of spice and honey.</p>
@@ -126,7 +375,9 @@
                     </div>
                 </div>
                 <div class="food-card">
-                    <div class="food-img">Tart Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Caramelized Honey Tart">
+                    </div>
                     <div class="food-details">
                         <h3>Caramelized Honey Tart</h3>
                         <p>A rich, buttery pastry shell filled with smooth velvet honey custard and flaky sea salt.</p>
@@ -134,7 +385,9 @@
                     </div>
                 </div>
                 <div class="food-card">
-                    <div class="food-img">Cake Layout View</div>
+                    <div class="food-img-container">
+                        <img src="https://unsplash.com" alt="Spiced Saffron Honey Cake">
+                    </div>
                     <div class="food-details">
                         <h3>Spiced Saffron Honey Cake</h3>
                         <p>A moist sponge dessert soaked in honey-saffron syrup and topped with crushed pistachios.</p>
@@ -144,6 +397,51 @@
             </div>
         </div>
 
+        <!-- 🏛️ About Us Section Block Grid -->
+        <section id="about-us" class="about-section">
+            <div class="about-container">
+                <h2 class="about-title">About Us</h2>
+                <p class="about-text">
+                    "Welcome to a curated culinary journey. We specialize in three refined dining categories featuring <strong>two authentic regional delicacies</strong>, <strong>four exclusive signature creations</strong>, and <strong>three artisanal desserts</strong>. Each masterpiece is expertly crafted with our house specialty—a sophisticated interplay of <strong>bold, vibrant spice balanced with rich, honey-infused sweetness</strong>. Indulge in perfect flavour harmony."
+                </p>
+
+                <!-- 📅 Integrated Inquiry Form -->
+                <div class="booking-box">
+                    <h3>Secure Your Event Date</h3>
+                    <form class="booking-form" onsubmit="event.preventDefault(); alert('Your luxury booking inquiry has been logged successfully!');">
+                        <div class="form-group full-width">
+                            <label>Full Name / Organization</label>
+                            <input type="text" required placeholder="Your full name or organization name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" required placeholder="your.email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Dining Category Focus</label>
+                            <select style="color: white;">
+                                <option style="background:#121212;">Private Dining Experience</option>
+                                <option style="background:#121212;">On-Site Live BBQ Catering</option>
+                                <option style="background:#121212;">Large Scale Buffet Feast</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estimated Guest Count</label>
+                            <input type="number" required min="1" placeholder="e.g. 20">
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Date & Time</label>
+                            <input type="datetime-local" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Special Spice & Honey-Flavour Customizations</label>
+                            <textarea rows="3" placeholder="Specify any unique heat profiles, honey levels, or dietary requirements..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Submit Bespoke Inquiry</button>
+                    </form>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- 🛒 Shopping Bag Checkout Counter System Scripts -->
