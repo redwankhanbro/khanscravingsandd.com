@@ -8,4 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: npm install -g surge
-    - run: surge --project ./ --domain khans-cravings-dining.surge.sh --email redwankhanbro@gmail.com --password "KhansCravings2026"
+    - run: surge --project ./ --domain khans-cravings-dining.surge.sh
+      env:
+        SURGE_LOGIN: redwankhanbro@gmail.com
+        SURGE_TOKEN: 637b3758697f562f55e7c9d8e9584f88
