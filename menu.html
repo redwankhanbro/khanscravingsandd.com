@@ -328,10 +328,11 @@
                     <div style="font-size: 24px; font-weight: bold; color: var(--orange); margin-bottom: 20px;" id="modal-display-price">$0.00</div>
                 </div>
                 
-                <div class="modal-action-row">
-                    <button class="btn-modal-action checkout" onclick="triggerInstantCheckout()">Instant Checkout Order</button>
-                    <button class="btn-modal-action dinein" onclick="triggerDineInBooking()">Secure Live Dine-In Table</button>
-                </div>
+              <!-- 💎 Clean up lines 331 to 336 with your correct HTML tags -->
+       <div class="modal-action-row">
+            <button class="btn-modal-action checkout" onclick="triggerInstantCheckout()">Instant Checkout Order</button>
+            <button class="btn-modal-action dinein" onclick="triggerDineInBooking()">Secure Live Dine-In Table</button>
+        </div>
             </div>
         </div>
     </div>
@@ -401,9 +402,9 @@
         }
 
         function triggerInstantCheckout() {
-            alert("Rerouting pipeline straight to active secure settlement nodes. Item checkout processing initialized!");
-            closeExploration();
-        }
+    // Reroutes the client instantly to your new checkout.html form layout desk
+    window.location.href = "checkout.html";
+}
 
         function triggerDineInBooking() {
             alert("Bespoke Dine-In table lock confirmed for this item selection. Our table matrix curators will hold your space!");
