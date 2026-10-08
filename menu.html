@@ -1,1 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Culinary Menu Hub - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #141414; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        
+        /* 🗺️ Sidebar Navigation Menu Framework */
+        .sidebar { 
+            width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; 
+            padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; 
+            display: flex; flex-direction: column; justify-content: space-between; z-index: 100; 
+        }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: var(--orange); color: white; }
+        .cart-status { background: #111; border: 1px solid #222; padding: 15px; border-radius: 8px; text-align: center; }
+        .cart-count { color: var(--orange); font-weight: bold; font-size: 18px; }
 
+        /* 🍱 Workspace Content Container */
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .section-title { color: white; border-left: 4px solid var(--orange); padding-left: 15px; margin-top: 40px; margin-bottom: 30px; text-transform: uppercase; font-size: 24px; letter-spacing: 1px; }
+        
+        /* 🛒 Layout Grids */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .food-card { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid var(--border); transition: 0.3s; }
+        .food-card:hover { transform: translateY(-5px); }
+        .food-img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; transition: 0.5s; }
+        .food-card:hover .food-img { transform: scale(1.05); }
+        .food-details { padding: 25px; }
+        .food-details h3 { margin: 0 0 10px 0; color: white; font-size: 20px; cursor: pointer; }
+        .food-details h3:hover { color: var(--orange); }
+        .food-details p { font-size: 14px; color: #A0A0A0; line-height: 1.6; margin-bottom: 15px; }
+        
+        .spice-vibe-tag { background: rgba(255, 107, 1, 0.08); border: 1px dashed var(--orange); border-radius: 6px; padding: 10px; font-size: 13px; color: #E0E0E0; margin-bottom: 20px; line-height: 1.4; }
+        .spice-vibe-tag strong { color: var(--orange); text-transform: uppercase; font-size: 11px; display: block; margin-bottom: 3px; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; }
+        .price { font-size: 20px; color: var(--orange); font-weight: bold; }
+        .btn-cart { background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.3s; }
+        .btn-cart:hover { background: var(--orange); color: white; }
+
+        /* 📋 Festival Terminal Sign-up Footer */
+        .festival-hub { background: linear-gradient(135deg, #111 0%, #1c0b02 100%); border: 1px solid #332005; border-radius: 12px; padding: 45px; margin-top: 80px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        .festival-hub h2 { color: var(--orange); font-size: 32px; margin-top: 0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .festival-hub p { color: #C0C0C0; font-size: 16px; margin-bottom: 30px; line-height: 1.6; }
+        .festival-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .festival-form label { color: #A0A0A0; font-size: 13px; margin-bottom: 8px; font-weight: 600; }
+        .festival-form input, .festival-form select { padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; }
+        .festival-form input:focus, .festival-form select:focus { border-color: var(--orange); outline: none; }
+        .btn-festival { background: var(--orange); color: white; border: none; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 21px; }
+        .btn-festival:hover { background: #e05e00; }
+        .premium-title-footer { text-align: center; margin-top: 40px; font-size: 26px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 3px; }
+
+        /* 🗺️ Deep Exploration Modal View Layer */
+        .modal-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.95); z-index: 1000; justify-content: center; align-items: center; box-sizing: border-box; padding: 40px; }
+        .modal-box { background: #111; border: 1px solid #333; max-width: 900px; width: 100%; border-radius: 12px; display: grid; grid-template-columns: 1fr 1.2fr; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .modal-close { position: absolute; top: 15px; right: 20px; color: #888; font-size: 30px; cursor: pointer; font-weight: bold; transition: 0.2s; z-index: 10; }
+        .modal-close:hover { color: white; }
+        .modal-img-frame { width: 100%; height: 100%; background: #252525; }
+        .modal-img-frame img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-body { padding: 40px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+        .modal-body h2 { margin-top: 0; color: white; font-size: 28px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .modal-desc-bold { font-size: 16px; font-weight: 700; color: white; line-height: 1.6; margin-bottom: 20px; }
+        .global-variants-box { background: #0A0A0A; border: 1px solid #222; padding: 15px; border-radius: 6px; margin-bottom: 25px; }
+        .global-variants-box h4 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: var(--orange); letter-spacing: 0.5px; }
+        .global-variants-box p { margin: 0; font-size: 13px; color: #A0A0A0; line-height: 1.5; }
+        .modal-action-row { display: flex; gap: 15px; }
+        .btn-modal-action { flex: 1; padding: 12px; border-radius: 6px; font-weight: bold; text-transform: uppercase; font-size: 14px; cursor: pointer; text-align: center; border: none; text-decoration: none; transition: 0.3s; }
+        .btn-modal-action.checkout { background: var(--orange); color: white; }
+        .btn-modal-action.checkout:hover { background: #e05e00; }
+        .btn-modal-action.dinein { background: transparent; border: 2px solid #444; color: #C0C0C0; }
+        .btn-modal-action.dinein:hover { border-color: white; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- 🗺️ Sidebar Navigation Menu -->
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a class="active" href="menu.html">Menu</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+        <div class="cart-status">
+            <span style="font-size: 13px; color: #888; display:block; margin-bottom:5px;">Shopping Cart</span>
+            <span class="cart-count" id="global-cart">0 Items</span>
+        </div>
+    </nav>
+
+    <!-- 🍱 Main Content Frame Area -->
+    <main class="content">
+
+        <!-- 👑 LAYER 1: Core Heritage Menu Sections (With Deep Click Exploration Active) -->
+        <h2 class="section-title">Core Heritage Menu (Click Title/Image for Global Varieties)</h2>
+        
+        <h3 style="color:var(--orange); text-transform:uppercase; margin-left:15px; font-size:16px;">Authentic Regional Delicacies</h3>
+        <div class="grid-3" style="margin-bottom: 50px;">
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img" onclick="openExploration('korma')">
+                <div class="food-details">
+                    <h3 onclick="openExploration('korma')">Heritage Spice Korma</h3>
+                    <p>A deeply flavorful, slow-simmered regional classic layered with authentic local whole spices.</p>
+                    <div class="price-row"><span class="price">$12.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img" onclick="openExploration('platter')">
+                <div class="food-details">
+                    <h3 onclick="openExploration('platter')">The Royal Regional Platter</h3>
+                    <p>A traditional curation of our area's best slow-cooked meats and fragrant grains.</p>
+                    <div class="price-row"><span class="price">$24.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img" onclick="openExploration('chaat')">
+                <div class="food-details">
+                    <h3 onclick="openExploration('chaat')">Fiery Sweet Street Chaat</h3>
+ <p>Crispy wafers layered with spiced chickpeas, sweet yogurt, and our chili-honey glaze.</p>
+                    <div class="price-row"><span class="price">$6.00</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="color:var(--orange); text-transform:uppercase; margin-left:15px; font-size:16px;">Signature Creations & Artisanal Desserts</h3>
+        <div class="grid-3" style="margin-bottom: 60px;">
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img" onclick="openExploration('skewers')">
+                <div class="food-details">
+                    <h3 onclick="openExploration('skewers')">Honey-Glazed Chili Skewers</h3>
+                    <p>Tender charred skewers brushed with a spicy pepper reduction and organic wildflower honey.</p>
+                    <div class="price-row"><span class="price">$10.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img" onclick="openExploration('wings')">
+                <div class="food-details">
+                    <h3 onclick="openExploration('wings')">Sweet Heat Flame Wings</h3>
+                    <p>Crispy glazed wings tossed in a signature blend of fiery habanero spice and warm honey.</p>
+                    <div class="price-row"><span class="price">$7.25</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img" onclick="openExploration('cake')">
+                <div class="food-details">
+                    <h3 onclick="openExploration('cake')">Spiced Saffron Honey Cake</h3>
+                    <p>A moist sponge dessert soaked in honey-saffron syrup and topped with crushed pistachios.</p>
+                    <div class="price-row"><span class="price">$6.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+        </div>
+
+
+        <h2 class="section-title">Expanded Vault Selection (12 Items Across 6 Tiers)</h2>
+        <div class="grid-3">
+            
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Charcoal Smoked Ribs</h3>
+                    <p>Substantial prime short ribs subjected to intense charcoal fire seals before resting.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Heavy smoky heat metrics brushed with dense habanero reduction paint.</div>
+                    <div class="price-row"><span class="price">$18.75</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Fire-Roasted Tandoor Chicken</h3>
+                    <p>Bone-in segments deeply gashed and marinated in local crushed chili curd pastes.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Aggressive red chili friction balanced with cool, sour dairy metrics.</div>
+                    <div class="price-row"><span class="price">$14.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Crispy Samosa Smash Chaat</h3>
+                    <p>Flaky golden pastry pockets crushed open and drenched in house spiced gravies.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Tangy tamarind structural notes colliding with sharp raw green pepper bits.</div>
+                    <div class="price-row"><span class="price">$7.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Spiced Chili Fish Cutlets</h3>
+                    <p>Minced coastal ocean whitefish blended thoroughly with cilantro stalks and green peppers.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Immediate biting tongue sting anchored clean by pristine seafood sugars.</div>
+                    <div class="price-row"><span class="price">$9.25</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Black Pepper Garlic Beef</h3>
+                    <p>Tender beef chunks slow-stewed inside thick crushed black peppercorn syrups.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Warming, dark woody heat density that bypasses standard chili mechanics entirely.</div>
+                    <div class="price-row"><span class="price">$16.00</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Tempered Chili-Honey Paneer</h3>
+                    <p>Firm hand-pressed curd cubes pan-fried till golden and tossed with fresh chilies.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Sweet organic amber honey sheets masking a sharp, raw cayenne back-kick.</div>
+                    <div class="price-row"><span class="price">$11.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Fiery Coconut Prawn Masala</h3>
+                    <p>Jumbo prawns simmered thoroughly in reduced coconut milks laced with red chili paste.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Velvety, rich nutty sweetness accelerating into an intense, persistent spice finish.</div>
+                    <div class="price-row"><span class="price">$19.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Tamarind Fire Sea Bass</h3>
+                    <p>Whole pan-seared sea bass filet glazed extensively with tart, sour local tamarind juices.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Aggressive puckering sour notes paired with crushed red pepper pods.</div>
+                    <div class="price-row"><span class="price">$22.00</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Bespoke Spiced Lamb Biryani</h3>
+                    <p>Fragrant aged basmati rice grains layered extensively with tender bone-in lamb chops.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Complex internal spice heat built on mace, green cardamom, and steam.</div>
+                    <div class="price-row"><span class="price">$17.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Saffron Chili Fragrant Grains</h3>
+                    <p>Light wok-tossed long grains seasoned elegantly with saffron threads and green serranos.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Elegant, highly aromatic luxury top notes yielding to clean green capsicum heat.</div>
+                    <div class="price-row"><span class="price">$8.00</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+
+            <div class="food-card"> 
+  <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Smoked Habanero Garlic Naan</h3>
+                    <p>Blistered clay-oven flatbreads brushed liberally with garlic ghee and minced orange peppers.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>High-frequency tropical fruit stinging heat embedded straight into hot buttery breads.</div>
+                    <div class="price-row"><span class="price">$4.50</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+            <div class="food-card">
+                <img src="https://unsplash.com" class="food-img">
+                <div class="food-details">
+                    <h3>Sweet Amber Honey Paratha</h3>
+                    <p>Multi-layered flaky laminated flatbread pan-fried and drizzled with wildflower honey reductions.</p>
+                    <div class="spice-vibe-tag"><strong>Spice Vibe Mechanics</strong>Soothing, rich sweet coat structured to settle burning palate mechanics perfectly.</div>
+                    <div class="price-row"><span class="price">$5.00</span><button class="btn-cart" onclick="addToCart()">Add to Cart</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="festival-hub">
+            <h2>The Fire & Nectar Elixir Festival</h2>
+            <p>Enroll securely inside our premier upcoming drinking festival. Experience open-cask tastings, bespoke micro-brew formulas infused with sweet pepper reduction glazes, and private masterclasses monitored on-site by our expert liquid curators.</p>
+            <form class="festival-form" onsubmit="event.preventDefault(); alert('Festival VIP Access Token Registered Successfully!');">
+                <div class="form-group">
+                    <label>Full Legal Registrant Name</label>
+                    <input type="text" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Contact Destination Email</label>
+                    <input type="email" required placeholder="name@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>Bespoke Event Access Passes Selection</label>
+                    <select style="color: white; background: #121212;">
+                        <option>Single Day Admission Pass token</option>
+                        <option>Full Weekend Tasting Access badge</option>
+                        <option>Elite VIP Overlord Lounge allocation</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit btn-festival">Secure Access Pass Token</button>
+            </form>
+              <div class="premium-title-footer"><strong>KHAN'S CRAVINGS CULINARY REVOLUTION</strong></div>
+        </div>
+
+    <div class="modal-layer" id="exploration-overlay">
+        <div class="modal-box">
+            <span class="modal-close" onclick="closeExploration()">&times;</span>
+            <div class="modal-img-frame">
+                <img id="modal-display-img" src="" alt="">
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h2 id="modal-display-name">Food Component Node</h2>
+                    <div class="modal-desc-bold" id="modal-display-bold-desc">Bold premium culinary profile statement goes here.</div>
+                    
+                    <div class="global-variants-box">
+                        <h4>Geopolitical Varieties across Different Countries</h4>
+                        <p id="modal-display-variants">Detailed geopolitical variant tracking documentation list.</p>
+                    </div>
+                    
+                    <div style="font-size: 24px; font-weight: bold; color: var(--orange); margin-bottom: 20px;" id="modal-display-price">$0.00</div>
+                </div>
+                
+                <div class="modal-action-row">
+                    <button class="btn-modal-action checkout" onclick="triggerInstantCheckout()">Instant Checkout Order</button>
+                    <button class="btn-modal-action dinein" onclick="triggerDineInBooking()">Secure Live Dine-In Table</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Heritage Exploration Matrix Database Object
+        const database = {
+            korma: {
+                name: "Heritage Spice Korma",
+                bold: "An uncompromised premium masterpiece slow-cooked over low embers, bringing forth an intense, robust spice wall.",
+                variants: "• United Kingdom: Adapted as Shahi Korma utilizing rich almond paste. <br>• Northern India: Tempered with heavy cream and aromatic cardamom. <br>• Bangladesh: Prepared as a highly spiced wedding delicacy using traditional ghee.",
+                price: "$12.50",
+                img: "https://unsplash.com"
+            },
+            platter: {
+                name: "The Royal Regional Platter",
+                bold: "A visual monument of gastronomic tradition displaying our region's best seasoned component meats.",
+                variants: "• Middle East: Configured as a communal tray utilizing saffron rice. <br>• Pakistan: Accompanied by heavy bone marrow reductions. <br>• Southeast Asia: Served alongside crisp flatbreads and pickled hot fruits.",
+                price: "$24.50",
+                img: "https://unsplash.com"
+            },
+            chaat: {
+                name: "Fiery Sweet Street Chaat",
+                bold: "An aggressive texturing game where crispy potato wafers snap apart inside sweet chili honey layers.",
+                variants: "• India: Known as Papdi Chaat loaded with pungent coriander mint chutney. <br>• East Africa: Adapted into local street versions laced with lime and cassava. <br>• Canada: Deployed inside modern gastro-pubs using smoked sweet glazes.",
+                price: "$6.00",
+                img: "https://unsplash.com"
+            },
+            skewers: {
+                name: "Honey-Glazed Chili Skewers",
+                bold: "Charred, smoky protein links glazed continually inside wild blossom sugars and crushed peppers.",
+                variants: "• Indonesia: Served as a traditional Satay with heavy peanut friction. <br>• Brazil: Adapted as a premium culinary cut brushed with chili glaze. <br>• Japan: Configured as Yakitori laced with heavy unagi-honey layers.",
+                price: "$10.50",
+                img: "https://unsplash.com"
+            },
+            wings: {
+                name: "Sweet Heat Flame Wings",
+                bold: "Crispy chicken wings cooked over blazing open fire bars, tossed inside intense habanero reductions.",
+                variants: "• United States: Served as Buffalo style using high cayenne vinegar notes. <br>• South Korea: Coated in sticky sweet gochujang chili honey layers. <br>• Caribbean: Tossed in a fiery scotch bonnet and jerk seasoning paste.",
+                price: "$7.25",
+                img: "https://unsplash.com"
+            },
+            cake: {
+                name: "Spiced Saffron Honey Cake",
+                bold: "A velvety luxury dessert soaked heavily inside pure saffron threads and thick amber reductions.",
+                variants: "• Spain: Infused with rich orange-blossom honeys. <br>• Persian Gulf: Steeped thoroughly inside rosewater syrups. <br>• Eastern Europe: Structured as a multi-layered crisp honey biscuit sponge.",
+                price: "$6.50",
+                img: "https://unsplash.com"
+            }
+        };
+
+        function openExploration(key) {
+            const data = database[key];
+            if(!data) return;
+            
+            document.getElementById('modal-display-img').src = data.img;
+            document.getElementById('modal-display-name').innerText = data.name;
+            document.getElementById('modal-display-bold-desc').innerHTML = data.bold;
+            document.getElementById('modal-display-variants').innerHTML = data.variants;
+            document.getElementById('modal-display-price').innerText = data.price;
+            
+            document.getElementById('exploration-overlay').style.display = "flex";
+        }
+
+        function closeExploration() {
+            document.getElementById('exploration-overlay').style.display = "none";
+        }
+
+        function triggerInstantCheckout() {
+            alert("Rerouting pipeline straight to active secure settlement nodes. Item checkout processing initialized!");
+            closeExploration();
+        }
+
+        function triggerDineInBooking() {
+            alert("Bespoke Dine-In table lock confirmed for this item selection. Our table matrix curators will hold your space!");
+            closeExploration();
+        }
+
+        let count = 0;
+        function addToCart() {
+            count++;
+            document.getElementById('global-cart').innerText = count + (count === 1 ? ' Item' : ' Items');
+        }
+    </script>
+</body>
+</html>                                                                                                                                                                                                                                                                              
