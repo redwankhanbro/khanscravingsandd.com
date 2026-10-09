@@ -1,1 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Elite Club Members Hub - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #070707; 
+            --sidebar-bg: #040404; 
+            --card: #121212; 
+            --orange: #FF6B01; 
+            --blood-red: #8B0000;
+            --text: #D8D8D8; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        
+        /* 🗺️ Left Sidebar Navigation Menu Framework */
+        .sidebar { 
+            width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; 
+            padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; 
+            display: flex; flex-direction: column; justify-content: space-between; z-index: 100; 
+        }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; transition: 0.3s; }
+        .sidebar a:hover { background: var(--orange); color: white; }
 
+        /* 🍱 Main Content Frame Panel Area */
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; letter-spacing: 0.5px; }
+        
+        /* 🗂️ LAYER 1: 8 Club Offers Layout Grid */
+        .offers-matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .offer-node { background: #0A0A0A; border: 1px solid #222; padding: 18px 12px; border-radius: 6px; text-align: center; font-weight: 600; font-size: 13px; color: white; border-top: 2px solid var(--orange); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        /* 🎨 LAYER 2: 3 Luxurious Column Layout Beside Each Other */
+        .lux-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 20px; }
+        .lux-card { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; overflow: hidden; transition: 0.3s; }
+        .lux-card:hover { transform: translateY(-5px); border-color: var(--orange); }
+        .lux-img-box { width: 100%; height: 190px; background: #252525; overflow: hidden; border-bottom: 1px solid #2a2a2a; }
+        .lux-img-box img { width: 100%; height: 100%; object-fit: cover; filter: contrast(110%) grayscale(15%); transition: 0.5s; }
+        .lux-card:hover .lux-img-box img { transform: scale(1.05); filter: contrast(115%) grayscale(0%); }
+        .lux-desc { padding: 22px; }
+        .lux-desc h4 { margin: 0 0 10px 0; color: white; text-transform: uppercase; font-size: 16px; letter-spacing: 0.5px; }
+        .lux-desc p { margin: 0; font-size: 13.5px; color: #999; line-height: 1.6; }
+
+        /* 📋 LAYER 3: Club Enrollment Input Field Form */
+        .club-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: span 2; }
+        .club-form label { color: #A0A0A0; font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .club-form input, .club-form select, .club-form textarea { padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 14px; }
+        .club-form input:focus, .club-form select:focus, .club-form textarea:focus { border-color: var(--orange); outline: none; }
+        
+        /* Scrollable Terms Textarea Box Viewport */
+        .policy-box { background: #050505; border: 1px solid #1f1f1f; padding: 15px; height: 130px; overflow-y: scroll; border-radius: 6px; font-size: 12.5px; color: #777; line-height: 1.6; margin-bottom: 10px; }
+        .policy-box::-webkit-scrollbar { width: 6px; }
+        .policy-box::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+        .btn-submit-club { background: var(--orange); color: white; border: none; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; grid-column: span 2; text-transform: uppercase; transition: 0.3s; letter-spacing: 0.5px; margin-top: 10px; }
+        .btn-submit-club:hover { background: #e05e00; box-shadow: 0 4px 15px rgba(255, 107, 1, 0.2); }
+
+        /* Five Inline Links Framework Matrix */
+        .extra-links-row { display: flex; gap: 20px; justify-content: center; margin: 35px 0 10px 0; border-top: 1px solid #222; padding-top: 25px; flex-wrap: wrap; }
+        .extra-links-row a { color: #666; text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .extra-links-row a:hover { color: var(--orange); }
+        
+        /* 📜 LAYER 4: Immersive Long Description Directive Narrative */
+        .long-description { font-size: 15.5px; line-height: 1.9; color: #A8A8A8; text-align: justify; margin-bottom: 10px; }
+        .premium-footer { text-align: center; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 2px solid var(--blood-red); padding-top: 40px; margin-top: 25px; }
+    </style>
+</head>
+<body>
+
+    <!-- 🗺️ Left Sidebar Navigation Menu Framework -->
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+
+    <!-- 🍱 Main Content Frame Panel Area -->
+    <main class="content">
+        <h1 class="page-title">Private Elite Club Member Matrix</h1>
+
+        <!-- LAYER 1: Full Details of 8 Club Offers (Top Layer Grid Boxes) -->
+        <div class="block-section">
+            <h3 class="section-heading">Eight Core Active Club Tiers</h3>
+            <div class="offers-matrix">
+                <div class="offer-node">1. Complimentary Cask Allocations</div>
+                <div class="offer-node">2. Locked Table Grid Pass</div>
+                <div class="offer-node">3. Dynamic Midnight Buffets</div>
+                <div class="offer-node">4. Habanero Secret Vaults</div>
+                <div class="offer-node">5. Visual Fire Specialist Assigns</div>
+                <div class="offer-node">6. Non-Public Beverage Imports</div>
+                <div class="offer-node">7. Zero-Cost Chauffeur Transits</div>
+                <div class="offer-node">8. Private Acoustics Buyouts</div>
+            </div>
+        </div>
+
+        <!-- LAYER 2: 3 Luxurious Services Side-By-Side (Images Above Text Details) -->
+        <div class="block-section">
+            <h3 class="section-heading">Three Luxurious Future Event Matrix Tiers</h3>
+            <div class="lux-row">
+                <!-- Card 1 -->
+                <div class="lux-card">
+                    <div class="lux-img-box">
+                        <img src="https://unsplash.com" alt="Bespoke Banquet Infrastructure Asset">
+                    </div>
+                    <div class="lux-desc">
+                        <h4>Bespoke Banquets</h4>
+                        <p>Complete structural dining table overrides engineered for massive group assemblies.</p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="lux-card">
+                    <div class="lux-img-box">
+                        <img src="https://unsplash.com" alt="Liquid Theater Master Class Asset">
+                    </div>
+                    <div class="lux-desc">
+                        <h4>Liquid Theater Masters</h4>
+                        <p>Dedicated mixologists providing continuous fire reduction drinks right at your grid location.</p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="lux-card">
+                    <div class="lux-img-box">
+                        <img src="https://unsplash.com" alt="Kitchen Overlord Artisan Showcase Asset">
+                    </div>
+                    <div class="lux-desc">
+                        <h4>Kitchen Overlord Showcases</h4>
+                        <p>Private multi-course menu creations drafted explicitly under direct chef instigation rules.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 3: Form Matrix with Terms/Conditions and 5 Inline Links -->
+        <div class="block-section">
+            <h3 class="section-heading">Club Membership Enrollment Terminal</h3>
+            <form class="club-form" onsubmit="event.preventDefault(); alert('Vault Membership documentation received successfully!');">
+                <div class="form-group">
+                    <label>Full Legal Name</label>
+                    <input type="text" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Private Phone Number</label>
+  <div class="form-group">
+                    <label>Mailing Email Address</label>
+                    <input type="email" required placeholder="name@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>Geopolitical Location</label>
+                    <input type="text" required placeholder="e.g. Dhaka, Bangladesh">
+                </div>
+                <div class="form-group">
+                    <label>Bespoke Event Feast Member Code (Optional)</label>
+                    <input type="text" placeholder="Enter Feast Code ID">
+                </div>
+                <div class="form-group">
+                    <label>Additional Personal Details</label>
+                    <input type="text" placeholder="Specify dietary profiles, spice limits, or room seating preferences...">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Structural Privacy Policies & Conditions Agreements</label>
+                    <div class="policy-box">
+                        1. Core elite club memberships are completely non-transferable vectors. <br>
+                        2. All registered cardholders explicitly agree to follow open-flame theater code safety behaviors on our venue lines. <br>
+                        3. Spiced beverage components and off-menu plates remain subjected to daily availability constraints. <br>
+                        4. Account logs that violate standard payment desk matrices will trigger immediate tier card termination cycles. <br>
+                        5. VIP lounge and acoustic sound block rules must be maintained during late night service loops.
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit-club">Authorize Vault Membership</button>
+            </form>
+
+            <div class="extra-links-row">
+                <a href="#matrix-specs">1. Architectural Specifications</a>
+                <a href="#spice-metrics">2. Culinary Spice Analytics</a>
+                <a href="#liquids-archive">3. Elixir Vault Archives</a>
+                <a href="#banquet-schedules">4. Corporate Schedules</a>
+                <a href="#legal-clauses">5. Regulatory Disclaimers</a>
+            </div>
+        </div>
+
+        <div class="block-section" style="background: linear-gradient(180deg, #121212 0%, #000000 100%); border-color: var(--blood-red);">
+            <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #333;">Immersive Club Directives & Core Operations</h3>
+            <p class="long-description">
+                Khan’s Cravings & Dinings Private Club Hub operates on an uncompromising approach to open-flame culinary craftsmanship. Formed exclusively for elite epicureans who demand advanced contrast layers, our network bridges the divide between historical regional recipe nodes and bold signature spice theater. We process raw charcoal heat variables under strict flavor constraints, ensuring that every skewer, meat cut, and ambient honey reduction lacquer matches premium luxury dining standards. Our major operations track user preferences natively, mapping menu selections against individual membership tags to craft highly tailored tableside showcases. We remain fiercely dedicated to pushing the outer boundaries of flavor execution worldwide.
+            </p>
+            <div class="premium-footer">
+                KHAN'S CRAVINGS
+                <div style="font-size: 14px; font-weight: 500; color: var(--orange); margin-top: 8px; letter-spacing: 2px;">THE ULTIMATE CULINARY REVOLUTION FOR TRUE VIP GUESTS</div>
+            </div>
+        </div>
+    </main>
+</body> 
+</html>  
