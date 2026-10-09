@@ -25,13 +25,12 @@
         .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; transition: 0.3s; }
         .sidebar a:hover, .sidebar a.active { background: var(--orange); color: white; }
 
-        /* 🍱 Main Display Workspace With Grand Feast Background Container */
-        .content { 
-            margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; 
-            background: linear-gradient(rgba(10, 10, 10, 0.92), rgba(5, 5, 5, 0.96)), 
-                        url('https://unsplash.com');
-            background-size: cover; background-position: center; background-attachment: fixed; min-height: 100vh;
-        }
+      /* 🍱 Main Display Workspace With Grand Feast Background Container */
+.content {
+    margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px;
+    background: linear-gradient(rgba(10, 10, 10, 0.92), rgba(5, 5, 5, 0.96)), url('https://unsplash.com');
+    background-size: cover; background-position: center; background-attachment: fixed; min-height: 100vh;
+}
         
         .category-title { color: white; border-left: 4px solid var(--orange); padding-left: 15px; margin-top: 50px; margin-bottom: 30px; text-transform: uppercase; font-size: 24px; letter-spacing: 1px; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
