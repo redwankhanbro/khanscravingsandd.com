@@ -1,1 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Dining & Live Floor Matrix - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #121212; 
+            --orange: #FF6B01; 
+            --green: #2ECC71;
+            --crimson: #C0392B;
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        
+        /* 🗺️ Left Sidebar Navigation Menu Framework */
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: var(--orange); color: white; }
+        
+        /* 🍱 Main Display Workspace Grid */
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; letter-spacing: 0.5px; }
+        
+        /* 📋 Top Signup Form Alignment Blueprint */
+        .premium-signup-box { background: linear-gradient(135deg, #111 0%, #1c0b02 100%); border: 1px solid #332005; border-radius: 12px; padding: 45px; margin-bottom: 40px; }
+        .signup-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; align-items: end; }
+        .signup-form label { color: #A0A0A0; font-size: 11px; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .signup-form input, .signup-form select { padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; }
+        .btn-signup-submit { background: var(--orange); color: white; border: none; padding: 13px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-signup-submit:hover { background: #e05e00; }
 
+        /* 👑 3 Column Form Layout Elements */
+        .column-form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 20px; }
+        .tier-form-card { background: #161616; border: 1px solid #2a2a2a; border-radius: 10px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; }
+        .tier-form-card h4 { margin-top: 0; color: white; text-transform: uppercase; font-size: 18px; border-left: 3px solid var(--orange); padding-left: 10px; margin-bottom: 20px; }
+        .card-inner-form { display: flex; flex-direction: column; gap: 12px; }
+        .card-inner-form label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: 600; }
+        .card-inner-form input { padding: 10px; background: #0A0A0A; border: 1px solid #333; color: white; border-radius: 6px; font-family: inherit; }
+        .btn-booking-submit { background: #222; color: white; border: 1px solid #444; padding: 11px; margin-top: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.2s; font-size: 12px; }
+        .btn-booking-submit:hover { background: #333; border-color: #666; }
+        .btn-see-other { background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 11px; margin-top: 10px; font-weight: 700; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s; text-align: center; text-decoration: none; font-size: 12px; letter-spacing: 0.5px; }
+        .btn-see-other:hover { background: var(--orange); color: white; box-shadow: 0 0 10px rgba(255,107,1,0.2); }
+
+        /* 🗂️ Services List Rows */
+        .services-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .service-row-node { background: #111; border: 1px solid #222; padding: 20px; border-radius: 8px; border-left: 4px solid var(--orange); }
+        .service-row-node h5 { margin: 0 0 8px 0; color: white; text-transform: uppercase; font-size: 15px; }
+        .service-row-node p { margin: 0; font-size: 13.5px; color: #999; line-height: 1.5; }
+
+        /* 📊 Manual Table Tracking System Console Workspace */
+        .matrix-viewport-container { display: flex; flex-direction: column; gap: 30px; }
+        .matrix-tier-block { background: #0A0A0A; border: 1px solid #1f1f1f; padding: 25px; border-radius: 8px; }
+        .matrix-tier-block h4 { margin-top: 0; margin-bottom: 20px; text-transform: uppercase; font-size: 16px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .matrix-tier-block h4 span { font-size: 12px; color: var(--orange); background: rgba(255,107,1,0.05); padding: 4px 10px; border-radius: 4px; border: 1px dashed var(--orange); }
+        
+        .table-scroll-tray { height: 350px; overflow-y: scroll; border: 1px solid #222; background: #050505; border-radius: 6px; padding: 15px; }
+        .table-scroll-tray::-webkit-scrollbar { width: 8px; }
+        .table-scroll-tray::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+        
+        .table-grid-mesh { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .table-node-card { background: #111; border: 1px solid #252525; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 8px; border-top: 3px solid #444; }
+        .table-node-card.booked { border-top-color: var(--orange); }
+        .table-node-card.occupied { border-top-color: var(--crimson); background: rgba(192,57,43,0.01); }
+        .table-node-card.free { border-top-color: var(--green); background: rgba(46,204,113,0.01); }
+        
+        .node-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 6px; }
+        .node-title { font-weight: bold; font-size: 14px; color: white; }
+        .status-badge { font-size: 11px; font-weight: bold; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
+        .status-badge.free { background: rgba(46,204,113,0.1); color: var(--green); }
+        .status-badge.booked { background: rgba(255,107,1,0.1); color: var(--orange); }
+        .status-badge.occupied { background: rgba(192,57,43,0.1); color: var(--crimson); }
+        
+        .node-data-line { font-size: 12px; color: #888; display: flex; justify-content: space-between; }
+        .node-data-line strong { color: #CCC; }
+        .premium-footer-title { text-align: center; margin-top: 40px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
+    </style>
+</head>
+<body>
+
+    <!-- 🗺️ Sidebar Menu -->
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a class="active" href="private-dining.html">Private Dining</a>
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+
+    <main class="content">
+        <h1 class="page-title">Private Dining & Floor Status Command</h1>
+
+        <!-- LAYER 1: Replica Homepage Event Signup Form -->
+        <div class="premium-signup-box">
+            <h3 style="color:var(--orange); text-transform:uppercase; margin-top:0; margin-bottom:10px; font-size:20px; letter-spacing:1px;">Secure Event & Private Dining Access</h3>
+            <p style="color:#A0A0A0; font-size:14px; margin-top:0; margin-bottom:25px;">Enroll your party details below to secure closed-door allocations or private festival suites.</p>
+            <form class="signup-form" onsubmit="event.preventDefault(); alert('Event request logged safely into our master registry!');">
+                <div class="form-group">
+                    <label>Full Representative Name</label>
+                    <input type="text" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Mailing Email Address</label>
+                    <input type="email" required placeholder="name@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>Target Celebration Tier</label>
+                    <select style="color:white; background:#0A0A0A;">
+                        <option>Bespoke Private Banquet Assembly</option>
+                        <option>Executive Live Fire BBQ Showcase</option>
+                        <option>Grand Elixir Drinking Festival Lounge</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-signup-submit">Secure Allocation Token</button>
+            </form>
+        </div>
+
+        <!-- 📋 LAYER 2: Three Seating Quality Options with Column Action Links -->
+        <div class="block-section">
+            <h3 class="section-heading">Active Dine-In Quality Booking Forms</h3>
+            <div class="column-form-grid">
+                
+                <!-- Quality 1 Form Card -->
+                <div class="tier-form-card">
+                    <div>
+                        <h4>1. Premier Tier Lounge</h4>
+                        <form class="card-inner-form" onsubmit="event.preventDefault(); alert('Premier Tier Table Request Recorded.');">
+                            <label>Organizer Name</label>
+                            <input type="text" required placeholder="Name">
+                            <label>Guest Capacity</label>
+                            <input type="number" required min="1" placeholder="e.g. 4">
+                            <button type="submit" class="btn-booking-submit">Hold Premier Slot</button>
+                        </form>
+                    </div>
+                    <a href="reserve-options.html" class="btn-see-other">See Other Options</a>
+                </div>
+                
+                <!-- Quality 2 Form Card -->
+                <div class="tier-form-card">
+                    <div>
+                        <h4>2. Executive Sound Suite</h4>
+                        <form class="card-inner-form" onsubmit="event.preventDefault(); alert('Sound Suite Table Request Recorded.');">
+                            <label>Organizer Name</label>
+                            <input type="text" required placeholder="Name">
+                            <label>Guest Capacity</label>
+                            <input type="number" required min="1" placeholder="e.g. 8">
+                            <button type="submit" class="btn-booking-submit">Hold Suite Slot</button>
+                        </form>
+                    </div>
+                    <a href="reserve-options.html" class="btn-see-other">See Other Options</a>
+                </div>
+                
+                <!-- Quality 3 Form Card -->
+                <div class="tier-form-card">
+                    <div>
+                        <h4>3. Royal Feast Circle</h4>
+                        <form class="card-inner-form" onsubmit="event.preventDefault(); alert('Royal Feast Circle Table Request Recorded.');">
+                            <label>Organizer Name</label>
+                            <input type="text" required placeholder="Name">
+                            <label>Guest Capacity</label>
+                            <input type="number" required min="1" placeholder="e.g. 12">
+                            <button type="submit" class="btn-booking-submit">Hold Royal Slot</button>
+                        </form>
+                    </div>
+                    <a href="reserve-options.html" class="btn-see-other">See Other Options</a>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- LAYER 3: Qualities Descriptions & Services List Rows -->
+        <div class="block-section">
+            <h3 class="section-heading">Dine-In Qualities & Premium Cardholder Services</h3>
+            <div class="services-list">
+                <div class="service-row-node">
+                    <h5>Quality 1: Premier Tier Lounge Infrastructure</h5>
+                    <p>Designed for fluid group dynamics. Standard customers unlock localized spice parameter adjustments, while Elite Cardholders gain complimentary access to mid-tier vintage cask reserves during late-night service loops.</p>
+                </div>
+                <div class="service-row-node">
+                    <h5>Quality 2: Executive Sound Suite Insulation</h5>
+                    <p>Equipped with professional acoustic isolation boundaries and independent audio consoles. Cardholders unlock instant booking priority parameters, complete room lockout control, and private text line concierge integrations.</p>
+                </div>
+                <div class="service-row-node">
+                    <h5>Quality 3: Royal Feast Circle (Customers First Choice)</h5>
+                    <p>Our peak gastronomic auditorium canvas. Features tableside preparation theater where master fire curators paint cuts with wildflower honey reductions. All VIP Club Members unlock unlimited liquid formulas and off-menu artisan chef plates natively.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 4: Manual Table Tracking System Console Workspace -->
+        <div class="block-section" style="border-color: var(--orange);">
+            <h3 class="section-heading" style="color: var(--orange);">Live Floor Tracking Mesh (570 Total Tables)</h3>
+            <div class="matrix-viewport-container">
+                
+                <!-- Tier 1 Mesh -->
+                <div class="matrix-tier-block">
+                    <h4>First Dine-In Quality: Premier Lounge Grid <span>185 Tables Allocated</span></h4>
+                    <div class="table-scroll-tray">
+                        <div class="table-grid-mesh">
+                            <div class="table-node-card free"><div class="node-header-row"><span class="node-title">Table #PL-001</span><span class="status-badge free">Live Vacant</span></div><div class="node-data-line">Payment Total: <strong>$0.00</strong></div><div class="node-data-line">VIP Cardholder: <strong>None</strong></div><div class="node-data-line">Club Member: <strong>No</strong></div><div class="node-data-line">Festival Feast: <strong>Unlinked</strong></div></div>
+                            <div class="table-node-card booked"><div class="node-header-row"><span class="node-title">Table #PL-002</span><span class="status-badge booked">Reserved Hold</span></div><div class="node-data-line">Payment ID: <strong>#TXN-9012 ($145.00 Card)</strong></div><div class="node-data-line">VIP Cardholder: <strong>#VIP-8841</strong></div><div class="node-data-line">Club Member: <strong>No</strong></div><div class="node-data-line">Festival Feast: <strong>Involved</strong></div></div>
+                            <div class="table-node-card occupied"><div class="node-header-row"><span class="node-title">Table #PL-003</span><span class="status-badge occupied">Live Occupied</span></div><div class="node-data-line">Payment ID: <strong>#TXN-4412 ($210.50 Wallet)</strong></div><div class="node-data-line">VIP Cardholder: <strong>None</strong></div><div class="node-data-line">Club Member: <strong>Yes (#ELITE-09)</strong></div><div class="node-data-line">Festival Feast: <strong>Involved</strong></div></div>
+                            <div class="table-node-card free"><div class="node-header-row"><span class="node-title">Table #PL-004</span><span class="status-badge free">Live Vacant</span></div><div class="node-data-line">Payment Total: <strong>$0.00</strong></div><div class="node-data-line">VIP Cardholder: <strong>None</strong></div><div class="node-data-line">Club Member: <strong>No</strong></div><div class="node-data-line">Festival Feast: <strong>Unlinked</strong></div></div>
+                            <div class="table-node-card booked"><div class="node-header-row"><span class="node-title">Tables #PL-005 to #PL-185</span><span class="status-badge booked">Manual Vault Registers Active</span></div><div class="node-data-line">System Statement: <strong>Continuous database mapping index loops running down standard parameter blocks...</strong></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 2 Mesh -->
+                <div class="matrix-tier-block">
+                    <h4>Second Dine-In Quality: Executive Sound Suites <span>175 Tables Allocated</span></h4>
+                    <div class="table-scroll-tray">
+                        <div class="table-grid-mesh">
+                            <div class="table-node-card occupied"><div class="node-header-row"><span class="node-title">Table #SS-001</span><span class="status-badge occupied">Live Occupied</span></div><div class="node-data-line">Payment ID: <strong>#TXN-1102 ($450.00 Tab Key)</strong></div><div class="node-data-line">VIP Cardholder: <strong>#VIP-1102</strong></div><div class="node-data-line">Club Member: <strong>Yes (#ELITE-84)</strong></div><div class="node-data-line">Festival Feast: <strong>Involved</strong></div></div>
+                            <div class="table-node-card free"><div class="node-header-row"><span class="node-title">Table #SS-002</span><span class="status-badge free">Live Vacant</span></div><div class="node-data-line">Payment Total: <strong>$0.00</strong></div><div class="node-data-line">VIP Cardholder: <strong>None</strong></div><div class="node-data-line">Club Member: <strong>No</strong></div><div class="node-data-line">Festival Feast: <strong>Unlinked</strong></div></div>
+                            <div class="table-node-card booked"><div class="node-header-row"><span class="node-title">Table #SS-003</span><span class="status-badge booked">Reserved Hold</span></div><div class="node-data-line">Payment ID: <strong>#TXN-7761 ($320.00 Wallet)</strong></div><div class="node-data-line">VIP Cardholder: <strong>None</strong></div><div class="node-data-line">Club Member: <strong>No</strong></div><div class="node-data-line">Festival Feast: <strong>Involved</strong></div></div>
+                            <div class="table-node-card booked"><div class="node-header-row"><span class="node-title">Tables #SS-004 to #SS-175</span><span class="status-badge booked">Manual Vault Registers Active</span></div><div class="node-data-line">System Statement: <strong>Continuous database mapping index loops running down standard parameter blocks...</strong></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 3 Mesh (Updated to 210 Tables!) -->
+                <div class="matrix-tier-block">
+                    <h4>Third Dine-In Quality: Royal Feast Circle (First Choice) <span>210 Tables Allocated</span></h4>
+                    <div class="table-scroll-tray">
+                        <div class="table-grid-mesh">
+                            
+                            <!-- Table RC-001 Layout Matrix -->
+                            <div class="table-node-card occupied">
+                                <div class="node-header-row">
+                                    <span class="node-title">Table #RC-001</span>
+                                    <span class="status-badge occupied">Live Occupied</span>
+                                </div>
+                                <div class="node-data-line">Payment ID: <strong>#TXN-9988 ($1,250 Card)</strong></div>
+                                <div class="node-data-line">VIP Cardholder: <strong>#VIP-9901</strong></div>
+                                <div class="node-data-line">Club Member: <strong>Yes (#ELITE-11)</strong></div>
+                                <div class="node-data-line">Festival Feast: <strong>Involved (Unlimited Liquids Unlocked)</strong></div>
+                            </div>
+                            
+                            <!-- Table RC-002 Layout Matrix -->
+                            <div class="table-node-card occupied">
+                                <div class="node-header-row">
+                                    <span class="node-title">Table #RC-002</span>
+                                    <span class="status-badge occupied">Live Occupied</span>
+                                </div>
+                                <div class="node-data-line">Payment ID: <strong>#TXN-5541 ($1,050 Wallet)</strong></div>
+                                <div class="node-data-line">VIP Cardholder: <strong>#VIP-4002</strong></div>
+                                <div class="node-data-line">Club Member: <strong>No</strong></div>
+                                <div class="node-data-line">Festival Feast: <strong>Involved (Unlimited Liquids Unlocked)</strong></div>
+                            </div>
+                            
+                            <!-- Table RC-003 Layout Matrix -->
+                            <div class="table-node-card free">
+                                <div class="node-header-row">
+                                    <span class="node-title">Table #RC-003</span>
+                                    <span class="status-badge free">Live Vacant</span>
+                                </div>
+                                <div class="node-data-line">Payment Total: <strong>$0.00</strong></div>
+                                <div class="node-data-line">VIP Cardholder: <strong>None</strong></div>
+                                <div class="node-data-line">Club Member: <strong>No</strong></div>
+                                <div class="node-data-line">Festival Feast: <strong>Unlinked</strong></div>
+                            </div>
+                            
+                            <!-- Table RC-004 Layout Matrix -->
+                            <div class="table-node-card booked">
+                                <div class="node-header-row">
+                                    <span class="node-title">Table #RC-004</span>
+                                    <span class="status-badge booked">Reserved Hold</span>
+                                </div>
+                                <div class="node-data-line">Payment ID: <strong>#TXN-3321 ($850.00 Tab Key)</strong></div>
+                                <div class="node-data-line">VIP Cardholder: <strong>None</strong></div>
+                                <div class="node-data-line">Club Member: <strong>Yes (#ELITE-44)</strong></div>
+                                <div class="node-data-line">Festival Feast: <strong>Involved</strong></div>
+                            </div>
+                            
+                            <!-- Manual Scaling Aggregation Stack Row -->
+                            <div class="table-node-card booked">
+                                <div class="node-header-row">
+                                    <span class="node-title">Tables #RC-005 to #RC-210</span>
+                                    <span class="status-badge booked">Manual Vault Registers Active</span>
+                                </div>
+                                <div class="node-data-line">System Statement: <strong>Continuous database mapping index loops running down standard parameter blocks...</strong></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="premium-footer-title">KHAN'S CRAVINGS REAL-TIME FLOOR DISPATCH METRICS</div>
+        </div>
+    </main>
+</body>
+</html>
