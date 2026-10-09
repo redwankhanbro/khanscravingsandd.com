@@ -39,7 +39,7 @@
         /* 🛒 Beverage Item Cards */
         .food-card { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1px solid var(--border); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; backdrop-filter: blur(8px); }
         .food-card:hover { transform: translateY(-5px); border-color: var(--orange); }
-        .food-img-container { width: 100%; height: 200px; overflow: hidden; }
+        .food-img-container { width: 100%; height: 200px; overflow: hidden; background: #222; }
         .food-img-container img { width: 100%; height: 100%; object-fit: cover; }
         .food-details { padding: 22px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .food-details h3 { margin: 0 0 10px 0; color: white; font-size: 19px; }
@@ -47,6 +47,18 @@
         .price-inline { color: var(--orange); font-weight: bold; font-size: 16px; margin-left: 6px; }
         .btn-cart { background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.3s; width: 100%; text-transform: uppercase; }
         .btn-cart:hover { background: var(--orange); color: white; }
+
+        /* 📅 Top-Level Reservation Booking Form Container */
+        .top-booking-box { background: rgba(25, 25, 25, 0.85); border: 1px solid #333; padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); margin-bottom: 60px; backdrop-filter: blur(8px); }
+        .top-booking-box h2 { color: var(--orange); font-size: 28px; margin-top: 0; margin-bottom: 10px; text-transform: uppercase; }
+        .top-booking-box p { color: #A0A0A0; margin-bottom: 30px; font-size: 15px; }
+        .booking-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: span 2; }
+        .booking-form label { color: #A0A0A0; font-size: 13px; margin-bottom: 8px; font-weight: 600; }
+        .booking-form input, .booking-form select { padding: 12px; background: #121212; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 14px; }
+        .btn-submit { background: var(--orange); color: white; border: none; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: 0.3s; grid-column: span 2; margin-top: 10px; text-transform: uppercase; }
+        .btn-submit:hover { background: #e05e00; }
 
         /* 👑 Showcase Row Footer Tiers */
         .showcase-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 60px; border-top: 1px solid #222; padding-top: 60px; }
@@ -75,7 +87,6 @@
         .btn-inline-route:hover { background: var(--orange); color: white; }
         
         .optional-trigger { font-size: 13px; color: var(--orange); cursor: pointer; font-weight: bold; margin-top: 5px; user-select: none; display: inline-block; }
-        .btn-submit-form { background: var(--orange); color: white; border: none; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; grid-column: span 2; text-transform: uppercase; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -92,10 +103,43 @@
     </nav>
 
     <main class="content">
-        <!-- 🍹 CATEGORY 1: Core Elixir Array Gallery -->
+        <!-- 📅 Tasting Reservation Booking Form (RESTORED!) -->
+        <div class="top-booking-box">
+            <h2>Reserve Your Liquid Journey</h2>
+            <p>Schedule an exclusive, private beverage tasting experience tailored precisely for your party.</p>
+            <form class="booking-form" onsubmit="event.preventDefault(); alert('Your private elixir experience has been successfully reserved!');">
+                <div class="form-group">
+                    <label>Full Name / Organization</label>
+                    <input type="text" required placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" required placeholder="name@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Tasting Focus Profile</label>
+                    <select style="color: white; background: #121212;">
+                        <option>Honey-Spiced Specialties Selection</option>
+                        <option>Fiery Chili Mocktail Assortment</option>
+                        <option>Aromatic Saffron & Heritage Warmers</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Expected Guest Count</label>
+                    <input type="number" required min="1" placeholder="e.g. 6">
+                </div>
+                <div class="form-group full-width">
+                    <label>Preferred Date & Time Selector</label>
+                    <input type="datetime-local" required>
+                </div>
+                <button type="submit" class="btn-submit">Confirm Beverage Reservation</button>
+            </form>
+        </div>
+
+        <!-- 🍹 CATEGORY 1: All 6 Foundational Core Drinks (RESTORED!) -->
         <h2 class="category-title">The Private Elixir Collection</h2>
         <div class="grid" style="margin-bottom: 50px;">
-            <div class="food-card">
+            <div class="food-card"> 
                 <div class="food-img-container"><img src="https://unsplash.com"></div>
                 <div class="food-details">
                     <h3>Honey-Spiced Ginger Ale</h3>
@@ -119,33 +163,63 @@
                     <button class="btn-cart" onclick="openOrderForm('Chili-Mango Mocktail')">Add to Cart</button>
                 </div>
             </div>
+            <div class="food-card">
+                <div class="food-img-container"><img src="https://unsplash.com"></div>
+                <div class="food-details">
+                    <h3>Saffron Infused Milk</h3>
+                    <p>Warm, premium whole milk steeped with hand-picked saffron threads and wild honey. <span class="price-inline">$6.50</span></p>
+                    <button class="btn-cart" onclick="openOrderForm('Saffron Infused Milk')">Add to Cart</button>
+                </div>
+            </div>
+            <div class="food-card">
+                <div class="food-img-container"><img src="https://unsplash.com"></div>
+                <div class="food-details">
+                    <h3>Fiery Cinnamon Cold Brew</h3>
+                    <p>16-hour slow-steeped dark roast coffee infused with natural Ceylon cinnamon. <span class="price-inline">$5.50</span></p>
+                    <button class="btn-cart" onclick="openOrderForm('Fiery Cinnamon Cold Brew')">Add to Cart</button>
+                </div>
+            </div>
+            <div class="food-card">
+                <div class="food-img-container"><img src="https://unsplash.com"></div>
+                <div class="food-details">
+                    <h3>Cardamom Rose Cooler</h3>
+                    <p>A refreshing floral blend of pink rosewater, crushed cardamom, and sparkling tonic. <span class="price-inline">$4.75</span></p>
+                    <button class="btn-cart" onclick="openOrderForm('Cardamom Rose Cooler')">Add to Cart</button>
+                </div>
+            </div>
         </div>
 
-        <!-- 🇹🇭 CATEGORY 2: Thai Options Drinking Collection -->
         <h2 class="category-title">Thai Options Drinking Collection</h2>
         <div class="grid">
             <div class="food-card">
                 <div class="food-img-container"><img src="https://unsplash.com"></div>
                 <div class="food-details">
-                    <h3>Authentic Cha Yen</h3>
-                    <p>Strongly-brewed black tea steeped with star anise and sweet cream. <span class="price-inline">$5.50</span></p>
-                    <button class="btn-cart" onclick="openOrderForm('Authentic Cha Yen (Thai Iced Tea)')">Add to Cart</button>
+                    <h3>Authentic Cha Yen (Thai Iced Tea)</h3>
+                    <p>Strongly-brewed black tea steeped with star anise, sweetened with condensed milk. <span class="price-inline">$5.50</span></p>
+                    <button class="btn-cart" onclick="openOrderForm('Authentic Cha Yen')">Add to Cart</button>
                 </div>
             </div>
             <div class="food-card">
                 <div class="food-img-container"><img src="https://unsplash.com"></div>
                 <div class="food-details">
                     <h3>Nom Yen (Sweet Pink Milk)</h3>
-                    <p>A comforting Thai street classic blending whole milk with sweet aromatic red syrup. <span class="price-inline">$4.75</span></p> 
-                      <button class="btn-cart" onclick="openOrderForm('O-Liang (Thai Iced Coffee)')">Add to Cart</button>
+                    <p>A comforting Thai street classic blending whole milk with sweet aromatic red syrup. <span class="price-inline">$4.75</span></p>
+                    <button class="btn-cart" onclick="openOrderForm('Nom Yen')">Add to Cart</button>
                 </div>
             </div>
-            <!-- Thai Drink 4 -->
+            <div class="food-card">
+                <div class="food-img-container"><img src="https://unsplash.com"></div>
+                <div class="food-details">
+                    <h3>O-Liang (Thai Iced Coffee)</h3>
+                    <p>Traditional dark roasted Robusta coffee beans simmered with honey and cane sugars. <span class="price-inline">$5.00</span></p>
+                    <button class="btn-cart" onclick="openOrderForm('O-Liang')">Add to Cart</button>
+                </div>
+            </div>
             <div class="food-card">
                 <div class="food-img-container"><img src="https://unsplash.com"></div>
                 <div class="food-details">
                     <h3>Lemongrass Lime Infusion</h3>
-                    <p>Freshly squeezed lime juice muddled with crushed stalks of aromatic lemongrass and sparkling tonic. <span class="price-inline">$5.25</span></p>
+                    <p>Fresh lime juice muddled with crushed stalks of lemongrass and sparkling tonic. <span class="price-inline">$5.25</span></p>
                     <button class="btn-cart" onclick="openOrderForm('Lemongrass Lime Infusion')">Add to Cart</button>
                 </div>
             </div>
@@ -177,16 +251,16 @@
                 <div class="form-group full-width">
                     <label>Selected Items Verification Matrix</label>
                     <div class="inline-verify-row">
-                        <input type="text" id="target-item-input" readonly style="background: #050505; color: var(--orange); font-weight: bold; width: 100%;">
+                        <input type="text" id="target-item-input" readonly style="background: #050505; color: var(--orange); font-weight: bold; padding: 12px; border: 1px solid #333; border-radius: 6px; box-sizing: border-box;">
                         <a href="verify.html" class="btn-inline-route">Verify Deeply</a>
                     </div>
                 </div>
 
                 <div class="form-group full-width">
-                    <span class="optional-trigger" onclick="document.getElementById('hidden-textarea').style.display='flex'">+ Click to add additional details / specific heat instructions</span>
+                    <span class="optional-trigger" onclick="document.getElementById('hidden-textarea').style.display='block'">+ Click to add additional details / specific heat instructions</span>
                     <textarea id="hidden-textarea" rows="2" style="display:none; padding:10px; background:#050505; border:1px solid #333; color:white; border-radius:6px; font-family:inherit; margin-top:10px;" placeholder="Type any special adjustments here..."></textarea>
                 </div>
-                <button type="submit" class="btn-submit-form">Confirm Cart Settings</button>
+                <button type="submit" class="btn-submit-form" style="background: var(--orange); color: white; border: none; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; grid-column: span 2; text-transform: uppercase;">Confirm Cart Settings</button>
             </form>
         </div>
     </div>
@@ -201,4 +275,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
