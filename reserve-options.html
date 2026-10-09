@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Reservation Settings - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #141414; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; }
+        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; }
+        .sidebar a:hover { background: var(--orange); color: white; }
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; }
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; }
+        .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        
+        /* Options Layout Grids */
+        .options-vertical-stack { display: flex; flex-direction: column; gap: 25px; margin-bottom: 30px; }
+        .option-node-card { background: #111; border: 1px solid #222; border-radius: 8px; padding: 30px; border-left: 4px solid var(--orange); }
+        .option-node-card h4 { margin-top: 0; color: white; font-size: 20px; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .option-node-card h4 span { color: var(--orange); font-size: 14px; }
+        .option-node-card p { margin: 0 0 20px 0; font-size: 14.5px; color: #A0A0A0; line-height: 1.7; }
+        
+        /* Interactive Input Component Row */
+        .privilege-verify-row { display: grid; grid-template-columns: 1fr auto; gap: 15px; max-width: 500px; }
+        .privilege-verify-row input { padding: 11px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; }
+        .btn-verify { background: #222; color: var(--orange); border: 1px solid var(--orange); padding: 0 25px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; }
+        .btn-verify:hover { background: var(--orange); color: white; }
+        
+        .strict-policy-viewport { background: #050505; border: 1px solid #1f1f1f; padding: 20px; height: 130px; overflow-y: scroll; border-radius: 6px; font-size: 13px; color: #666; line-height: 1.6; }
+        .strict-policy-viewport::-webkit-scrollbar { width: 6px; }
+        .strict-policy-viewport::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a href="private-dining.html">Private Dining</a>
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+    <main class="content">
+        <h1 class="page-title">Advanced Reservation Options Desk</h1>
 
+        <div class="block-section">
+            <h3 class="section-heading">Five Premium Quality Settlement Channels</h3>
+            <div class="options-vertical-stack">
+                
+                <!-- Node 1 -->
+                <div class="option-node-card">
+                    <h4>1) Confirmed My Card <span>Premium Gateway Tier</span></h4>
+                    <p>Complete your layout table assignment instantly by running authorization parameters directly across secure card settlement networks. Validated restaurant privilege cardholders automatically trigger an injected 20% tier multiplier discount right at the settlement node box.</p>
+                    <div class="privilege-verify-row">
+                        <input type="text" placeholder="Enter Restaurant Card ID for 20% Discount Verification">
+                        <button type="button" class="btn-verify" onclick="alert('Privilege Code Authenticated! 20% discount bracket applied safely.')">Verify ID</button>
+                    </div>
+                </div>
+
+                <!-- Node 2 -->
+                <div class="option-node-card">
+                    <h4>2) Bookings Via Slot <span>Direct Account Settlement</span></h4>
+                    <p>Acquire and seal a dedicated floor grid slot by processing standard banking transfers directly into our central culinary operations ledger account. Ideal for non-cardholding corporate entities mapping out large-scale private dining buyouts in advance. Upload your secure wire transaction token numbers during checkout loops to confirm structural reservations.</p>
+                </div>
+
+                <!-- Node 3 -->
+                <div class="option-node-card">
+                    <h4>3) Bookings Via Tab <span>Elite Cardholder Key</span></h4>
+                    <p>Exclusively engineered for verified VIP Cardholders and Private Vault Club Members. Bypasses standard prepayment barriers entirely, allowing authorized users to establish a rolling house balance tab to be audited and cleared at the close of the calendar month. Input your security token hash parameters to lock down immediate seating allocations.</p>
+                </div>
+
+                <!-- Node 4 -->
+                <div class="option-node-card">
+                    <h4>4) Corporate Concierge Package <span>Luxury Custom Option</span></h4>
+                    <p>Includes round-trip private chauffeur coordinates straight to our entry perimeter lane, curated off-menu hidden chef plates, and complete room buyouts. Monitored on-site by an assigned personal service curator. Extends deep sensory immersion for grand feast attendees.</p>
+                </div>
+
+                <!-- Node 5 -->
+                <div class="option-node-card">
+                    <h4>5) Festival Mezzanine Privilege <span>Liquid Tasting Allocation</span></h4>
+                    <p>Grants front-row access allocations to high-end open-cask zones during upcoming grand elixirs and drinking festivals. Requires a minimum tab commitment threshold parameters to execute tableside flame theater services.</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Strict Non-Paying Policy Box -->
+        <div class="block-section" style="border-color: var(--orange);">
+            <h3 class="section-heading" style="color: var(--orange);">Strict Policy of Non-Paying Defaults</h3>
+            <div class="strict-policy-viewport">
+                1. All advanced reservation selections require a confirmed payment verification token path or active VIP credential link to map tables live. <br>
+                2. Grid allocations holding a "Bookings Via Slot" label will automatically release back into the public vacant floor matrix if direct ledger assets are not received within 4 hours. <br>
+                3. Accounts utilizing rolling house balance keys ("Bookings Via Tab") that fail to clear processing logs by the designated date will face instant cardholder privilege termination loops. <br>
+                4. Khan's Cravings reserves the absolute structural right to refuse tableside live-fire theater setups to profiles with unverified clearance tokens.
+            </div>
+        </div>
+    </main>
+</body>
+</html>
