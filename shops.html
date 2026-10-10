@@ -388,27 +388,67 @@
             </div>
         </div>
 
-        <!-- CATEGORY 4: Live Music Seating Class Classifications -->
-        <div class="block-section">
-            <h3 class="section-heading">Live Music Festival Seating Class Classifications</h3>
-            <div class="music-tiers-stack">
-                
-                <div class="music-tier-node vip">
-                    <h4>First Class: Elite VIP Section Arena</h4>
-                    <p>Our most premium acoustic boundary assignment zone. Provides adjacent proximity mapping rows right next to the central theater platform stage layout boundaries. Verified restaurant platinum cardholders and club members unlock premium lounge services, zero prepayment barriers, and unlimited free-flowing elixir refills natively throughout the festival loop.</p>
-                </div>
+   <!-- CATEGORY 4: Live Music Seating Class Classifications (With Smooth Scroll Actions) -->
+   <div class="block-section" id="music-seating-section">
+       <h3 class="section-heading">Live Music Festival Seating Class Classifications</h3>
+       <div class="music-tiers-stack">
+        
+        <!-- First Class Section -->
+        <div class="music-tier-node vip">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 10px;">
+                <h4 style="margin: 0;">First Class: Elite VIP Section Arena</h4>
+                <a href="#offer-inquiry-anchor" class="btn-see-more-offers" onclick="scrollToInquiryForm('First Class VIP Arena')">See More Offers</a>
+            </div>
+            <p>Our most premium acoustic boundary assignment zone. Provides adjacent proximity mapping rows right next to the central theater platform stage layout boundaries. Verified restaurant platinum cardholders and club members unlock premium lounge services, zero prepayment barriers, and unlimited free-flowing elixir refills natively throughout the festival loop.</p>
+        </div>
 
-                <div class="music-tier-node luxury">
-                    <h4>Second Class: Luxurious Dine Seating Suite</h4>
-                    <p>Features insulated dining room suites providing pristine view metrics of the live fire stage area. Standard guests receive tableside artisan chef plates and custom wildflower honey glazes. Active cardholder profiles automatically unlock an assigned service concierge to monitor transaction records smoothly.</p>
-                </div>
+        <!-- Second Class Section -->
+        <div class="music-tier-node luxury">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 10px;">
+                <h4 style="margin: 0;">Second Class: Luxurious Dine Seating Suite</h4>
+                <a href="#offer-inquiry-anchor" class="btn-see-more-offers" onclick="scrollToInquiryForm('Second Class Luxury Suite')">See More Offers</a>
+            </div>
+            <p>Features insulated dining room suites providing pristine view metrics of the live fire stage area. Standard guests receive tableside artisan chef plates and custom wildflower honey glazes. Active cardholder profiles automatically unlock an assigned service concierge to monitor transaction records smoothly.</p>
+        </div>
 
+                <!-- Third Class Section -->
                 <div class="music-tier-node">
-                    <h4>Third Class: General Class Auditorium Seats</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 10px;">
+                        <h4 style="margin: 0;">Third Class: General Class Auditorium Seats</h4>
+                        <a href="#offer-inquiry-anchor" class="btn-see-more-offers" onclick="scrollToInquiryForm('Third Class General Auditorium')">See More Offers</a>
+                    </div>
                     <p>Provides standard auditorium chair mapping entries across our main festival grounds canvas. Grants guests and entry-tier cardholders fluid navigation paths to our open Japanese and Ghanaian takeaway food counters, public lounge seating blocks, and central drinking festival lanes.</p>
                 </div>
 
             </div>
+        </div>
+
+        <!-- 📋 LAYER 5: PREMIUM OFFER INQUIRY & UPDATE GATEWAY FORM -->
+        <div class="block-section" id="offer-inquiry-anchor" style="background: linear-gradient(135deg, #121212 0%, #1c0e02 100%); border-color: #332005;">
+            <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #332005;">Festival Privilege Information Request Portal</h3>
+            <p style="color: #A0A0A0; font-size: 13.5px; margin-top: 0; margin-bottom: 25px; line-height: 1.6;">
+                Enlist your credentials below to retrieve private structural updates, off-menu culinary formulas, and exclusive ticket allocation adjustments from our command section. Complete this form to subscribe to our master ledger update system loops.
+            </p>
+            
+            <form onsubmit="event.preventDefault(); handleInquirySubmission();" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: end;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Target Classification Selection</label>
+                    <input type="text" id="inquiry-target-tier" readonly value="General Festival Inquiry" style="padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: var(--orange); font-family: inherit; font-size: 13px; font-weight: bold; outline: none;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Full Representative Name</label>
+                    <input type="text" id="inquiry-guest-name" required placeholder="John Doe" style="padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Mailing Email Address</label>
+                    <input type="email" id="inquiry-guest-email" required placeholder="name@domain.com" style="padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2; margin-top: 10px;">
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Physical Mailing Location Coordinates</label>
+                    <input type="text" id="inquiry-guest-location" required placeholder="Enter city, region, or shipping coordinates (e.g. Accra, Greater Accra, Ghana)" style="padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
+                </div>
+                <button type="submit" class="btn-cart-action" style="padding: 13px; font-size: 13px; margin-top: 10px; height: auto;">Register for Custom Updates</button>
+            </form>
         </div>
 
         <!-- Premium Luxury Footer Section -->
@@ -417,5 +457,30 @@
             <span style="display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none;">THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
         </div>
     </main>
+
+    <script>
+        function scrollToInquiryForm(tierName) {
+            // Automatically capture the classification name token and update the input value box
+            document.getElementById('inquiry-target-tier').value = tierName;
+            
+            // Execute a smooth visual animation scroll loop straight to the inquiry form section
+            document.getElementById('offer-inquiry-anchor').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function handleInquirySubmission() {
+            const name = document.getElementById('inquiry-guest-name').value;
+            const email = document.getElementById('inquiry-guest-email').value;
+            const location = document.getElementById('inquiry-guest-location').value;
+            const tier = document.getElementById('inquiry-target-tier').value;
+
+            alert(`Thank you, ${name}! Your premium inquiry for the [${tier}] has been logged from ${location}. Advanced festival details and custom updates have been dispatched to ${email}!`);
+            
+            // Clean out the form input text loops to reset workspace parameters safely
+            document.getElementById('inquiry-guest-name').value = "";
+            document.getElementById('inquiry-guest-email').value = "";
+            document.getElementById('inquiry-guest-location').value = "";
+            document.getElementById('inquiry-target-tier').value = "General Festival Inquiry";
+        }
+    </script>
 </body>
 </html>
