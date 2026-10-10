@@ -1,1 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shops & Festival Features - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #121212; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        
+        /* 🗺️ Left Sidebar Navigation Menu Framework */
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: var(--orange); color: white; }
+        
+        /* 🍱 Main Display Workspace Grid */
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
+        
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; letter-spacing: 0.5px; }
+        
+        /* 🛒 Product Item Grid Matrices */
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 20px; }
+        .product-card { background: #161616; border: 1px solid #252525; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
+        .product-card:hover { border-color: var(--orange); transform: translateY(-3px); }
+        .product-img-box { width: 100%; height: 180px; background: #222; }
+        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .product-details { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+        .product-header h4 { margin: 0; color: white; font-size: 16px; text-transform: uppercase; }
+        .price-tag { color: var(--orange); font-weight: bold; font-size: 16px; white-space: nowrap; }
+        
+        .product-details p { margin: 0 0 15px 0; font-size: 13px; color: #999; line-height: 1.5; }
+        .btn-cart-action { background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.3s; width: 100%; text-transform: uppercase; font-size: 12px; }
+        .btn-cart-action:hover { background: var(--orange); color: white; }
 
+        /* 🎟️ Ticket Nodes Stack */
+        .ticket-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 25px; }
+        .ticket-header-row h3 { margin: 0; color: white; font-size: 22px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-see-more-offers { color: var(--orange); text-decoration: none; font-size: 13px; font-weight: bold; text-transform: uppercase; border-bottom: 1px dashed var(--orange); padding-bottom: 2px; }
+        .btn-see-more-offers:hover { color: white; border-color: white; }
+
+        .tickets-stack { display: flex; flex-direction: column; gap: 15px; }
+        .ticket-row-card { background: #111; border: 1px solid #222; padding: 20px 25px; border-radius: 8px; border-left: 4px solid var(--orange); display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; }
+        .ticket-icon { font-size: 28px; color: var(--orange); line-height: 1; }
+        .ticket-info h5 { margin: 0 0 6px 0; color: white; text-transform: uppercase; font-size: 15px; }
+        .ticket-info p { margin: 0; font-size: 13px; color: #888; line-height: 1.4; }
+        .ticket-action-pane { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+
+        /* 🎵 Music Festival Tier Rows */
+        .music-tiers-stack { display: flex; flex-direction: column; gap: 20px; }
+        .music-tier-node { background: linear-gradient(90deg, #141414 0%, #0d0d0d 100%); border: 1px solid #222; border-radius: 8px; padding: 25px; position: relative; overflow: hidden; }
+        .music-tier-node::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #444; }
+        .music-tier-node.vip::before { background: var(--orange); }
+        .music-tier-node.luxury::before { background: #E67E22; }
+        .music-tier-node h4 { margin: 0 0 10px 0; font-size: 18px; text-transform: uppercase; color: white; letter-spacing: 0.5px; }
+        .music-tier-node p { margin: 0; font-size: 13.5px; color: #999; line-height: 1.6; }
+        
+        .premium-footer { text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
+        .premium-footer span { display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 🗺️ Left Sidebar Navigation Menu Framework -->
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a href="private-dining.html">Private Dining</a>
+            <a class="active" href="shop.html">Shops & Features</a> <!-- Isolated Sidebar Link -->
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+
+    <!-- 🍱 Main Content Frame Area -->
+    <main class="content">
+        <h1 class="page-title">Shops & Premium Festival Features</h1>
+
+        <!-- CATEGORY 1: European Feast Drinks (Top Section) -->
+        <div class="block-section">
+            <h3 class="section-heading">European Feast Festival Drink Curation</h3>
+            <div class="product-grid">
+                
+                <!-- Drink 1 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Bavarian Honey Ale"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Bavarian Honey Spiced Ale</h4>
+                            <span class="price-tag">$8.50</span>
+                        </div>
+                        <p>A classic European festival warmer steeped with alpine wildflower honey, crushed cloves, and cinnamon sticks.</p>
+                        <button class="btn-cart-action" onclick="alert('Bavarian Honey Spiced Ale added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Drink 2 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Nordic Winter Mead"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Nordic Winter Berry Mead</h4>
+                            <span class="price-tag">$9.75</span>
+                        </div>
+                        <p>Fermented heritage style cider baseline fortified with cold-pressed elderberries and local sweet honeys.</p>
+                        <button class="btn-cart-action" onclick="alert('Nordic Winter Berry Mead added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Drink 3 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Belgian Spiced Elixir"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Belgian Artisan Spiced Elixir</h4>
+                            <span class="price-tag">$7.25</span>
+                        </div>
+                        <p>Crisp golden nectar offering light notes of zesty orange peel, crushed coriander nodes, and honey foam overlays.</p>
+                        <button class="btn-cart-action" onclick="alert('Belgian Artisan Spiced Elixir added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Drink 4 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Austrian Pear Nectar"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Austrian Spiced Pear Nectar</h4>
+                            <span class="price-tag">$6.50</span>
+                        </div>
+                        <p>Muddled festival orchard pears simmered with sweet vanilla bean reduction tracks and sparkling spring bubbles.</p>
+                        <button class="btn-cart-action" onclick="alert('Austrian Spiced Pear Nectar added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="English Honey Perry"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>English Heritage Honey Perry</h4>
+                            <span class="price-tag">$8.00</span>
+                        </div>
+                        <p>Traditional barrel-aged pear extraction combined with premium clover honey drops for true VIP celebrations.</p>
+                        <button class="btn-cart-action" onclick="alert('English Heritage Honey Perry added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Mediterranean Citron Splash"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Mediterranean Citron Splash</h4>
+                            <span class="price-tag">$5.75</span>
+                        </div>
+                        <p>Zesty coastal lemons balanced softly with rosemary sprig extractions and golden clear honey strings.</p>
+                        <button class="btn-cart-action" onclick="alert('Mediterranean Citron Splash added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CATEGORY 2: Japanese and Ghana's Choice Takeaway Curation -->
+        <div class="block-section">
+            <h3 class="section-heading">Japanese and Ghana's Choice Takeaway Curation</h3>
+            <div class="product-grid">
+                
+                <!-- Takeaway 1 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Kyoto Matcha Latte"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Kyoto Stone-Ground Matcha Latte</h4>
+                            <span class="price-tag">$6.75</span>
+                        </div>
+                        <p>Authentic Japanese Uji matcha whisked into premium whole milk and layered with rich organic honey.</p>
+                        <button class="btn-cart-action" onclick="alert('Kyoto Matcha Latte added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 2 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Tokyo Fire Cinnamon Espresso"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Tokyo Flame Cinnamon Cold Brew</h4>
+                            <span class="price-tag">$5.50</span>
+                        </div>
+                        <p>Slow-steeped dark roast espresso blend balanced with crushed hot cinnamon sticks and sweet sugars.</p>
+                        <button class="btn-cart-action" onclick="alert('Tokyo Flame Cinnamon Cold Brew added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 3 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Ghanaian Asaana Elixir"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Ghanaian Heritage Asaana Elixir</h4>
+                            <span class="price-tag">$6.00</span>
+                        </div>
+                        <p>Traditional caramel sweetened fermented corn beverage brewed safely following strict coastal guidelines.</p>
+                        <button class="btn-cart-action" onclick="alert('Ghanaian Asaana Elixir added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 4 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Hokkaido Velvet Milk Tea"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Hokkaido Velvet Honey Milk Tea</h4>
+                            <span class="price-tag">$5.25</span>
+                        </div>
+                        <p>Rich cream black tea parameters infused deeply with amber honey syrup strings for takeaway luxury.</p>
+                        <button class="btn-cart-action" onclick="alert('Hokkaido Velvet Milk Tea added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 5 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Traditional Ghanaian Sobolo"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Ghanaian Hibiscus Sobolo Punch</h4>
+                            <span class="price-tag">$4.75</span>
+                        </div>
+                        <p>Aromatic dried hibiscus petals steeped with ginger roots, pepper nodes, and rich wildflower honey infusions.</p>
+                        <button class="btn-cart-action" onclick="alert('Ghanaian Sobolo Punch added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 6 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Osaka Yuzu Shaker"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Osaka Yuzu Mint Citrus Shaker</h4>
+                            <span class="price-tag">$6.25</span>
+                        </div>
+                        <p>Crisp Japanese yuzu juice shaken over crushed ice with garden mint leaves and sparkling tonic parameters.</p>
+                        <button class="btn-cart-action" onclick="alert('Osaka Yuzu Citrus Shaker added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 7 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Premium Ginza Iced Latte"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Ginza Double Shot Iced Latte</h4>
+                            <span class="price-tag">$5.75</span>
+                        </div>
+                        <p>Premium dark roast espresso poured over chilled whole milk with hand-shaken honey glaze metrics.</p>
+                        <button class="btn-cart-action" onclick="alert('Ginza Iced Latte added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 8 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Palm Wine Fusion"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Ghanaian Sweet Palm Wine Fusion</h4>
+                            <span class="price-tag">$7.00</span>
+                        </div>
+                        <p>Authentic, un-fermented fresh palm sap coupled nicely with lime zest extract layers for pure refreshment.</p>
+                        <button class="btn-cart-action" onclick="alert('Ghanaian Palm Wine Fusion added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Takeaway 9 -->
+                <div class="product-card">
+                    <div class="product-img-box"><img src="https://unsplash.com" alt="Okinawa Brown Sugar Cooler"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h4>Okinawa Molasses Sugar Coffee</h4>
+                            <span class="price-tag">$6.50</span>
+                        </div>
+                        <p>Cold-steeped espresso layered with authentic caramelized Okinawa brown sugar cane reductions.</p>
+                        <button class="btn-cart-action" onclick="alert('Okinawa Sugar Coffee added to cart!')">Add to Cart</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CATEGORY 3: Future Drinking Festival Tickets -->
+        <div class="block-section" style="border-color: #333;">
+            <div class="tickets-stack">
+                
+                <!-- Ticket 1 -->
+                <div class="ticket-row-card">
+                    <div class="ticket-icon">🎟️</div>
+                    <div class="ticket-info">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <h5>1. Global Amber Elixir Grand Festival Gateway</h5>
+                            <a href="reserve-options.html" class="btn-see-more-offers">See More Offers</a>
+                        </div>
+                        <p>Our premier flagship tasting event assembly. Strictly mandatory entry pass requirement path for non-cardholder attendees and non-VIP profiles.</p>
+                    </div>
+                    <div class="ticket-action-pane">
+                        <span class="price-tag" style="margin-bottom:5px;">$45.00</span>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Festival Gateway Ticket added!')">Select Pass</button>
+                    </div>
+                </div>
+
+                <!-- Ticket 2 -->
+                <div class="ticket-row-card">
+                    <div class="ticket-icon">🎟️</div>
+                    <div class="ticket-info">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <h5>2. Live Fire BBQ Auditorium Theater Pass</h5>
+                            <a href="reserve-options.html" class="btn-see-more-offers">See More Offers</a>
+                        </div>
+                        <p>Grants tier entry coordinates directly onto our master flame theater layouts. Includes introductory meat allocations and spice sampling cards.</p>
+                    </div>
+                    <div class="ticket-action-pane">
+                        <span class="price-tag" style="margin-bottom:5px;">$55.00</span>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('BBQ Theater Pass added!')">Select Pass</button>
+                    </div>
+                </div>
+
+                <!-- Ticket 3 -->
+                <div class="ticket-row-card">
+                    <div class="ticket-icon">🎟️</div>
+                    <div class="ticket-info">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <h5>3. Wildflower Honey Reduction Masterclass</h5>
+                            <a href="reserve-options.html" class="btn-see-more-offers">See More Offers</a>
+                        </div>
+                        <p>Gain closed-door lecture parameters managed by our master curators. Witness secret sauce adjustments and recipe trackers live.</p>
+                    </div>
+                    <div class="ticket-action-pane">
+                        <span class="price-tag" style="margin-bottom:5px;">$75.00</span>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Masterclass Ticket added!')">Select Pass</button>
+                    </div>
+                </div>
+
+                <!-- Ticket 4 -->
+                <div class="ticket-row-card">
+                    <div class="ticket-icon">🎟️</div>
+                    <div class="ticket-info">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <h5>4. Uji Matcha Steeping Heritage Forum</h5>
+                            <a href="reserve-options.html" class="btn-see-more-offers">See More Offers</a>
+                        </div>
+                        <p>Explore traditional stone-ground milling metrics and whisking calibration rules natively with international tea masters.</p>
+                    </div>
+                    <div class="ticket-action-pane">
+                        <span class="price-tag" style="margin-bottom:5px;">$35.00</span>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Matcha Forum Ticket added!')">Select Pass</button>
+                    </div>
+                </div>
+
+                <!-- Ticket 5 -->
+                <div class="ticket-row-card">
+                    <div class="ticket-icon">🎟️</div>
+                    <div class="ticket-info">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <h5>5. Heritage Ghanaian Brew Assembly</h5>
+                            <a href="reserve-options.html" class="btn-see-more-offers">See More Offers</a>
+                        </div>
+                        <p>Taste fresh Sobolo extractions and Asaana yeast baselines managed strictly under ancient West African community processing terms.</p>
+                    </div>
+                    <div class="ticket-action-pane">
+                        <span class="price-tag" style="margin-bottom:5px;">$40.00</span>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Ghanaian Assembly Ticket added!')">Select Pass</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CATEGORY 4: Live Music Seating Class Classifications -->
+        <div class="block-section">
+            <h3 class="section-heading">Live Music Festival Seating Class Classifications</h3>
+            <div class="music-tiers-stack">
+                
+                <div class="music-tier-node vip">
+                    <h4>First Class: Elite VIP Section Arena</h4>
+                    <p>Our most premium acoustic boundary assignment zone. Provides adjacent proximity mapping rows right next to the central theater platform stage layout boundaries. Verified restaurant platinum cardholders and club members unlock premium lounge services, zero prepayment barriers, and unlimited free-flowing elixir refills natively throughout the festival loop.</p>
+                </div>
+
+                <div class="music-tier-node luxury">
+                    <h4>Second Class: Luxurious Dine Seating Suite</h4>
+                    <p>Features insulated dining room suites providing pristine view metrics of the live fire stage area. Standard guests receive tableside artisan chef plates and custom wildflower honey glazes. Active cardholder profiles automatically unlock an assigned service concierge to monitor transaction records smoothly.</p>
+                </div>
+
+                <div class="music-tier-node">
+                    <h4>Third Class: General Class Auditorium Seats</h4>
+                    <p>Provides standard auditorium chair mapping entries across our main festival grounds canvas. Grants guests and entry-tier cardholders fluid navigation paths to our open Japanese and Ghanaian takeaway food counters, public lounge seating blocks, and central drinking festival lanes.</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Premium Luxury Footer Section -->
+        <div class="premium-footer">
+            KHAN'S CRAVINGS
+            <span style="display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none;">THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
+        </div>
+    </main>
+</body>
+</html>
