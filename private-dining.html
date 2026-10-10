@@ -55,13 +55,13 @@
         .service-row-node h5 { margin: 0 0 8px 0; color: white; text-transform: uppercase; font-size: 15px; }
         .service-row-node p { margin: 0; font-size: 13.5px; color: #999; line-height: 1.5; }
 
-        /* 📊 Dropdown Control Toolbar Button Row Elements */
+        /* 📊 Interactive Manual Keyboard Input Layout Row Components */
         .dropdown-toolbar-row { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 25px; padding-right: 10px; }
-        .plus-btn-box { display: flex; align-items: center; background: #1A1A1A; border: 1px solid #333; padding: 2px 14px; border-radius: 6px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: 0.2s; }
-        .plus-btn-box:hover { border-color: var(--orange); }
-        .plus-btn-box span { font-weight: bold; font-size: 14px; color: var(--orange); margin-right: 12px; user-select: none; text-transform: uppercase; letter-spacing: 0.5px; }
-        .plus-btn-box select { background: transparent; border: none; color: white; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; padding: 10px 25px 10px 0; outline: none; appearance: none; -webkit-appearance: none; }
-        .plus-btn-box::after { content: '▼'; font-size: 9px; color: #888; position: absolute; right: 14px; pointer-events: none; }
+        .plus-btn-box { display: flex; align-items: center; background: #1A1A1A; border: 1px solid #333; padding: 4px 14px; border-radius: 6px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.4); gap: 10px; }
+        .plus-btn-box span { font-weight: bold; font-size: 14px; color: var(--orange); user-select: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        .plus-btn-box input { background: #0A0A0A; border: 1px solid #444; border-radius: 4px; color: white; padding: 8px 12px; font-family: inherit; font-size: 14px; width: 220px; font-weight: bold; outline: none; border-left: 3px solid var(--orange); }
+        .plus-btn-box button { background: var(--orange); color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; transition: 0.2s; }
+        .plus-btn-box button:hover { background: #e05e00; }
 
         /* 📊 Manual Table Tracking System Scroller Panels */
         .matrix-viewport-container { display: flex; flex-direction: column; gap: 30px; }
@@ -199,14 +199,13 @@
             </div>
         </div>
 
-        <!-- LAYER 4: Interactive Tables Selector Row Toolbar -->
+        <!-- LAYER 4: Interactive Tables Manual Search Terminal Toolbar Row -->
         <div class="block-section" style="border-color: var(--orange);">
             <div class="dropdown-toolbar-row" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 25px; padding-right: 10px;">
-                <div class="plus-btn-box" style="display: flex; align-items: center; background: #1A1A1A; border: 1px solid #333; padding: 2px 14px; border-radius: 6px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: 0.2s;">
-                    <span style="font-weight: bold; font-size: 14px; color: var(--orange); margin-right: 12px; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;">Tables</span>
-                    <select id="direct-table-inspector" onchange="runOverlayInspector()" style="background: transparent; border: none; color: white; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; padding: 10px 25px 10px 0; outline: none; appearance: none; -webkit-appearance: none;">
-                        <!-- Options generated automatically via JavaScript to keep original code secure and clear -->
-                    </select>
+                <div class="plus-btn-box" style="display: flex; align-items: center; background: #1A1A1A; border: 1px solid #333; padding: 2px 14px; border-radius: 6px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.4); gap: 10px;">
+                    <span style="font-weight: bold; font-size: 14px; color: var(--orange); user-select: none; text-transform: uppercase; letter-spacing: 0.5px;">Tables</span>
+                    <input type="text" id="manual-table-search-input" placeholder="Type Table ID (e.g. PL-003, SS-012, RC-201)..." onkeypress="if(event.key === 'Enter') runOverlayInspector()" style="background: #0A0A0A; border: 1px solid #444; border-radius: 4px; color: white; padding: 8px 12px; font-family: inherit; font-size: 14px; width: 220px; font-weight: bold; outline: none; border-left: 3px solid var(--orange);">
+                    <button type="button" onclick="runOverlayInspector()" style="background: var(--orange); color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; transition: 0.2s;">Check Node</button>
                 </div>
             </div>
 
@@ -222,14 +221,23 @@
                             <div class="table-node-card booked"><div class="node-header-row"><span class="node-title">Table #PL-002</span><span class="status-badge booked">Reserved Hold</span></div><div class="node-data-line">Payment ID: <strong>#TXN-9012 ($145.00 Card)</strong></div><div class="node-data-line">VIP Cardholder: <strong>#VIP-8841</strong></div><div class="node-data-line">Club Member: <strong>No</strong></div><div class="node-data-line">Festival Feast: <strong>Involved</strong></div></div>
                             <div class="table-node-card occupied"><div class="node-header-row"><span class="node-title">Table #PL-003</span><span class="status-badge occupied">Live Occupied</span></div><div class="node-data-line">Payment ID: <strong>#TXN-4412 ($210.50 Wallet)</strong></div><div class="node-data-line">VIP Cardholder: <strong>None</strong></div><div class="node-data-line">Club Member: <strong>Yes (#ELITE-09)</strong></div><div class="node-data-line">Festival Feast: <strong>Involved</strong></div></div>
                             <div class="table-node-card free"><div class="node-header-row"><span class="node-title">Table #PL-004</span><span class="status-badge free">Live Vacant</span></div><div class="node-data-line">Payment Total: <strong>$0.00</strong></div><div class="node-data-line">VIP Cardholder: <strong>None</strong></div><div class="node-data-line">Club Member: <strong>No</strong></div><div class="node-data-line">Festival Feast: <strong>Unlinked</strong></div></div>
-                            <div class="table-node-card booked"><div class="node-header-row"><span class="node-title">Tables #PL-005 to #PL-185</span><span class="status-badge booked">Manual Vault Registers Active</span></div><div class="node-data-line">System Statement: <strong>Continuous database mapping index loops running down standard parameter blocks...</strong></div></div>
-                        </div>    
-  <!-- 🎧 Second Dine-In Quality Room Block Grid -->
+                            <!-- Premier Lounge Bulk Multi-Node Allocation -->
+                            <div class="table-node-card booked">
+                                <div class="node-header-row">
+                                    <span class="node-title">Tables #PL-005 to #PL-185</span>
+                                    <span class="status-badge booked">Manual Vault Registers Active</span>
+                                </div>
+                                <div class="node-data-line">System Statement: <strong>Continuous database mapping index loops running down standard parameter blocks...</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🎧 Second Dine-In Quality Room Block Grid -->
                 <div class="matrix-tier-block">
                     <h4>Second Dine-In Quality: Executive Sound Suites <span>175 Tables Allocated</span></h4>
                     <div class="table-scroll-tray">
                         <div class="table-grid-mesh">
-                            
                             <!-- Table SS-001 Layout Matrix -->
                             <div class="table-node-card occupied">
                                 <div class="node-header-row">
@@ -241,7 +249,6 @@
                                 <div class="node-data-line">Club Member: <strong>Yes (#ELITE-84)</strong></div>
                                 <div class="node-data-line">Festival Feast: <strong>Involved</strong></div>
                             </div>
-                            
                             <!-- Table SS-002 Layout Matrix -->
                             <div class="table-node-card free">
                                 <div class="node-header-row">
@@ -253,7 +260,6 @@
                                 <div class="node-data-line">Club Member: <strong>No</strong></div>
                                 <div class="node-data-line">Festival Feast: <strong>Unlinked</strong></div>
                             </div>
-                            
                             <!-- Table SS-003 Layout Matrix -->
                             <div class="table-node-card booked">
                                 <div class="node-header-row">
@@ -265,7 +271,6 @@
                                 <div class="node-data-line">Club Member: <strong>No</strong></div>
                                 <div class="node-data-line">Festival Feast: <strong>Involved</strong></div>
                             </div>
-                            
                             <!-- Executive Sound Suites Bulk Multi-Node Allocation -->
                             <div class="table-node-card booked">
                                 <div class="node-header-row">
@@ -274,7 +279,6 @@
                                 </div>
                                 <div class="node-data-line">System Statement: <strong>Continuous database mapping index loops running down standard parameter blocks...</strong></div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -284,7 +288,6 @@
                     <h4>Third Dine-In Quality: Royal Feast Circle (First Choice) <span>210 Tables Allocated</span></h4>
                     <div class="table-scroll-tray">
                         <div class="table-grid-mesh">
-                            
                             <!-- Table RC-001 Layout Matrix -->
                             <div class="table-node-card occupied">
                                 <div class="node-header-row">
@@ -296,7 +299,6 @@
                                 <div class="node-data-line">Club Member: <strong>Yes (#ELITE-11)</strong></div>
                                 <div class="node-data-line">Festival Feast: <strong>Involved (Unlimited Liquids Unlocked)</strong></div>
                             </div>
-                            
                             <!-- Table RC-002 Layout Matrix -->
                             <div class="table-node-card occupied">
                                 <div class="node-header-row">
@@ -308,7 +310,6 @@
                                 <div class="node-data-line">Club Member: <strong>No</strong></div>
                                 <div class="node-data-line">Festival Feast: <strong>Involved (Unlimited Liquids Unlocked)</strong></div>
                             </div>
-                            
                             <!-- Table RC-003 Layout Matrix -->
                             <div class="table-node-card free">
                                 <div class="node-header-row">
@@ -320,7 +321,6 @@
                                 <div class="node-data-line">Club Member: <strong>No</strong></div>
                                 <div class="node-data-line">Festival Feast: <strong>Unlinked</strong></div>
                             </div>
-                            
                             <!-- Table RC-004 Layout Matrix -->
                             <div class="table-node-card booked">
                                 <div class="node-header-row">
@@ -332,7 +332,6 @@
                                 <div class="node-data-line">Club Member: <strong>Yes (#ELITE-44)</strong></div>
                                 <div class="node-data-line">Festival Feast: <strong>Involved</strong></div>
                             </div>
-                            
                             <!-- Royal Feast Circle Bulk Multi-Node Allocation -->
                             <div class="table-node-card booked">
                                 <div class="node-header-row">
@@ -341,7 +340,6 @@
                                 </div>
                                 <div class="node-data-line">System Statement: <strong>Continuous database mapping index loops running down standard parameter blocks...</strong></div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -349,51 +347,26 @@
             </div>
             <!-- 📊 Real-Time Floor Dispatch Metrics Footer Anchor Section -->
             <div class="premium-footer-title">KHAN'S CRAVINGS REAL-TIME FLOOR DISPATCH METRICS</div>
-        </div>  
-   <!-- 📊 Table Inspector Overlay Modal Popup Panel -->
-   <div id="inspector-overlay-window" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.94); z-index: 2000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
-       <div style="background: #111; border: 1px solid #333; max-width: 550px; width: 100%; border-radius: 12px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); position: relative;">
-            <span onclick="document.getElementById('inspector-overlay-window').style.display='none'; document.getElementById('direct-table-inspector').value='';" style="position: absolute; top: 15px; right: 20px; color: #888; font-size: 28px; cursor: pointer; font-weight: bold;">&times;</span>
+        </div>
+        <!-- 📊 Table Inspector Overlay Modal Popup Panel -->
+        <div id="inspector-overlay-window" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.94); z-index: 2000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+            <div style="background: #111; border: 1px solid #333; max-width: 550px; width: 100%; border-radius: 12px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); position: relative;">
+            <span onclick="document.getElementById('inspector-overlay-window').style.display='none'; document.getElementById('manual-table-search-input').value='';" style="position: absolute; top: 15px; right: 20px; color: #888; font-size: 28px; cursor: pointer; font-weight: bold;">&times;</span>
             <h3 style="margin-top: 0; color: white; font-size: 19px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 12px; margin-bottom: 25px;" id="inspect-title-header">Table Analytics Breakdown</h3>
             
             <div style="display: flex; flex-direction: column; gap: 14px;">
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 8px;"><span style="color:#888; font-size:13px; font-weight:600; text-transform:uppercase;">Live Seating Status:</span><strong id="inspect-status" style="font-size:14px;">Vacant</strong></div>
-                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 8px;"><span style="color:#888; font-size:13px; font-weight:600; text-transform:uppercase;">Processed Payment Details:</span><strong id="inspect-payment" style="color:white; font-size:14px;">$0.00</strong></div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 8px;"><span style="color:#888; font-size:13px; font-weight:600; text-transform:uppercase;">Processed Payment Details:</span><strong id="inspect-payment" style="color:white; font-size:14px;">\$0.00</strong></div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 8px;"><span style="color:#888; font-size:13px; font-weight:600; text-transform:uppercase;">VIP Cardholder Status:</span><strong id="inspect-vip" style="color:white; font-size:14px;">None</strong></div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 8px;"><span style="color:#888; font-size:13px; font-weight:600; text-transform:uppercase;">Elite Club Member Match:</span><strong id="inspect-club" style="color:white; font-size:14px;">No</strong></div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 8px;"><span style="color:#888; font-size:13px; font-weight:600; text-transform:uppercase;">Grand Festival Feast Involvement:</span><strong id="inspect-feast" style="color:white; font-size:14px;">Unlinked</strong></div>
             </div>
             
-            <button onclick="document.getElementById('inspector-overlay-window').style.display='none'; document.getElementById('direct-table-inspector').value='';" style="background: var(--orange); color: white; border: none; padding: 13px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 25px; font-size: 13px; letter-spacing: 0.5px;">Close Inspection Overlay</button>
+            <button onclick="document.getElementById('inspector-overlay-window').style.display='none'; document.getElementById('manual-table-search-input').value='';" style="background: var(--orange); color: white; border: none; padding: 13px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 25px; font-size: 13px; letter-spacing: 0.5px;">Close Inspection Overlay</button>
         </div>
     </div>
 
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const selector = document.getElementById('direct-table-inspector');
-            let outputHtml = '<option value="">Inspect Floor Number...</option>';
-            
-            outputHtml += '<optgroup label="Premier Lounge Grid Rows (1 to 185)">';
-            }
-            outputHtml += '</optgroup>';
-            
-            outputHtml += '<optgroup label="Executive Sound Suites Rows (1 to 175)">';
-            for(let i = 1; i <= 175; i++) {
-                let id = 'SS-' + String(i).padStart(3, '0');
-                outputHtml += `<option value="${id}">Table #${id}</option>`;
-            }
-            outputHtml += '</optgroup>';
-            
-            outputHtml += '<optgroup label="Royal Feast Circle Rows (1 to 210)">';
-            for(let i = 1; i <= 210; i++) {
-                let id = 'RC-' + String(i).padStart(3, '0');
-                outputHtml += `<option value="${id}">Table #${id}</option>`;
-            }
-            outputHtml += '</optgroup>';
-            
-            selector.innerHTML = outputHtml;
-        });
-
         const tableDatabase = {
             "PL-001": { status: "Live Vacant", color: "var(--green)", payment: "\$0.00 (Unpaid)", vip: "None", club: "No", feast: "Unlinked" },
             "PL-002": { status: "Reserved Hold", color: "var(--orange)", payment: "#TXN-9012 (\$145.00 Card)", vip: "#VIP-8841", club: "No", feast: "Involved" },
@@ -409,14 +382,33 @@
         };
 
         function runOverlayInspector() {
-            const selector = document.getElementById('direct-table-inspector');
-            const targetId = selector.value;
-            if (!targetId) return;
+            const inputField = document.getElementById('manual-table-search-input');
+            let targetId = inputField.value.trim().toUpperCase();
+            
+            // Clean syntax helpers: auto-formats user shortcuts seamlessly (e.g. typing "pl12" converts to "PL-012")
+            if(targetId.startsWith('PL') && !targetId.includes('-')) {
+                let num = targetId.substring(2).replace(/[^0-9]/g, '');
+                targetId = 'PL-' + num.padStart(3, '0');
+            }
+            if(targetId.startsWith('SS') && !targetId.includes('-')) {
+                let num = targetId.substring(2).replace(/[^0-9]/g, '');
+                targetId = 'SS-' + num.padStart(3, '0');
+            }
+            if(targetId.startsWith('RC') && !targetId.includes('-')) {
+                let num = targetId.substring(2).replace(/[^0-9]/g, '');
+                targetId = 'RC-' + num.padStart(3, '0');
+            }
 
+            if (!targetId) {
+                alert('Please type a specific table layout number coordinates (e.g. PL-003, SS-001, RC-004)!');
+                return;
+            }
+
+            // Fallback logic to instantly monitor and support ANY typed integer among all 570 slots manually!
             const record = tableDatabase[targetId] || { 
                 status: "Live Vacant", 
                 color: "var(--green)", 
-                payment: "\$0.00 (Unpaid Manual Entry)", 
+                payment: "\$0.00 (Vacant / Unpaid Manual Entry Ledger Allocation)", 
                 vip: "None", 
                 club: "No Registered Card Link", 
                 feast: "Unlinked" 
@@ -434,4 +426,4 @@
         }
     </script>
 </body>
-</html>              
+</html>
