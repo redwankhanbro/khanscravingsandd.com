@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Fiesto Lounge Room - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #121212; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; }
+        .sidebar a:hover, .sidebar a.active { background: var(--orange); color: white; }
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; letter-spacing: 0.5px; }
+        .privilege-row { background: #111; border: 1px solid #222; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--orange); }
+        .privilege-row h5 { margin: 0 0 8px 0; color: white; text-transform: uppercase; font-size: 15px; }
+        .privilege-row p { margin: 0; font-size: 13.5px; color: #999; line-height: 1.5; }
+        .premium-footer { text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
+        .premium-footer span { display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none; }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a class="active" href="about.html">About Us</a>
+            <a href="private-dining.html">Private Dining</a>
+            <a href="shops.html">Shops & Features</a>
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+    <main class="content">
+        <h1 class="page-title">Private Fiesto Room Lounge Details</h1>
+        
+        <div class="block-section">
+            <h3 class="section-heading">Premium Offer Overview</h3>
+            <p style="font-size: 15px; line-height: 1.7; color: #BBB; margin: 0;">Our Private Fiesto Room Vault serves as an exclusive, customized sanctuary built specifically for hosting high-profile banquets, grand elixir tastings, and custom holiday assemblies. Each booking block completely claims ownership of a dedicated service perimeter track.</p>
+        </div>
 
+        <div class="block-section">
+            <h3 class="section-heading">How It Provides Our Best Services</h3>
+            <p style="font-size: 14.5px; line-height: 1.6; color: #999; margin: 0;">We deploy a private, dedicated artisan kitchen stream and personal room curator for every reservation block. This structural setup ensures rapid, closed-door menu presentation loops and premium glass handling benchmarks that cater to the most discerning profiles.</p>
+        </div>
+
+        <div class="block-section">
+            <h3 class="section-heading">Why It Matters to Our Restaurant</h3>
+            <p style="font-size: 14.5px; line-height: 1.6; color: #999; margin: 0;">The Private Fiesto Rooms represent our peak dedication to bespoke luxury hospitality. They allow our culinary research teams to test extreme off-menu recipe modifications for groups that demand exceptional sensory experiences.</p>
+        </div>
+
+        <div class="block-section">
+            <h3 class="section-heading">The Fiesto Privilege Menu</h3>
+            <div class="privilege-row">
+                <h5>1. Dedicated Room Curator & Sommelier</h5>
+                <p>Enjoy a personal hospitality master tasked solely with coordinating custom glass pouring speeds and menu service loops.</p>
+            </div>
+            <div class="privilege-row">
+                <h5>2. Closed-Door Custom Menu Adaptations</h5>
+                <p>Directly alter spice intensities, flame exposure times, and sweet honey reductions with our kitchen brigade to match your party's exact requirements.</p>
+            </div>
+            <div class="privilege-row">
+                <h5>3. Early Reservation Guarantee Paths</h5>
+                <p>Gain priority booking privileges for future premium elixirs, seasonal tasting assemblies, and annual culinary summits before public opening gates.</p>
+            </div>
+        </div>
+
+        <div class="premium-footer">
+            KHAN'S CRAVINGS
+            <span>THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
+        </div>
+    </main>
+</body>
+</html>
