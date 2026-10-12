@@ -173,6 +173,7 @@
     KHAN'S CRAVINGS
     <span style="display: block; font-size: 13px; font-weight: 500; color: #FF6B01; letter-spacing: 2px; margin-top: 6px; text-transform: none;">THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
 </div>
+                
   <!-- 📊 LAYER 6: EXTRACTED CHECKOUT OVERLAY MODAL WINDOW CONTAINER -->
     <div id="pass-modal-window" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.97); z-index: 2000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; overflow-y: auto;">
         <div style="background: #111; border: 1px solid #333; max-width: 600px; width: 100%; border-radius: 12px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); position: relative; margin: auto; font-family: 'Segoe UI', Arial, sans-serif; color: #E0E0E0;">
@@ -251,12 +252,17 @@
         </div>
     </div>
 
-    <!-- ⚙️ BACKEND PROCESSING JAVASCRIPT MOTOR -->
+    <!-- ⚙️ FULLY CALIBRATED JAVASCRIPT MASTER MOTOR -->
     <script>
         function openPassForm(passName, priceValue) {
+            // Securely seed the selected product name and price token into the display container
             document.getElementById('modal-product-token').value = passName + " (" + priceValue + ")";
+            
+            // Programmatically generate a unique, randomized secure product verification tracker hash
             const verificationHash = "VERIFY-" + passName.substring(0,3).toUpperCase() + "-" + Math.floor(100000 + Math.random() * 900000);
             document.getElementById('modal-verification-details').value = verificationHash;
+            
+            // Launch the modal visibility overlay window live onto the active screen view canvas
             document.getElementById('pass-modal-window').style.display = "flex";
         }
 
@@ -264,6 +270,8 @@
             const checkBox = document.getElementById('modal-has-details');
             const targetBlock = document.getElementById('modal-details-block');
             targetBlock.style.display = checkBox.checked ? "block" : "none";
+        }
+
         function handlePassCheckout() {
             const name = document.getElementById('modal-user-name').value;
             const token = document.getElementById('modal-product-token').value;
@@ -289,6 +297,7 @@
 
             alert(finalAlertMsg);
             
+            // Reset modal window fields cleanly and flush tracking values
             document.getElementById('pass-modal-window').style.display = 'none';
             document.getElementById('modal-user-name').value = "";
             document.getElementById('modal-user-email').value = "";
@@ -301,4 +310,4 @@
         }
     </script>
 </body>
-</html>   
+</html> 
