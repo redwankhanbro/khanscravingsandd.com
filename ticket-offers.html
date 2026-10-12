@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extended Ticket Offers & Registry - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #121212; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        
+        /* 🗺️ Left Sidebar Navigation Menu Framework */
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); text-decoration: none; padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; text-decoration: none; }
+        .sidebar a:hover, .sidebar a.active { background: var(--orange); color: white; }
+        
+        /* 🍱 Main Display Workspace Grid */
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
+        
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; letter-spacing: 0.5px; }
+        
+        /* 🎟️ Premium Tier Row Boxes Layout */
+        .offers-stack { display: flex; flex-direction: column; gap: 25px; margin-bottom: 20px; }
+        .offer-node-card { background: #161616; border: 1px solid #252525; border-radius: 8px; padding: 30px; border-left: 4px solid var(--orange); }
+        
+        .offer-desc-flex { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; margin-bottom: 20px; }
+        .offer-desc-flex p { margin: 0; font-size: 14.5px; color: #BBB; line-height: 1.6; }
+        .side-price-tag { font-size: 22px; font-weight: 800; color: var(--orange); background: #0A0A0A; padding: 12px 24px; border-radius: 6px; border: 1px solid #333; white-space: nowrap; }
+        
+        .btn-select-pass { background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 12px 30px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.3s; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; width: 180px; text-align: center; }
+        .btn-select-pass:hover { background: var(--orange); color: white; box-shadow: 0 0 12px rgba(255,107,1,0.2); }
 
+        /* 📋 Extended Sign-In & Registry Form Elements */
+        .registry-form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group-full { grid-column: span 2; }
+        .registry-form label { color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .registry-form input, .registry-form textarea { width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; transition: 0.2s; }
+        .registry-form input:focus, .registry-form textarea:focus { border-color: var(--orange); }
+        .registry-form input { border-left: 2px solid var(--orange); }
+        
+        .btn-submit-registry { background: var(--orange); color: white; border: none; padding: 14px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; grid-column: span 2; margin-top: 10px; }
+        .btn-submit-registry:hover { background: #e05e00; }
+        
+        .premium-footer { text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
+        .premium-footer span { display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 🗺️ Left Sidebar Navigation Menu Framework -->
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a href="private-dining.html">Private Dining</a>
+            <a class="active" href="shops.html">Shops & Features</a>
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+
+    <!-- 🍱 Main Workspace Panel Canvas -->
+    <main class="content">
+        <h1 class="page-title">Extended Ticket Offers Desk</h1>
+
+        <!-- SECTION 1: Ticket Offers Array Matrix -->
+        <div class="block-section">
+            <h3 class="section-heading">Active Drinking Festival Ticket Offer Variations</h3>
+            <div class="offers-stack">
+                
+                <!-- Ticket Variation 1 -->
+                <div class="offer-node-card">
+                    <h4 style="margin: 0 0 15px 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">1. Global Amber Elixir Grand Festival Gateway</h4>
+                    <div class="offer-desc-flex">
+                        <p>Our premier flagship tasting event assembly details. Strictly mandatory entry pass requirement path for non-cardholder attendees and non-VIP profiles looking to gain exposure to elite craft lines across international brewing loops.</p>
+                        <div class="side-price-tag">$45.00</div>
+                    </div>
+                    <button class="btn-select-pass" onclick="alert('Global Amber Elixir Grand Pass selected successfully!')">Select Pass</button>
+                </div>
+
+                <!-- Ticket Variation 2 -->
+                <div class="offer-node-card">
+                    <h4 style="margin: 0 0 15px 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">2. Live Fire BBQ Auditorium Theater Pass</h4>
+                    <div class="offer-desc-flex">
+                        <p>Grants tier entry coordinates directly onto our master flame theater layouts. Includes introductory meat allocations, spice sampling cards, and front-row preparation viewing rights managed by master curators.</p>
+                        <div class="side-price-tag">$55.00</div>
+                    </div>
+                    <button class="btn-select-pass" onclick="alert('Live Fire BBQ Theater Pass selected successfully!')">Select Pass</button>
+                </div>
+
+                <!-- Ticket Variation 3 -->
+                <div class="offer-node-card">
+                    <h4 style="margin: 0 0 15px 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">3. Wildflower Honey Reduction Culinary Masterclass</h4>
+                    <div class="offer-desc-flex">
+                        <p>Gain closed-door lecture parameters managed by our master curators. Witness secret sauce adjustments, recipe trackers, and sample ultra-premium artisanal glazed plates natively inside the private test suite.</p>
+                        <div class="side-price-tag">$75.00</div>
+                    </div>
+                    <button class="btn-select-pass" onclick="alert('Honey Reduction Masterclass Pass selected successfully!')">Select Pass</button>
+                </div>
+
+                <!-- Ticket Variation 4 -->
+                <div class="offer-node-card">
+                    <h4 style="margin: 0 0 15px 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">4. Uji Matcha Steeping Heritage Forum Pass</h4>
+                    <div class="offer-desc-flex">
+                        <p>Explore traditional stone-ground milling metrics and whisking calibration rules natively with international tea masters. Includes complimentary organic matcha sampling tubes for takeaway.</p>
+                        <div class="side-price-tag">$35.00</div>
+                    </div>
+                    <button class="btn-select-pass" onclick="alert('Uji Matcha Heritage Forum Pass selected successfully!')">Select Pass</button>
+                </div>
+
+                <!-- Ticket Variation 5 -->
+                <div class="offer-node-card">
+                    <h4 style="margin: 0 0 15px 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">5. Heritage Ghanaian Brew Assembly Entry Pass</h4>
+                    <div class="offer-desc-flex">
+                        <p>Taste fresh Sobolo extractions and Asaana yeast baselines managed strictly under ancient West African community processing terms. Includes unlimited refills of community cask formulations during active slots.</p>
+                        <div class="side-price-tag">$40.00</div>
+                    </div>
+                    <button class="btn-select-pass" onclick="alert('Heritage Ghanaian Brew Pass selected successfully!')">Select Pass</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 2: Comprehensive Info Sign-In Form (Gathering Requested Fields) -->
+        <div class="block-section" style="border-color: var(--orange);">
+            <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #222;">Future Festival Information Sign-In Ledger</h3>
+            <p style="color: #999; font-size: 13.5px; margin-top: 0; margin-bottom: 25px; line-height: 1.6;">
+                Enroll your back-office billing profiles and structural coordinates below to unlock immediate future updates, allocation priority variables, and cardholder privilege announcements from our main section directly.
+            </p>
+            
+            <form class="registry-form" onsubmit="event.preventDefault(); alert('Sign-in credentials recorded safely into our master registry database loops! You will receive deep festival priority updates shortly.'); this.reset();" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div>
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Full Representative Name</label>
+                    <input type="text" required placeholder="John Doe" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
+                </div>
+                <div>
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Mailing Email Address</label>
+                    <input type="email" required placeholder="name@domain.com" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
+                </div>
+                <div>
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Physical Location Coordinates</label>
+                    <input type="text" required placeholder="City, Region, or Country (e.g. Accra, Ghana)" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
+                </div>
+                <div>
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Restaurant Privilege Card Number (Optional)</label>
+                    <input type="text" placeholder="e.g. #VIP-8841 (Leave blank if non-cardholder)" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
+                </div>
+                <div class="form-group-full" style="grid-column: span 2;">
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Additional Detail Parameters / Written Requests</label>
+                    <textarea rows="4" placeholder="Write any specific layout seating choices, diet variables, or festival requirements here..." style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; transition: 0.2s; resize: vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn-submit-registry" style="background: var(--orange); color: white; border: none; padding: 14px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; grid-column: span 2; margin-top: 10px;">Secure Future Information Stream</button>
+            </form>
+        </div>
+
+        <!-- 👑 Branded Luxury Footer Anchor Banner Section -->
+        <div class="premium-footer" style="text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px;">
+            KHAN'S CRAVINGS
+            <span style="display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none;">THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
+        </div>
+    </main>
+</body>
+</html>
