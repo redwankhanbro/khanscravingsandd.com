@@ -255,12 +255,16 @@
 <!-- ⚙️ BACKEND PROCESSING JAVASCRIPT MOTOR -->
 <script>
     function openPassForm(passName, priceValue) {
-        document.getElementById('modal-product-token').value = `${passName} (${priceValue})`;
+        // Capture specific item attributes and seed the display fields automatically
+        document.getElementById('modal-product-token').value = passName + " (" + priceValue + ")";
+        
+        // Programmatically generate a unique, randomized secure product verification tracker hash
         const verificationHash = "VERIFY-" + passName.substring(0,3).toUpperCase() + "-" + Math.floor(100000 + Math.random() * 900000);
         document.getElementById('modal-verification-details').value = verificationHash;
+        
+        // Pop the modal visibility overlay window array block up live onto the screen layout canvas
         document.getElementById('pass-modal-window').style.display = "flex";
     }
-
     function toggleDetailsBox() {
         const checkBox = document.getElementById('modal-has-details');
         const targetBlock = document.getElementById('modal-details-block');
