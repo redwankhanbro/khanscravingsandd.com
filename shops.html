@@ -301,28 +301,28 @@
             </div>
         </div>
 
-        <!-- CATEGORY 3: Future Drinking Festival Tickets -->
-        <div class="block-section" style="border-color: #333;">
-            <div class="tickets-stack">
+       <!-- CATEGORY 3: Future Drinking Festival Tickets -->
+       <div class="block-section" style="border-color: #333;">
+           <div class="tickets-stack">
                 
-                <!-- Ticket 1 Row -->
+                <!-- Ticket 1 Card -->
                 <div class="ticket-row-card">
                     <div class="ticket-icon">🎟️</div>
                     <div class="ticket-info">
                         <div style="display:flex; align-items:center; gap:15px;">
                             <h5>1. Global Amber Elixir Grand Festival Gateway</h5>
-                            <!-- Changed to direct to your premium ticket details desk instead of reserve options -->
                             <a href="ticket-offers.html" class="btn-see-more-offers">See More Offers</a>
                         </div>
                         <p>Our premier flagship tasting event assembly. Strictly mandatory entry pass requirement path for non-cardholder attendees and non-VIP profiles.</p>
                     </div>
                     <div class="ticket-action-pane">
                         <span class="price-tag" style="margin-bottom:5px;">$45.00</span>
-                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Festival Gateway Ticket added!')">Select Pass</button>
+                        <!-- ⚡ POPUP TRIGGER LINKED INDIVIDUALLY -->
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="openPassForm('Global Amber Elixir Grand Festival Gateway', '$45.00')">Select Pass</button>
                     </div>
                 </div>
 
-                <!-- Ticket 2 Row -->
+                <!-- Ticket 2 Card -->
                 <div class="ticket-row-card">
                     <div class="ticket-icon">🎟️</div>
                     <div class="ticket-info">
@@ -334,11 +334,11 @@
                     </div>
                     <div class="ticket-action-pane">
                         <span class="price-tag" style="margin-bottom:5px;">$55.00</span>
-                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('BBQ Theater Pass added!')">Select Pass</button>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="openPassForm('Live Fire BBQ Auditorium Theater Pass', '$55.00')">Select Pass</button>
                     </div>
                 </div>
 
-                <!-- Ticket 3 Row -->
+                <!-- Ticket 3 Card -->
                 <div class="ticket-row-card">
                     <div class="ticket-icon">🎟️</div>
                     <div class="ticket-info">
@@ -350,11 +350,11 @@
                     </div>
                     <div class="ticket-action-pane">
                         <span class="price-tag" style="margin-bottom:5px;">$75.00</span>
-                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Masterclass Ticket added!')">Select Pass</button>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="openPassForm('Wildflower Honey Reduction Masterclass', '$75.00')">Select Pass</button>
                     </div>
                 </div>
 
-                <!-- Ticket 4 Row -->
+                <!-- Ticket 4 Card -->
                 <div class="ticket-row-card">
                     <div class="ticket-icon">🎟️</div>
                     <div class="ticket-info">
@@ -366,11 +366,11 @@
                     </div>
                     <div class="ticket-action-pane">
                         <span class="price-tag" style="margin-bottom:5px;">$35.00</span>
-                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Matcha Forum Ticket added!')">Select Pass</button>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="openPassForm('Uji Matcha Steeping Heritage Forum', '$35.00')">Select Pass</button>
                     </div>
                 </div>
 
-                <!-- Ticket 5 Row -->
+                <!-- Ticket 5 Card -->
                 <div class="ticket-row-card">
                     <div class="ticket-icon">🎟️</div>
                     <div class="ticket-info">
@@ -382,12 +382,12 @@
                     </div>
                     <div class="ticket-action-pane">
                         <span class="price-tag" style="margin-bottom:5px;">$40.00</span>
-                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="alert('Ghanaian Assembly Ticket added!')">Select Pass</button>
+                        <button class="btn-cart-action" style="padding:6px 15px; font-size:11px;" onclick="openPassForm('Heritage Ghanaian Brew Assembly', '$40.00')">Select Pass</button>
                     </div>
                 </div>
 
             </div>
-        </div>   
+        </div>  
    <!-- CATEGORY 4: Live Music Seating Class Classifications (With Smooth Scroll Actions) -->
    <div class="block-section" id="music-seating-section">
        <h3 class="section-heading">Live Music Festival Seating Class Classifications</h3>
