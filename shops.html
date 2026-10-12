@@ -430,35 +430,54 @@
                 Enlist your credentials below to retrieve private structural updates, off-menu culinary formulas, and exclusive ticket allocation adjustments from our command section. Complete this form to subscribe to our master ledger update system loops.
             </p>
             
-            <form onsubmit="event.preventDefault(); handleInquirySubmission();" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: end;">
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Target Classification Selection</label>
-                    <input type="text" id="inquiry-target-tier" readonly value="General Festival Inquiry" style="padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: var(--orange); font-family: inherit; font-size: 13px; font-weight: bold; outline: none;">
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Full Representative Name</label>
-                    <input type="text" id="inquiry-guest-name" required placeholder="John Doe" style="padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Mailing Email Address</label>
-                    <input type="email" id="inquiry-guest-email" required placeholder="name@domain.com" style="padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2; margin-top: 10px;">
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Physical Mailing Location Coordinates</label>
-                    <input type="text" id="inquiry-guest-location" required placeholder="Enter city, region, or shipping coordinates (e.g. Accra, Greater Accra, Ghana)" style="padding: 12px; background: #0A0A0A; border: 1px solid #444; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid var(--orange);">
-                </div>
-                <button type="submit" class="btn-cart-action" style="padding: 13px; font-size: 13px; margin-top: 10px; height: auto;">Register for Custom Updates</button>
-            </form>
-        </div>
+             function openPassForm(passName, priceValue) {
+            document.getElementById('pass-modal-window').style.display = "flex";
+            document.getElementById('modal-product-token').value = passName + " (" + priceValue + ")";
+            const verificationHash = "VERIFY-" + passName.substring(0,3).toUpperCase() + "-" + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('modal-verification-details').value = verificationHash;
+        }
 
-        <!-- Premium Luxury Footer Section -->
-        <div class="premium-footer">
-            KHAN'S CRAVINGS
-            <span style="display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none;">THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
-        </div>
-    </main>
+        function toggleDetailsBox() {
+            const checkBox = document.getElementById('modal-has-details');
+            const targetBlock = document.getElementById('modal-details-block');
+            if(targetBlock) targetBlock.style.display = checkBox.checked ? "block" : "none";
+        }
 
-    <script>
+        function handlePassCheckout() {
+            const name = document.getElementById('modal-user-name').value;
+            const token = document.getElementById('modal-product-token').value;
+            const hash = document.getElementById('modal-verification-details').value;
+            const email = document.getElementById('modal-user-email').value;
+            const wantInfo = document.getElementById('modal-verify-info').checked;
+            const codeEntered = document.getElementById('modal-privilege-code').value.trim();
+            const memberRadio = document.getElementById('payment-member-radio').checked;
+            
+            let finalAlertMsg = `Thank you, ${name}! Your checkout loop completed successfully.\n\n`;
+            finalAlertMsg += `Allocation: ${token}\n`;
+            finalAlertMsg += `Verification Node: ${hash}\n\n`;
+            
+            if (memberRadio || codeEntered.length > 0) {
+                finalAlertMsg += `🎉 Privilege Code [${codeEntered || "VIP-AUTOMATCH"}] Verified! Discount and exclusive bonus offers applied successfully.\n\n`;
+            }
+            
+            if (wantInfo) {
+                finalAlertMsg += `📧 Complete product details have been scheduled for delivery straight to ${email}.\n\n`;
+            } else {
+                finalAlertMsg += `Secure entry routing matrices have been dispatched to ${email}!`;
+            }
+
+            alert(finalAlertMsg);
+            
+            document.getElementById('pass-modal-window').style.display = 'none';
+            document.getElementById('modal-user-name').value = "";
+            document.getElementById('modal-user-email').value = "";
+            document.getElementById('modal-user-location').value = "";
+            document.getElementById('modal-privilege-code').value = "";
+            document.getElementById('modal-additional-details').value = "";
+            document.getElementById('modal-has-details').checked = false;
+            document.getElementById('modal-verify-info').checked = false;
+            if(document.getElementById('modal-details-block')) document.getElementById('modal-details-block').style.display = "none";
+        }
         function scrollToInquiryForm(tierName) {
             // Automatically capture the classification name token and update the input value box
             document.getElementById('inquiry-target-tier').value = tierName;
