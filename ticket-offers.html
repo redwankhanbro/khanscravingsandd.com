@@ -173,107 +173,98 @@
     KHAN'S CRAVINGS
     <span style="display: block; font-size: 13px; font-weight: 500; color: #FF6B01; letter-spacing: 2px; margin-top: 6px; text-transform: none;">THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
 </div>
-<!-- 📊 LAYER 6: EXTRACTED CHECKOUT OVERLAY MODAL WINDOW CONTAINER -->
-<div id="pass-modal-window" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.97); z-index: 2000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; overflow-y: auto;">
-    <div style="background: #111; border: 1px solid #333; max-width: 600px; width: 100%; border-radius: 12px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); position: relative; margin: auto; font-family: 'Segoe UI', Arial, sans-serif; color: #E0E0E0;">
-        <span onclick="document.getElementById('pass-modal-window').style.display='none';" style="position: absolute; top: 15px; right: 20px; color: #888; font-size: 28px; cursor: pointer; font-weight: bold;">&times;</span>
-        <h3 style="margin-top: 0; color: white; font-size: 19px; text-transform: uppercase; border-left: 4px solid #FF6B01; padding-left: 12px; margin-bottom: 25px;">Secure Selected Festival Pass</h3>
-        
-        <form class="modal-form" onsubmit="event.preventDefault(); handlePassCheckout();" style="display: flex; flex-direction: column; gap: 16px;">
-            <div class="split-layout-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div>
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Selected Product Token</label>
-                    <input type="text" id="modal-product-token" readonly style="width: 100%; box-sizing: border-box; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: #FF6B01; font-family: inherit; font-size: 13px; font-weight: bold; outline: none;">
-                </div>
-                <div>
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Product Verification Details</label>
-                    <input type="text" id="modal-verification-details" readonly style="width: 100%; box-sizing: border-box; padding: 12px; background: #050505; border: 1px solid #222; border-radius: 6px; color: #2ECC71; font-family: inherit; font-size: 13px; font-weight: bold; outline: none;">
-                </div>
-            </div>
-
-            <div class="split-layout-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div>
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Full Representative Name</label>
-                    <input type="text" id="modal-user-name" required placeholder="John Doe" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
-                </div>
-                <div>
-                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Mailing Email Address</label>
-                    <input type="email" id="modal-user-email" required placeholder="name@domain.com" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
-                </div>
-            </div>
-
-            <div>
-                <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Physical Location Coordinates</label>
-                <input type="text" id="modal-user-location" required placeholder="City, State, or Country" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
-            </div>
-
-            <div class="split-layout-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #161616; padding: 15px; border-radius: 6px; border: 1px solid #222; align-items: center;">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: white; font-size: 12px; margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                    <input type="checkbox" id="modal-verify-info" style="cursor: pointer; margin: 0;"> Send product details via mail
-                </label>
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: white; font-size: 12px; margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                    <input type="checkbox" id="modal-has-details" onchange="toggleDetailsBox()" style="cursor: pointer; margin: 0;"> Add additional details
-                </label>
-            </div>
-
-            <div id="modal-details-block" style="display: none;">
-                <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Additional Detail Parameters</label>
-                <textarea id="modal-additional-details" rows="2" placeholder="Write any specific inquiries or requests..." style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; resize: vertical;"></textarea>
-            </div>
-
-            <div style="background: #161616; padding: 20px; border-radius: 8px; border: 1px solid #222; margin-top: 5px;">
-                <label style="color: white; margin-bottom: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; letter-spacing: 0.5px;">Payment Method & Membership Validation</label>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <span style="font-size: 10px; color:#666; font-weight: bold; text-transform: uppercase;">Select Option:</span>
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color:#BBB; font-size:13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <input type="radio" name="payment-method" value="Card" checked style="cursor: pointer; margin: 0;"> Card
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color:#BBB; font-size:13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <input type="radio" name="payment-method" value="Cash" style="cursor: pointer; margin: 0;"> Cash
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color:#FF6B01; font-size:13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <input type="radio" name="payment-method" value="Membership" id="payment-member-radio" style="cursor: pointer; margin: 0;"> Club Member / VIP Cardholder
-                        </label>
-                    </div>
-                    
-                    <div>
-                        <label id="verification-box-title" style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Card No. / Member Code Box</label>
-                        <input type="text" id="modal-privilege-code" placeholder="Card number or member code..." style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
-                        <span style="display:block; font-size:11px; color:#666; margin-top:6px; line-height: 1.3;">Members and VIP cardholders receive special discounts and extra offers!</span>
-                    </div>
-                </div>
-            </div>
+  <!-- 📊 LAYER 6: EXTRACTED CHECKOUT OVERLAY MODAL WINDOW CONTAINER -->
+    <div id="pass-modal-window" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.97); z-index: 2000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; overflow-y: auto;">
+        <div style="background: #111; border: 1px solid #333; max-width: 600px; width: 100%; border-radius: 12px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); position: relative; margin: auto; font-family: 'Segoe UI', Arial, sans-serif; color: #E0E0E0;">
+            <span onclick="document.getElementById('pass-modal-window').style.display='none';" style="position: absolute; top: 15px; right: 20px; color: #888; font-size: 28px; cursor: pointer; font-weight: bold;">&times;</span>
+            <h3 style="margin-top: 0; color: white; font-size: 19px; text-transform: uppercase; border-left: 4px solid #FF6B01; padding-left: 12px; margin-bottom: 25px;">Secure Selected Festival Pass</h3>
             
-            <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 14px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 5px; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(255,107,1,0.2);">Execute Secure Checkout Pass</button>
-        </form>
+            <form class="modal-form" onsubmit="event.preventDefault(); handlePassCheckout();" style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Selected Product Token</label>
+                        <input type="text" id="modal-product-token" readonly style="width: 100%; box-sizing: border-box; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: #FF6B01; font-family: inherit; font-size: 13px; font-weight: bold; outline: none;">
+                    </div>
+                    <div>
+                        <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Product Verification Details</label>
+                        <input type="text" id="modal-verification-details" readonly style="width: 100%; box-sizing: border-box; padding: 12px; background: #050505; border: 1px solid #222; border-radius: 6px; color: #2ECC71; font-family: inherit; font-size: 13px; font-weight: bold; outline: none;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Full Representative Name</label>
+                        <input type="text" id="modal-user-name" required placeholder="John Doe" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
+                    </div>
+                    <div>
+                        <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Mailing Email Address</label>
+                        <input type="email" id="modal-user-email" required placeholder="name@domain.com" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Physical Location Coordinates</label>
+                    <input type="text" id="modal-user-location" required placeholder="City, State, or Country" style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #161616; padding: 15px; border-radius: 6px; border: 1px solid #222; align-items: center;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: white; font-size: 12px; margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <input type="checkbox" id="modal-verify-info" style="cursor: pointer; margin: 0;"> Send product details via mail
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: white; font-size: 12px; margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <input type="checkbox" id="modal-has-details" onchange="toggleDetailsBox()" style="cursor: pointer; margin: 0;"> Add additional details
+                    </label>
+                </div>
+
+                <div id="modal-details-block" style="display: none;">
+                    <label style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Additional Detail Parameters</label>
+                    <textarea id="modal-additional-details" rows="2" placeholder="Write any specific inquiries or requests..." style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; resize: vertical;"></textarea>
+                </div>
+
+                <div style="background: #161616; padding: 20px; border-radius: 8px; border: 1px solid #222; margin-top: 5px;">
+                    <label style="color: white; margin-bottom: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; letter-spacing: 0.5px;">Payment Method & Membership Validation</label>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <span style="font-size: 10px; color:#666; font-weight: bold; text-transform: uppercase;">Select Option:</span>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color:#BBB; font-size:13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <input type="radio" name="payment-method" value="Card" checked style="cursor: pointer; margin: 0;"> Card
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color:#BBB; font-size:13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <input type="radio" name="payment-method" value="Cash" style="cursor: pointer; margin: 0;"> Cash
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color:#FF6B01; font-size:13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <input type="radio" name="payment-method" value="Membership" id="payment-member-radio" style="cursor: pointer; margin: 0;"> Club Member / VIP Cardholder
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label id="verification-box-title" style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px;">Card No. / Member Code Box</label>
+                            <input type="text" id="modal-privilege-code" placeholder="Card number or member code..." style="width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; border-left: 2px solid #FF6B01;">
+                            <span style="display:block; font-size:11px; color:#666; margin-top:6px; line-height: 1.3;">Members and VIP cardholders receive special discounts and extra offers!</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 14px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 5px; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(255,107,1,0.2);">Execute Secure Checkout Pass</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- ⚙️ BACKEND PROCESSING JAVASCRIPT MOTOR -->
-<script>
-    function openPassForm(passName, priceValue) {
-        // Capture specific item attributes and seed the display fields automatically
-        document.getElementById('modal-product-token').value = passName + " (" + priceValue + ")";
-        
-        // Programmatically generate a unique, randomized secure product verification tracker hash
-        const verificationHash = "VERIFY-" + passName.substring(0,3).toUpperCase() + "-" + Math.floor(100000 + Math.random() * 900000);
-        document.getElementById('modal-verification-details').value = verificationHash;
-        
-        // Pop the modal visibility overlay window array block up live onto the screen layout canvas
-        document.getElementById('pass-modal-window').style.display = "flex";
-    }
-    function toggleDetailsBox() {
-        const checkBox = document.getElementById('modal-has-details');
-        const targetBlock = document.getElementById('modal-details-block');
-        targetBlock.style.display = checkBox.checked ? "block" : "none";
-    }
+    <!-- ⚙️ BACKEND PROCESSING JAVASCRIPT MOTOR -->
+    <script>
+        function openPassForm(passName, priceValue) {
+            document.getElementById('modal-product-token').value = passName + " (" + priceValue + ")";
+            const verificationHash = "VERIFY-" + passName.substring(0,3).toUpperCase() + "-" + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('modal-verification-details').value = verificationHash;
+            document.getElementById('pass-modal-window').style.display = "flex";
+        }
 
-    function handlePassCheckout() {
-        const name = document.getElementById('modal-user-name').value;
-        const token = document.getElementById('modal-product-token').value;
-       function handlePassCheckout() {
+        function toggleDetailsBox() {
+            const checkBox = document.getElementById('modal-has-details');
+            const targetBlock = document.getElementById('modal-details-block');
+            targetBlock.style.display = checkBox.checked ? "block" : "none";
+        function handlePassCheckout() {
             const name = document.getElementById('modal-user-name').value;
             const token = document.getElementById('modal-product-token').value;
             const hash = document.getElementById('modal-verification-details').value;
@@ -310,4 +301,4 @@
         }
     </script>
 </body>
-</html>  
+</html>   
