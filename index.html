@@ -450,10 +450,31 @@
 
     <!-- 🛒 Shopping Bag Checkout Counter System Scripts -->
     <script>
-        let count = 0;
-        function addToCart() {
-            count++;
-            document.getElementById('global-cart').innerText = count + (count === 1 ? ' Item' : ' Items');
+        // Retrieve the current persistent cart array baseline or seed a fresh empty database layout
+        let activeCartItems = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
+        
+        // Dynamically initialize your sidebar counter text node on fresh page rendering loops
+        document.getElementById('sidebar-cart-counter').innerText = activeCartItems.length + (activeCartItems.length === 1 ? ' Item' : ' Items');
+
+        function addToCart(productId, productName, productPrice) {
+            // Read the absolute up-to-date memory array stack directly from local storage parameters
+            let currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
+            
+            // Push the clicked dish credentials straight into your synchronized ledger array matrix
+            currentCartInstance.push({
+                id: productId,
+                name: productName,
+                price: parseFloat(productPrice)
+            });
+            
+            // Lock the updated state back securely inside the persistent browser local memory
+            localStorage.setItem('khans_cart_vault', JSON.stringify(currentCartInstance));
+            
+            // Instantly refresh your bottom-left sidebar status string indicator row side-by-side
+            document.getElementById('sidebar-cart-counter').innerText = currentCartInstance.length + (currentCartInstance.length === 1 ? ' Item' : ' Items');
+            
+            // Fire an elegant alert notification block confirming capture success loop parameters
+            alert(`🎉 ${productName} [ID: ${productId}] has been appended to your select bin ledger!`);
         }
     </script>
 </body>
