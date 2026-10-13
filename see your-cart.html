@@ -92,7 +92,8 @@
         <div class="block-section" id="checkout-settings-anchor" style="border-color: var(--orange);">
             <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #222;">Fulfillment Configuration Form</h3>
             
-            <form class="checkout-form" id="main-cart-routing-form" onsubmit="event.preventDefault(); forwardToSummaryPage();">
+            <!-- ⚡ ADJUSTED FORM ROUTING ACTIONS TO EXECUTE STABLE MAPPING -->
+            <form class="checkout-form" id="main-cart-routing-form" action="javascript:void(0);" onsubmit="forwardToSummaryPage();">
                 <div>
                     <label>Full Representative Name</label>
                     <input type="text" id="cust-name" required placeholder="John Doe">
@@ -145,12 +146,12 @@
                     </div>
                 </div>
                 
+                <!-- ⚡ NATIVE FORM TRIGGER SUBMIT ACTION BUTTON -->
                 <button type="submit" class="btn-submit-order">Review Order Summary Parameters</button>
             </form>
         </div>
 
-        <!-- 👑 Branded Luxury Footer Section -->
-        <div class="premium-footer" style="text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px;">
+        <div class="premium-footer">
             KHAN'S CRAVINGS
             <span style="display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none;">THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
         </div>
