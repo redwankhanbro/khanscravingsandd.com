@@ -181,23 +181,28 @@
 
             listContainer.innerHTML = "";
             activeCart.forEach((item, index) => {
-                sumTotal += item.price;
-                extractedIDs.push(item.id);
+                // Ensure properties are read accurately regardless of object casing structures
+                const itemId = item.id || item.productId || "UNKNOWN-ID";
+                const itemName = item.name || item.productName || "Gourmet Dish";
+                const itemPrice = parseFloat(item.price || item.productPrice || 0);
+
+                sumTotal += itemPrice;
+                extractedIDs.push(itemId);
 
                 listContainer.innerHTML += `
                     <div class="cart-item-node" style="display: grid; grid-template-columns: auto 1fr auto auto; gap: 20px; align-items: center; background: #161616; border: 1px solid #252525; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #FF6B01;">
                         <div style="font-size: 20px; color: #FF6B01;">🍽️</div>
                         <div class="item-details">
-                            <h5 style="margin: 0; font-size: 16px; color: white; text-transform: uppercase;">${item.name}</h5>
-                            <span style="font-size: 11px; color: #FF6B01; font-weight: bold; background: #050505; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; letter-spacing: 0.5px;">Reference Code ID: ${item.id}</span>
+                            <h5 style="margin: 0; font-size: 16px; color: white; text-transform: uppercase;">${itemName}</h5>
+                            <span style="font-size: 11px; color: #FF6B01; font-weight: bold; background: #050505; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; letter-spacing: 0.5px;">Reference Code ID: ${itemId}</span>
                         </div>
-                        <div class="item-price" style="font-weight: bold; color: white; font-size: 16px;">$${item.price.toFixed(2)}</div>
+                        <div class="item-price" style="font-weight: bold; color: white; font-size: 16px;">$${itemPrice.toFixed(2)}</div>
                         <button class="btn-bin-remove" onclick="removeNodeFromBin(${index})" title="Erase item from ledger" style="background: none; border: none; color: #E74C3C; font-size: 20px; cursor: pointer;">🗑️</button>
                     </div>
                 `;
             });
 
-            // Adjust price layout logic automatically depending on total element stack counts
+            // Populate text elements dynamically and match item parameters perfectly
             if (document.getElementById('cart-total-price-badge')) {
                 document.getElementById('cart-total-price-badge').innerText = `$${sumTotal.toFixed(2)}`;
             }
