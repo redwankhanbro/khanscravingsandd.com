@@ -273,10 +273,15 @@
             <a class="active" href="shops.html">Shops & Features</a> <!-- 💎 CUSTOM FILENAME APPLIED! --
             <a href="cart.html">Shopping Cart</a> <!-- 💎 PASTE THIS EXACT ROW HERE -->
         </div>
-        <div class="cart-status">
-            <span style="font-size: 13px; color: #888; display:block; margin-bottom:5px;">Shopping Cart</span>
-            <span class="cart-count" id="global-cart">0 Items</span>
-        </div>
+        <!-- 🛒 LAYER 2: INTEGRATED CORNER SHOPPING CART OPTION (ANCHORED AT THE ABSOLUTE BOTTOM LEFT OF SIDEBAR) -->
+        <div style="padding: 10px; background: #121212; border: 1px solid #222; border-radius: 8px; width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div style="display: flex; flex-direction: column;">
+                <span style="color: #666; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Shopping Cart</span>
+                <span id="sidebar-cart-counter" style="color: #FF6B01; font-weight: bold; font-size: 13px;">0 Items</span>
+            </div>
+            <!-- ⚡ SIDEBAR CART BUTTON POSITIONED RIGHT BESIDE THE COUNT TEXT -->
+            <a href="see your-cart.html" style="background: transparent; border: 2px solid #FF6B01; color: #FF6B01; padding: 6px 12px; border-radius: 6px; font-weight: 700; text-transform: uppercase; text-decoration: none; font-size: 11px; letter-spacing: 0.5px; transition: 0.3s; white-space: nowrap;">See Your Cart</a>
+         </div></div>
     </nav>
 
     <!-- 🍱 Main Content Frame Area -->
