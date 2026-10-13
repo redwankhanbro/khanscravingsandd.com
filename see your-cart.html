@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Luxury Cart & Checkout - Khan's Cravings</title>
+    <title>Your Luxury Cart Ledger - Khan's Cravings</title>
     <style>
         :root { 
             --dark: #0A0A0A; 
@@ -15,40 +15,40 @@
         }
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
         
-        /* 🗺️ Left Sidebar Navigation Menu Framework */
         .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
         .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
         .sidebar a { display: block; color: var(--text); padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; text-decoration: none; transition: 0.3s; }
         .sidebar a:hover, .sidebar a.active { background: var(--orange); color: white; }
         
-        /* 🍱 Main Display Workspace Grid */
         .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
         .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
         
         .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; letter-spacing: 0.5px; }
         
-        /* 🛒 Cart Item Node Arrays Styles with Trash Bin Options */
-        .cart-item-node { display: grid; grid-template-columns: auto 1fr auto auto; gap: 20px; align-items: center; background: #161616; border: 1px solid #252525; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--orange); }
+        .cart-item-node { display: grid; grid-template-columns: auto 1fr auto auto auto; gap: 20px; align-items: center; background: #161616; border: 1px solid #252525; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--orange); }
         .item-details h5 { margin: 0; font-size: 16px; color: white; text-transform: uppercase; }
         .item-details span { font-size: 11px; color: var(--orange); font-weight: bold; background: #050505; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; letter-spacing: 0.5px; }
         .item-price { font-weight: bold; color: white; font-size: 16px; }
         .btn-bin-remove { background: none; border: none; color: #E74C3C; font-size: 20px; cursor: pointer; transition: 0.2s; padding: 5px 10px; outline: none; }
         .btn-bin-remove:hover { transform: scale(1.15); }
         
-        /* 📋 Checkout Form Grid Layout System */
+        .qty-control { display: flex; align-items: center; gap: 8px; background: #0A0A0A; padding: 5px 10px; border-radius: 6px; border: 1px solid #333; }
+        .qty-btn { background: none; border: none; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--orange); }
+        .qty-val { color: white; font-size: 14px; font-weight: bold; min-width: 20px; text-align: center; }
+
         .checkout-form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-full-row { grid-column: span 2; }
         .checkout-form label { color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .checkout-form input, .checkout-form textarea { width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; transition: 0.2s; }
-        .checkout-form input:focus, .checkout-form textarea:focus { border-color: var(--orange); }
+        .checkout-form input, .checkout-form textarea, .checkout-form select { width: 100%; box-sizing: border-box; padding: 12px; background: #0A0A0A; border: 1px solid #333; border-radius: 6px; color: white; font-family: inherit; font-size: 13px; outline: none; transition: 0.2s; }
+        .checkout-form input:focus, .checkout-form textarea:focus, .checkout-form select:focus { border-color: var(--orange); }
         .checkout-form input[required] { border-left: 2px solid var(--orange); }
         
         .radio-box-group { display: flex; flex-direction: column; gap: 10px; background: #161616; padding: 15px; border-radius: 6px; border: 1px solid #222; }
         .radio-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: #BBB; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .radio-label input { width: auto; margin: 0; cursor: pointer; }
         
-        .btn-submit-order { background: var(--orange); color: white; border: none; padding: 16px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; grid-column: span 2; margin-top: 15px; box-shadow: 0 4px 15px rgba(255,107,1,0.2); }
+        .btn-submit-order { background: var(--orange); color: white; border: none; padding: 16px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; grid-column: span 2; margin-top: 15px; box-shadow: 0 4px 15px rgba(255,107,1,0.2); text-align: center; text-decoration: none; display: block; }
         .btn-submit-order:hover { background: #e05e00; }
         
         .premium-footer { text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
@@ -57,7 +57,6 @@
 </head>
 <body>
 
-    <!-- 🗺️ Left Sidebar Navigation Menu Frame -->
     <nav class="sidebar">
         <div>
             <h2>Khan's Cravings</h2>
@@ -71,27 +70,29 @@
         </div>
     </nav>
 
-    <!-- 🍱 Main Content Display Panel Canvas -->
     <main class="content">
-        <h1 class="page-title">Your Extracted Selection Ledger</h1>
+        <h1 class="page-title">Item Management</h1>
 
         <!-- SECTION 1: Active Live Cart Product Display List -->
         <div class="block-section">
-            <h3 class="section-heading">Recently Appended Dishes & Passes</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+                <h3 style="color: white; font-size: 17px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Review added meals or products, modify quantities, remove items individually, or clear the entire cart.</h3>
+                <button onclick="clearEntireCartVault()" style="background: #E74C3C; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Clear Entire Cart</button>
+            </div>
             <div id="master-cart-bin-list">
-                <!-- Javascript engine outputs appended food items natively here -->
+                <!-- Items list out natively side-by-side here -->
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-top: 1px dashed #333; padding-top: 20px;">
-                <h4 style="margin: 0; text-transform: uppercase; font-size: 14px; color: #888; letter-spacing: 0.5px;">Ledger Price Metrics Summary</h4>
+                <h4 style="margin: 0; text-transform: uppercase; font-size: 14px; color: #888; letter-spacing: 0.5px;">Cart Subtotal</h4>
                 <div id="cart-total-price-badge" style="font-size: 24px; font-weight: 900; color: var(--orange);">$0.00</div>
             </div>
         </div>
 
-        <!-- SECTION 2: Dynamic Form with ID Extraction and Payment Splits -->
+        <!-- SECTION 2: Customer Fields with Custom Order Routing -->
         <div class="block-section" id="checkout-settings-anchor" style="border-color: var(--orange);">
-            <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #222;">Bespoke Checkout System Loop</h3>
+            <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #222;">Fulfillment Configuration Form</h3>
             
-            <form class="checkout-form" onsubmit="event.preventDefault(); processFinalOrder();">
+            <form class="checkout-form" id="main-cart-routing-form" onsubmit="event.preventDefault(); forwardToSummaryPage();">
                 <div>
                     <label>Full Representative Name</label>
                     <input type="text" id="cust-name" required placeholder="John Doe">
@@ -105,39 +106,47 @@
                     <input type="tel" id="cust-phone" required placeholder="+233 XX XXX XXXX">
                 </div>
                 <div>
-                    <label>Physical Delivery Coordinates</label>
-                    <input type="text" id="cust-location" required placeholder="Enter drop shipping address or city coordinates">
+                    <label>Physical Location</label>
+                    <input type="text" id="cust-location" required placeholder="Enter city or street address coordinates">
                 </div>
                 
+                <!-- 📦 PLACED EXACTLY BELOW LOCATION AND ABOVE PRODUCT IDS -->
                 <div class="form-full-row">
-                    <!-- 🆔 Dynamic Product Verification ID Tracking Box -->
+                    <label>Fulfillment Selection (Delivery vs. Pickup)</label>
+                    <select id="cust-fulfillment-mode">
+                        <option value="Delivery">Premium Gourmet Home Delivery</option>
+                        <option value="Pickup">Self-Arranged Vault Desk Pickup</option>
+                    </select>
+                </div>
+
+                <div class="form-full-row">
                     <label>Captured Product Verification IDs (Auto-Extracted Matrix Display)</label>
                     <input type="text" id="cust-product-ids" readonly style="background: #050505; color: #2ECC71; font-weight: bold; letter-spacing: 0.5px;" value="None Loaded">
                 </div>
                 
                 <div class="form-full-row">
                     <label>Additional Detail Parameters / Written Preparation Customizations</label>
-                    <textarea id="cust-details" rows="3" placeholder="Specify food presentation layout adjustments, how you want that product to look, or specific written notes here..."></textarea>
+                    <textarea id="cust-details" rows="3" placeholder="Specify food presentation layout adjustments, how you want that product to look, or notes..."></textarea>
                 </div>
                 
                 <div class="form-full-row">
-                    <label>Payment Method & Privilege Level Validation</label>
+                    <label>Payment Method Selection</label>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
                         <div class="radio-box-group">
-                            <span style="font-size: 10px; color: #555; font-weight: bold; text-transform: uppercase;">Gateway Method Selection:</span>
-                            <label class="radio-label"><input type="radio" name="pay-method" value="Cash" checked> Cash Vault Desk</label>
-                            <label class="radio-label"><input type="radio" name="pay-method" value="Card"> Standard Credit Card</label>
-                            <label class="radio-label" style="color: var(--orange); font-weight: bold;"><input type="radio" name="pay-method" value="VIP" id="vip-radio-selector"> VIP Cardholder / Club Member</label>
+                            <span style="font-size: 10px; color: #555; font-weight: bold; text-transform: uppercase;">Select Payment Option below:</span>
+                            <label class="radio-label"><input type="radio" name="pay-method" value="Cash Vault Desk" checked> Cash Vault Desk</label>
+                            <label class="radio-label"><input type="radio" name="pay-method" value="Standard Credit Card"> Standard Credit Card</label>
+                            <label class="radio-label" style="color: var(--orange); font-weight: bold;"><input type="radio" name="pay-method" value="VIP Cardholder / Club Member" id="vip-radio-selector"> VIP Cardholder / Club Member</label>
                         </div>
                         <div>
-                            <label>Card Number / Membership Verification Code Box</label>
-                            <input type="text" id="cust-privilege-code" placeholder="Enter VIP card number hash or club membership token code...">
-   <span style="display: block; font-size: 11px; color: #666; margin-top: 8px; line-height: 1.4;">Active Club Members and VIP cardholders unlock exclusive additional benefits on every individual product checkout processing run, dispatched and detailed directly to you via mail updates.</span>
+                            <label>VIP Verification Code Box</label>
+                            <input type="text" id="cust-privilege-code" placeholder="Enter VIP card code token...">
+                            <span style="display: block; font-size: 11px; color: #666; margin-top: 8px; line-height: 1.4;">Active Club Members and VIP cardholders unlock exclusive additional benefits on every individual product checkout processing run, dispatched and detailed directly to you via mail updates.</span>
                         </div>
                     </div>
                 </div>
                 
-                <button type="submit" class="btn-submit-order" style="background: var(--orange); color: white; border: none; padding: 16px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; grid-column: span 2; margin-top: 15px; box-shadow: 0 4px 15px rgba(255,107,1,0.2); width: 100%;">Execute Secure Checkout Pass</button>
+                <button type="submit" class="btn-submit-order">Review Order Summary Parameters</button>
             </form>
         </div>
 
@@ -155,9 +164,8 @@
             let activeCart = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
             if (activeCart.length === 0) {
                 activeCart = [
-                    { id: "SIGNATURE-01", name: "Heritage Spice Korma", price: 12.50 },
-                    { id: "SIGNATURE-02", name: "The Royal Regional Platter", price: 24.50 },
-                    { id: "DESSERT-01", name: "Fiery Sweet Street Chaat", price: 6.00 }
+                    { id: "FOOD-HK902", name: "Heritage Spice Korma", price: 12.50, quantity: 1 },
+                    { id: "FOOD-RP441", name: "The Royal Regional Platter", price: 24.50, quantity: 1 }
                 ];
                 localStorage.setItem('khans_cart_vault', JSON.stringify(activeCart));
             }
@@ -173,42 +181,49 @@
             if (!listContainer) return;
 
             if (activeCart.length === 0) {
-                listContainer.innerHTML = `<p style="color: #666; font-style: italic; margin: 0; padding: 20px 0;">Your select bin ledger is currently empty. Direct navigation paths to food menus are open.</p>`;
-                if (document.getElementById('cust-product-ids')) document.getElementById('cust-product-ids').value = "None Loaded";
-                if (document.getElementById('cart-total-price-badge')) document.getElementById('cart-total-price-badge').innerText = "\$0.00";
+                listContainer.innerHTML = `<p style="color: #666; font-style: italic; margin: 0; padding: 20px 0;">Your select bin ledger is currently empty. Navigation paths to menus are open.</p>`;
+                document.getElementById('cust-product-ids').value = "None Loaded";
+                document.getElementById('cart-total-price-badge').innerText = "\$0.00";
                 return;
             }
 
             listContainer.innerHTML = "";
             activeCart.forEach((item, index) => {
-                // Ensure properties are read accurately regardless of object casing structures
-                const itemId = item.id || item.productId || "UNKNOWN-ID";
-                const itemName = item.name || item.productName || "Gourmet Dish";
-                const itemPrice = parseFloat(item.price || item.productPrice || 0);
-
-                sumTotal += itemPrice;
-                extractedIDs.push(itemId);
+                const qty = item.quantity || 1;
+                const cost = parseFloat(item.price) * qty;
+                sumTotal += cost;
+                extractedIDs.push(`${item.id}(x${qty})`);
 
                 listContainer.innerHTML += `
-                    <div class="cart-item-node" style="display: grid; grid-template-columns: auto 1fr auto auto; gap: 20px; align-items: center; background: #161616; border: 1px solid #252525; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #FF6B01;">
-                        <div style="font-size: 20px; color: #FF6B01;">🍽️</div>
+                    <div class="cart-item-node">
+                        <div style="font-size: 20px; color: var(--orange);">🍽️</div>
                         <div class="item-details">
-                            <h5 style="margin: 0; font-size: 16px; color: white; text-transform: uppercase;">${itemName}</h5>
-                            <span style="font-size: 11px; color: #FF6B01; font-weight: bold; background: #050505; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; letter-spacing: 0.5px;">Reference Code ID: ${itemId}</span>
+                            <h5>${item.name}</h5>
+                            <span>Reference Code ID: ${item.id}</span>
                         </div>
-                        <div class="item-price" style="font-weight: bold; color: white; font-size: 16px;">$${itemPrice.toFixed(2)}</div>
-                        <button class="btn-bin-remove" onclick="removeNodeFromBin(${index})" title="Erase item from ledger" style="background: none; border: none; color: #E74C3C; font-size: 20px; cursor: pointer;">🗑️</button>
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="adjustItemQty(${index}, -1)">-</button>
+                            <span class="qty-val">${qty}</span>
+                            <button class="qty-btn" onclick="adjustItemQty(${index}, 1)">+</button>
+                        </div>
+                        <div class="item-price">$${cost.toFixed(2)}</div>
+                        <button class="btn-bin-remove" onclick="removeNodeFromBin(${index})" title="Remove item individually">🗑️</button>
                     </div>
                 `;
             });
 
-            // Populate text elements dynamically and match item parameters perfectly
-            if (document.getElementById('cart-total-price-badge')) {
-                document.getElementById('cart-total-price-badge').innerText = `$${sumTotal.toFixed(2)}`;
+            document.getElementById('cart-total-price-badge').innerText = `$${sumTotal.toFixed(2)}`;
+            document.getElementById('cust-product-ids').value = extractedIDs.join(', ');
+        }
+
+        function adjustItemQty(index, adjustment) {
+            let activeCart = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
+            activeCart[index].quantity = (activeCart[index].quantity || 1) + adjustment;
+            if (activeCart[index].quantity <= 0) {
+                activeCart.splice(index, 1);
             }
-            if (document.getElementById('cust-product-ids')) {
-                document.getElementById('cust-product-ids').value = extractedIDs.join(', ');
-            }
+            localStorage.setItem('khans_cart_vault', JSON.stringify(activeCart));
+            renderSelectionLedger();
         }
 
         function removeNodeFromBin(index) {
@@ -218,27 +233,41 @@
             renderSelectionLedger();
         }
 
-        function processFinalOrder() {
-            const name = document.getElementById('cust-name').value;
-            const email = document.getElementById('cust-email').value;
-            const ids = document.getElementById('cust-product-ids').value;
-            const total = document.getElementById('cart-total-price-badge').innerText;
-            const isVIP = document.getElementById('vip-radio-selector').checked;
-            const vipCode = document.getElementById('cust-privilege-code').value.trim();
-
-            let targetAlertMsg = `Thank you, ${name}! Your gourmet checkout loop succeeded.\n\n`;
-            targetAlertMsg += `Total Invoiced Processing Amount: ${total}\n`;
-            targetAlertMsg += `Captured Food Reference IDs: [${ids}]\n\n`;
-
-            if (isVIP || vipCode.length > 0) {
-                targetAlertMsg += `👑 VIP Privilege Verification Detected! Active Club Members and VIP cardholders unlock exclusive additional benefits on every individual product checkout processing run, dispatched and detailed directly to you via mail updates to ${email}!\n\n`;
-            } else {
-                targetAlertMsg += `Secure fulfillment schedules and digital delivery manifests routed to ${email} successfully!`;
-            }
-
-            alert(targetAlertMsg);
+        function clearEntireCartVault() {
             localStorage.setItem('khans_cart_vault', JSON.stringify([]));
             renderSelectionLedger();
+            alert("All items removed from cart ledger successfully!");
+        }
+
+        function forwardToSummaryPage() {
+            const activeCart = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
+            if(activeCart.length === 0) {
+                alert("Your cart ledger is currently empty!");
+                return;
+            }
+
+            let subtotal = 0;
+            activeCart.forEach(item => subtotal += parseFloat(item.price) * (item.quantity || 1));
+            
+            const selectedMethod = document.querySelector('input[name="pay-method"]:checked').value;
+            const mode = document.getElementById('cust-fulfillment-mode').value;
+
+            const checkoutMeta = {
+                name: document.getElementById('cust-name').value,
+                email: document.getElementById('cust-email').value,
+                phone: document.getElementById('cust-phone').value,
+                location: document.getElementById('cust-location').value,
+                fulfillmentMode: mode,
+                ids: document.getElementById('cust-product-ids').value,
+                details: document.getElementById('cust-details').value,
+                paymentMethod: selectedMethod,
+                subtotal: subtotal.toFixed(2)
+            };
+
+            localStorage.setItem('khans_active_checkout_session', JSON.stringify(checkoutMeta));
+            
+            // ⚡ SEAMLESSLY ROUTED TO YOUR PREFERRED CUSTOM FILE NAME
+            window.location.href = "finals and- order.html";
         }
 
         window.onload = renderSelectionLedger;
