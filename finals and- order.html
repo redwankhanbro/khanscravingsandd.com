@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Invoice Verification - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #121212; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        
+        /* 🗺️ Left Sidebar Navigation Menu Framework */
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; text-decoration: none; transition: 0.3s; }
+        .sidebar a:hover { background: var(--orange); color: white; }
+        
+        /* 🍱 Main Display Workspace Grid */
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
+        
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .invoice-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1a1a1a; font-size: 14px; }
+        .invoice-total { display: flex; justify-content: space-between; padding-top: 20px; font-size: 22px; font-weight: 900; color: var(--orange); }
+        
+        .flex-split-pane { display: flex; justify-content: space-between; align-items: center; background: #161616; padding: 20px; border-radius: 8px; border: 1px solid #252525; margin-top: 15px; }
+        .btn-change-router { background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 10px 20px; font-weight: bold; border-radius: 6px; text-decoration: none; font-size: 12px; text-transform: uppercase; transition: 0.3s; cursor: pointer; }
+        .btn-change-router:hover { background: var(--orange); color: white; }
+        
+        .btn-final-execute { background: var(--orange); color: white; border: none; width: 100%; padding: 18px; border-radius: 6px; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 30px; box-shadow: 0 5px 20px rgba(255,107,1,0.3); transition: 0.3s; }
+        .btn-final-execute:hover { background: #e05e00; transform: translateY(-2px); }
+        
+        .premium-footer { text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
+        .premium-footer span { display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none; }
+    </style>
+</head>
+<body>
 
+    <!-- 🗺️ Left Sidebar Navigation Menu Frame -->
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a href="private-dining.html">Private Dining</a>
+            <a href="shops.html">Shops & Features</a>
+            <a href="see your-cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+
+    <!-- 🍱 Main Content Display Panel Canvas -->
+    <main class="content">
+        <h1 class="page-title">Order Invoice Summary</h1>
+
+        <!-- 💰 SECTION 1: FINANCIAL BREAKDOWN METRICS SIT NATIVELY AT THE TOP -->
+        <div class="block-section">
+            <h3 style="margin-top: 0; color: white; text-transform: uppercase; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; letter-spacing: 0.5px;">Financial Matrix Breakdown</h3>
+            <div class="invoice-row"><span>Item Subtotal Matrix</span><span id="load-subtotal">\$0.00</span></div>
+            <div class="invoice-row"><span>Logistics Delivery Fee</span><span id="load-delivery">\$0.00</span></div>
+            <div class="invoice-row"><span>Luxury Service Fee</span><span id="load-service">\$0.00</span></div>
+            <div class="invoice-total"><span>Final Total Bill</span><span id="load-final">\$0.00</span></div>
+        </div>
+
+        <!-- 💳 SECTION 2: CHOSEN PAYMENT METHOD WITH BACKWARD METHOD ALTERATION ROUTER LINK -->
+        <div class="block-section">
+            <h3 style="margin-top: 0; color: white; text-transform: uppercase; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; letter-spacing: 0.5px;">Gateway Routing Authentication</h3>
+            <div class="flex-split-pane">
+                <div>
+                    <span style="font-size: 11px; color: #666; display: block; text-transform: uppercase; font-weight: bold; margin-bottom: 4px;">Selected Payment Option:</span>
+                    <strong id="load-payment-method" style="color: white; font-size: 15px; letter-spacing: 0.5px;">None Specified</strong>
+                </div>
+                <!-- ⚡ BACK ROUTER ENABLES METHOD MODIFICATIONS NATIVELY ON SEE YOUR-CART.HTML OPTIONS -->
+                <a href="see your-cart.html" class="btn-change-router">Change Your Methods</a>
+            </div>
+        </div>
+
+        <!-- 🚀 SECTION 3: TRANSACTION FINALIZATION ACTION PANEL -->
+        <div class="block-section" style="border-top: 3px solid var(--orange);">
+            <h3 style="margin-top: 0; color: white; text-transform: uppercase; font-size: 18px; letter-spacing: 0.5px;">Fulfillment Dispatch Matrix</h3>
+            <p style="color: #666; font-size: 13px; line-height: 1.5; margin-bottom: 0;">By executing the final verification checkout step loop down below, you securely dispatch your gourmet queues. Detailed parameters mapping tracking loops update via mail lines.</p>
+            
+            <button onclick="confirmFinalGourmetOrder()" class="btn-final-execute">Order That</button>
+        </div>
+
+        <div class="premium-footer">
+            KHAN'S CRAVINGS
+            <span>THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
+        </div>
+    </main>
+
+    <script>
+        function renderConfirmationSummary() {
+            const data = JSON.parse(localStorage.getItem('khans_active_checkout_session'));
+            if (!data) {
+                alert("No active checkout session data parameters found.");
+                window.location.href = "see your-cart.html";
+                return;
+            }
+
+            const sub = parseFloat(data.subtotal);
+            const delivery = data.fulfillmentMode === "Delivery" ? 5.00 : 0.00;
+            const service = (sub * 0.05); // Flat 5% gourmet handling luxury metrics calculation
+            const grandTotal = sub + delivery + service;
+
+            document.getElementById('load-subtotal').innerText = `$${sub.toFixed(2)}`;
+            document.getElementById('load-delivery').innerText = `$${delivery.toFixed(2)}`;
+            document.getElementById('load-service').innerText = `$${service.toFixed(2)}`;
+            document.getElementById('load-final').innerText = `$${grandTotal.toFixed(2)}`;
+            document.getElementById('load-payment-method').innerText = data.paymentMethod;
+        }
+
+        function confirmFinalGourmetOrder() {
+            const data = JSON.parse(localStorage.getItem('khans_active_checkout_session'));
+            alert(`🎉 Order Confirmed! Your submission has been processed securely.\n\nThank you, ${data.name}! Your selection matrix has been dispatched for preparation.`);
+            localStorage.setItem('khans_cart_vault', JSON.stringify([]));
+            localStorage.removeItem('khans_active_checkout_session');
+            window.location.href = "index.html";
+        }
+
+        window.onload = renderConfirmationSummary;
+    </script>
+</body>
+</html>
