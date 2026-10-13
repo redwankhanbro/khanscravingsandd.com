@@ -48,7 +48,7 @@
         .radio-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: #BBB; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .radio-label input { width: auto; margin: 0; cursor: pointer; }
         
-        .btn-submit-order { background: var(--orange); color: white; border: none; padding: 16px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; grid-column: span 2; margin-top: 15px; box-shadow: 0 4px 15px rgba(255,107,1,0.2); text-align: center; text-decoration: none; display: block; }
+        .btn-submit-order { background: var(--orange); color: white; border: none; padding: 16px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; grid-column: span 2; margin-top: 15px; box-shadow: 0 4px 15px rgba(255,107,1,0.2); text-align: center; text-decoration: none; display: block; width: 100%; }
         .btn-submit-order:hover { background: #e05e00; }
         
         .premium-footer { text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
@@ -76,11 +76,11 @@
         <!-- SECTION 1: Active Live Cart Product Display List -->
         <div class="block-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-                <h3 style="color: white; font-size: 17px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Review added meals or products, modify quantities, remove items individually, or clear the entire cart.</h3>
+                <h3 style="color: white; font-size: 14px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.4;">Review added meals or products, modify quantities, remove items individually, or clear the entire cart.</h3>
                 <button onclick="clearEntireCartVault()" style="background: #E74C3C; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Clear Entire Cart</button>
             </div>
             <div id="master-cart-bin-list">
-                <!-- Items list out natively side-by-side here -->
+                <!-- Javascript engine prints items natively here -->
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-top: 1px dashed #333; padding-top: 20px;">
                 <h4 style="margin: 0; text-transform: uppercase; font-size: 14px; color: #888; letter-spacing: 0.5px;">Cart Subtotal</h4>
@@ -88,7 +88,7 @@
             </div>
         </div>
 
-        <!-- SECTION 2: Customer Fields with Custom Order Routing -->
+        <!-- SECTION 2: Billing Input Layout Grid Panel -->
         <div class="block-section" id="checkout-settings-anchor" style="border-color: var(--orange);">
             <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #222;">Fulfillment Configuration Form</h3>
             
@@ -110,7 +110,6 @@
                     <input type="text" id="cust-location" required placeholder="Enter city or street address coordinates">
                 </div>
                 
-                <!-- 📦 PLACED EXACTLY BELOW LOCATION AND ABOVE PRODUCT IDS -->
                 <div class="form-full-row">
                     <label>Fulfillment Selection (Delivery vs. Pickup)</label>
                     <select id="cust-fulfillment-mode">
@@ -130,7 +129,7 @@
                 </div>
                 
                 <div class="form-full-row">
-                    <label>Payment Method Selection</label>
+                    <label>Gateway Method Selection</label>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
                         <div class="radio-box-group">
                             <span style="font-size: 10px; color: #555; font-weight: bold; text-transform: uppercase;">Select Payment Option below:</span>
@@ -182,8 +181,8 @@
 
             if (activeCart.length === 0) {
                 listContainer.innerHTML = `<p style="color: #666; font-style: italic; margin: 0; padding: 20px 0;">Your select bin ledger is currently empty. Navigation paths to menus are open.</p>`;
-                document.getElementById('cust-product-ids').value = "None Loaded";
-                document.getElementById('cart-total-price-badge').innerText = "\$0.00";
+                if (document.getElementById('cust-product-ids')) document.getElementById('cust-product-ids').value = "None Loaded";
+                if (document.getElementById('cart-total-price-badge')) document.getElementById('cart-total-price-badge').innerText = "\$0.00";
                 return;
             }
 
@@ -195,25 +194,29 @@
                 extractedIDs.push(`${item.id}(x${qty})`);
 
                 listContainer.innerHTML += `
-                    <div class="cart-item-node">
-                        <div style="font-size: 20px; color: var(--orange);">🍽️</div>
+                    <div class="cart-item-node" style="display: grid; grid-template-columns: auto 1fr auto auto auto; gap: 20px; align-items: center; background: #161616; border: 1px solid #252525; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #FF6B01;">
+                        <div style="font-size: 20px; color: #FF6B01;">🍽️</div>
                         <div class="item-details">
-                            <h5>${item.name}</h5>
-                            <span>Reference Code ID: ${item.id}</span>
+                            <h5 style="margin: 0; font-size: 16px; color: white; text-transform: uppercase;">${item.name}</h5>
+                            <span style="font-size: 11px; color: #FF6B01; font-weight: bold; background: #050505; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; letter-spacing: 0.5px;">Reference Code ID: ${item.id}</span>
                         </div>
-                        <div class="qty-control">
-                            <button class="qty-btn" onclick="adjustItemQty(${index}, -1)">-</button>
-                            <span class="qty-val">${qty}</span>
-                            <button class="qty-btn" onclick="adjustItemQty(${index}, 1)">+</button>
+                        <div class="qty-control" style="display: flex; align-items: center; gap: 8px; background: #0A0A0A; padding: 5px 10px; border-radius: 6px; border: 1px solid #333;">
+                            <button class="qty-btn" style="background: none; border: none; font-weight: bold; cursor: pointer; font-size: 14px; color: #FF6B01;" type="button" onclick="adjustItemQty(${index}, -1)">-</button>
+                            <span class="qty-val" style="color: white; font-size: 14px; font-weight: bold; min-width: 20px; text-align: center;">${qty}</span>
+                            <button class="qty-btn" style="background: none; border: none; font-weight: bold; cursor: pointer; font-size: 14px; color: #FF6B01;" type="button" onclick="adjustItemQty(${index}, 1)">+</button>
                         </div>
-                        <div class="item-price">$${cost.toFixed(2)}</div>
-                        <button class="btn-bin-remove" onclick="removeNodeFromBin(${index})" title="Remove item individually">🗑️</button>
+                        <div class="item-price" style="font-weight: bold; color: white; font-size: 16px;">$${cost.toFixed(2)}</div>
+                        <button class="btn-bin-remove" style="background: none; border: none; color: #E74C3C; font-size: 20px; cursor: pointer;" type="button" onclick="removeNodeFromBin(${index})">🗑️</button>
                     </div>
                 `;
             });
 
-            document.getElementById('cart-total-price-badge').innerText = `$${sumTotal.toFixed(2)}`;
-            document.getElementById('cust-product-ids').value = extractedIDs.join(', ');
+            if (document.getElementById('cart-total-price-badge')) {
+                document.getElementById('cart-total-price-badge').innerText = `$${sumTotal.toFixed(2)}`;
+            }
+            if (document.getElementById('cust-product-ids')) {
+                document.getElementById('cust-product-ids').value = extractedIDs.join(', ');
+            }
         }
 
         function adjustItemQty(index, adjustment) {
@@ -266,11 +269,11 @@
 
             localStorage.setItem('khans_active_checkout_session', JSON.stringify(checkoutMeta));
             
-             // ⚡ URL-ENCODED FIXED ROUTE TO HANDLE YOUR FILE'S SPACE CHARACTERS CLEANLY
+            // Safe URL-encoded routing path mapping to your preferred file title text line
             window.location.href = "finals%20and-%20order.html";
         }
 
         window.onload = renderSelectionLedger;
     </script>
 </body>
-</html>
+</html>         
