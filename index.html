@@ -459,13 +459,16 @@
         let activeCartItems = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
         
         // Dynamically initialize your sidebar counter text node on fresh page rendering loops
-        document.getElementById('sidebar-cart-counter').innerText = activeCartItems.length + (activeCartItems.length === 1 ? ' Item' : ' Items');
+        if (document.getElementById('sidebar-cart-counter')) {
+            document.getElementById('sidebar-cart-counter').innerText = activeCartItems.length + (activeCartItems.length === 1 ? ' Item' : ' Items');
+        }
 
+        // ⚡ EXACT MATRICES CALIBRATED TO CORRECT FOR ALL CONSOLE CASINGS
         function addToCart(productId, productName, productPrice) {
-            // Read the absolute up-to-date memory array stack directly from local storage parameters
+            // Read the exact same matching storage key variable used by see your-cart.html
             let currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
             
-            // Push the clicked dish credentials straight into your synchronized ledger array matrix
+            // Push the clean, non-undefined data properties securely into the array loop matrix
             currentCartInstance.push({
                 id: productId,
                 name: productName,
@@ -476,7 +479,9 @@
             localStorage.setItem('khans_cart_vault', JSON.stringify(currentCartInstance));
             
             // Instantly refresh your bottom-left sidebar status string indicator row side-by-side
-            document.getElementById('sidebar-cart-counter').innerText = currentCartInstance.length + (currentCartInstance.length === 1 ? ' Item' : ' Items');
+            if (document.getElementById('sidebar-cart-counter')) {
+                document.getElementById('sidebar-cart-counter').innerText = currentCartInstance.length + (currentCartInstance.length === 1 ? ' Item' : ' Items');
+            }
             
             // Fire an elegant alert notification block confirming capture success loop parameters
             alert(`🎉 ${productName} [ID: ${productId}] has been appended to your select bin ledger!`);
