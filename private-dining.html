@@ -233,15 +233,16 @@
                 { keywords: ["book", "reserve", "rent", "private", "schedule"], response: "To lock in your calendar allocation queue, select your dishes inside your Shopping Cart matrix, populate your fulfillment coordinates on the form, and execute the checkout pass!" }
             ];
 
-            function processPanelChatbotQuery() {
+           function processPanelChatbotQuery() {
                 const inputField = document.getElementById('panel-user-input');
                 const stream = document.getElementById('panel-msg-stream');
                 const rawQuery = inputField.value.trim();
                 if (!rawQuery) return;
 
+                // ⚡ PERFECTLY ESCAPED VARIABLE TEMPLATE LITERAL STRINGS
                 stream.innerHTML += `
                     <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
-                        \${rawQuery}
+                        ${rawQuery}
                     </div>
                 `;
 
@@ -261,12 +262,12 @@
 
                     stream.innerHTML += `
                         <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-                            \${matchedResponse}
+                            ${matchedResponse}
                         </div>
                     `;
                     stream.scrollTop = stream.scrollHeight;
                 }, 400);
-            }
+            } 
         </script>
         
         <!-- LAYER 4: Interactive Tables Manual Search Terminal Toolbar Row -->
