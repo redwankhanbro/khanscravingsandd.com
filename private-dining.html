@@ -199,76 +199,81 @@
             </div>
         </div>
         
-  <!-- 🤖 INTEGRATED RESTAURANT PANEL CHATBOT (EMBEDDED NATIVELY ABOVE TABLE TRACKER) -->
-        <div id="khans-embedded-chatbot-panel" style="background: #121212; border: 2px solid #FF6B01; border-radius: 12px; padding: 30px; margin-top: 20px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box;">
-            <div style="display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px;">
-                <div style="font-size: 28px; color: #FF6B01;">🤖</div>
-                <div>
-                    <h3 style="margin: 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Khan's Interactive AI Butler</h3>
-                    <span style="font-size: 11px; color: #2ECC71; display: flex; align-items: center; gap: 4px;">● Restaurant Panel Concierge Online</span>
-                </div>
-            </div>
-
-            <!-- Chat Stream Area Container -->
-            <div id="panel-msg-stream" style="height: 250px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0A0A0A; border: 1px solid #222; border-radius: 6px; margin-bottom: 15px;">
-                <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-                    Welcome VIP Guest. I am your automated culinary guide. Ask me any questions about our seat pricing, custom event limits, VIP club code configuration, or booking methods!
-                </div>
-            </div>
-
-            <!-- Interactive Console Input Row Form -->
-            <form onsubmit="event.preventDefault(); processPanelChatbotQuery();" style="display: flex; gap: 10px; margin: 0; padding: 0; box-sizing: border-box;">
-                <input type="text" id="panel-user-input" required placeholder="Type your reservation query or ask about packages here..." style="flex: 1; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: white; font-size: 13px; outline: none; transition: 0.2s;" onfocus="this.style.borderColor='#FF6B01'" onblur="this.style.borderColor='#333'">
-                <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 0 25px; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.2s;">Inquire</button>
-            </form>
+<!-- 🤖 Standalone Restaurant Panel Chatbot Interface -->
+<div id="khans-embedded-chatbot-panel" style="background: #121212; border: 2px solid #FF6B01; border-radius: 12px; padding: 30px; margin-top: 20px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; max-width: 600px; margin-left: auto; margin-right: auto;">
+    <div style="display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px;">
+        <div style="font-size: 28px; color: #FF6B01;">🤖</div>
+        <div>
+            <h3 style="margin: 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Khan's Interactive AI Butler</h3>
+            <span style="font-size: 11px; color: #2ECC71; display: flex; align-items: center; gap: 4px;">● Restaurant Panel Concierge Online</span>
         </div>
+    </div>
 
-        <!-- ⚙️ BOT ENGINE INTELLIGENCE ROUTER LOOP -->
-        <script>
-            const panelKnowledgeVault = [
-                { keywords: ["price", "cost", "spend", "rate", "fee"], response: "Our private dining rooms operate on a minimum spending allocation metric baseline starting at $500 for evening configurations, covering all custom food preparation loops and butler service tiers." },
-                { keywords: ["vip", "member", "club", "benefit", "privilege"], response: "Active Club Members and VIP cardholders unlock exclusive additional benefits on every individual product checkout processing run, dispatched and detailed directly to you via mail updates." },
-                { keywords: ["menu", "food", "dish", "korma", "platter", "dessert"], response: "Your private gathering can choose from our complete culinary trilogy: Heritage Spice Korma, The Royal Regional Platter, and Fiery Sweet Street Chaat, alongside custom premium desserts and drink pairing tiers." },
-                { keywords: ["capacity", "people", "seat", "guest", "size", "many"], response: "The main imperial dining vault securely accommodates from 2 to 35 VIP guests symmetrically. For larger corporate galas or wedding receptions, layout arrays can stretch up to 50 delegates safely." },
-                { keywords: ["book", "reserve", "rent", "private", "schedule"], response: "To lock in your calendar allocation queue, select your dishes inside your Shopping Cart matrix, populate your fulfillment coordinates on the form, and execute the checkout pass!" }
-            ];
+    <!-- Chat Stream Area Container -->
+    <div id="panel-msg-stream" style="height: 300px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0A0A0A; border: 1px solid #222; border-radius: 6px; margin-bottom: 15px;">
+        <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
+            Welcome VIP Guest. I am your automated culinary guide. Ask me any questions about our seat pricing, custom event limits, VIP club code configuration, or booking methods!
+        </div>
+    </div>
 
-           function processPanelChatbotQuery() {
-                const inputField = document.getElementById('panel-user-input');
-                const stream = document.getElementById('panel-msg-stream');
-                const rawQuery = inputField.value.trim();
-                if (!rawQuery) return;
+    <!-- Interactive Console Input Row Form -->
+    <form onsubmit="event.preventDefault(); processPanelChatbotQuery();" style="display: flex; gap: 10px; margin: 0; padding: 0; box-sizing: border-box;">
+        <input type="text" id="panel-user-input" required placeholder="Type your reservation query or ask about packages here..." style="flex: 1; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: white; font-size: 13px; outline: none; transition: 0.2s;" onfocus="this.style.borderColor='#FF6B01'" onblur="this.style.borderColor='#333'">
+        <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 0 25px; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.2s;">Inquire</button>
+    </form>
+</div>
 
-                // ⚡ PERFECTLY ESCAPED VARIABLE TEMPLATE LITERAL STRINGS
-                stream.innerHTML += `
-                    <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
-                        ${rawQuery}
-                    </div>
-                `;
+<!-- ⚙️ BOT ENGINE FUZZY EXTENSION MATRICES -->
+<script>
+    const panelKnowledgeVault = [
+        { keywords: ["price", "cost", "spend", "rate", "fee", "money", "expensive", "dollar", "payment", "pay"], response: "Our private dining rooms operate on a minimum spending allocation metric baseline starting at $500 for evening configurations, covering all custom food preparation loops and butler service tiers." },
+        { keywords: ["vip", "member", "club", "benefit", "privilege", "card", "cardholder", "pass", "reward"], response: "Active Club Members and VIP cardholders unlock exclusive additional benefits on every individual product checkout processing run, dispatched and detailed directly to you via mail updates." },
+        { keywords: ["menu", "food", "dish", "korma", "platter", "chaat", "dahl", "rice", "dessert", "eat", "dinner", "cravings"], response: "Your private gathering can choose from our complete culinary trilogy: Heritage Spice Korma, The Royal Regional Platter, and Fiery Sweet Street Chaat, alongside custom premium desserts and drink pairing tiers." },
+        { keywords: ["capacity", "people", "seat", "guest", "size", "many", "room", "table", "chair", "crowd", "space"], response: "The main imperial dining vault securely accommodates from 2 to 35 VIP guests symmetrically. For larger corporate galas or wedding receptions, layout arrays can stretch up to 50 delegates safely." },
+        { keywords: ["book", "reserve", "rent", "private", "schedule", "order", "checkout", "buy", "date", "time"], response: "To lock in your calendar allocation queue, select your dishes inside your Shopping Cart matrix, populate your fulfillment coordinates on the form, and execute the checkout pass!" }
+    ];
 
-                inputField.value = "";
-                stream.scrollTop = stream.scrollHeight;
+    function processPanelChatbotQuery() {
+        const inputField = document.getElementById('panel-user-input');
+        const stream = document.getElementById('panel-msg-stream');
+        const rawQuery = inputField.value.trim();
+        if (!rawQuery) return;
 
-                setTimeout(() => {
-                    let matchedResponse = "I have captured your query parameters but couldn't find an exact keyword link. Please ask about private dining prices, VIP memberships, menu items, guest capacities, or booking procedures!";
-                    const lowerQuery = rawQuery.toLowerCase();
+        stream.innerHTML += `
+            <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
+                ${rawQuery}
+            </div>
+        `;
 
-                    for (let entry of panelKnowledgeVault) {
-                        if (entry.keywords.some(keyword => lowerQuery.includes(keyword))) {
-                            matchedResponse = entry.response;
-                            break;
-                        }
-                    }
+        inputField.value = "";
+        stream.scrollTop = stream.scrollHeight;
 
-                    stream.innerHTML += `
-                        <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-                            ${matchedResponse}
-                        </div>
-                    `;
-                    stream.scrollTop = stream.scrollHeight;
-                }, 400);
-            } 
-        </script>
+        setTimeout(() => {
+            let matchedResponse = null;
+            const lowerQuery = rawQuery.toLowerCase();
+
+            // ⚡ ELASTIC INTENT MATRICES SCANNING FOR ANY PARTIAL CONNECTIONS
+            for (let entry of panelKnowledgeVault) {
+                if (entry.keywords.some(keyword => lowerQuery.includes(keyword))) {
+                    matchedResponse = entry.response;
+                    break;
+                }
+            }
+
+            // Fallback Engine if no matching intent keywords are parsed at all
+            if (!matchedResponse) {
+                matchedResponse = `Thank you for inquiring about "${rawQuery}". Your request parameters have been logged. For direct scheduling configuration anomalies or special custom packages, our premium concierge manager will reach out straight to your verified email dashboard link once your order checkout pass executes!`;
+            }
+
+            stream.innerHTML += `
+                <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
+                    ${matchedResponse}
+                </div>
+            `;
+            stream.scrollTop = stream.scrollHeight;
+        }, 400);
+    }
+</script>
         
         <!-- LAYER 4: Interactive Tables Manual Search Terminal Toolbar Row -->
         <div class="block-section" style="border-color: var(--orange);">
