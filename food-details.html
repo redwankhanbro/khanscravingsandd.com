@@ -1,1 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Specifications Hub - Khan's Cravings</title>
+    <style>
+        :root { 
+            --dark: #0A0A0A; 
+            --sidebar-bg: #050505; 
+            --card: #121212; 
+            --orange: #FF6B01; 
+            --text: #E0E0E0; 
+            --border: #222;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); display: flex; }
+        
+        /* 🗺️ Left Sidebar Navigation Menu Framework */
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; padding: 30px 20px; box-sizing: border-box; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; z-index: 100; }
+        .sidebar h2 { color: var(--orange); font-size: 22px; margin: 0 0 40px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar a { display: block; color: var(--text); padding: 12px 16px; margin: 6px 0; border-radius: 6px; font-weight: 600; text-decoration: none; transition: 0.3s; }
+        .sidebar a:hover { background: var(--orange); color: white; }
+        
+        /* 🍱 Main Display Workspace Grid */
+        .content { margin-left: 260px; width: calc(100% - 260px); box-sizing: border-box; padding: 60px 50px; }
+        .page-title { color: var(--orange); font-size: 32px; text-transform: uppercase; border-left: 4px solid var(--orange); padding-left: 15px; margin-bottom: 40px; letter-spacing: 1px; }
+        
+        .block-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .section-heading { color: white; font-size: 22px; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; letter-spacing: 0.5px; }
+        
+        .badge-spice { display: inline-block; background: #2C1100; color: #FF4500; font-weight: bold; font-size: 13px; padding: 6px 14px; border: 1px solid #551A00; border-radius: 4px; margin-bottom: 20px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .price-tag-large { font-size: 36px; font-weight: 900; color: white; margin: 20px 0; font-family: 'Segoe UI', sans-serif; }
+        
+        .btn-place-order { background: var(--orange); color: white; border: none; width: 100%; padding: 18px; border-radius: 6px; font-size: 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none; display: block; box-shadow: 0 5px 20px rgba(255,107,1,0.25); }
+        .btn-place-order:hover { background: #e05e00; transform: translateY(-2px); }
+        
+        .premium-footer { text-align: center; margin-top: 50px; font-size: 24px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 4px; border-top: 1px dashed var(--border); padding-top: 35px; }
+        .premium-footer span { display: block; font-size: 13px; font-weight: 500; color: var(--orange); letter-spacing: 2px; margin-top: 6px; text-transform: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 🗺️ Universal Side Navigation Bar Menu Matrix Links -->
+    <nav class="sidebar">
+        <div>
+            <h2>Khan's Cravings</h2>
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu Hub</a>
+            <a href="drinks.html">Drinking Options</a>
+            <a href="about.html">About Us</a>
+            <a href="private-dining.html">Private Dining</a>
+            <a href="shops.html">Shops & Features</a>
+            <a href="see your-cart.html">Shopping Cart</a>
+        </div>
+    </nav>
+
+    <!-- 🍱 Dynamic Content View Master Panel Canvas Layout -->
+    <main class="content">
+        <h1 class="page-title" id="food-title-header">Gourmet Matrix Specifications</h1>
+
+        <!-- LAYER 1: Dish Heading & Primary Narrative Text Introduction -->
+        <div class="block-section">
+            <h3 class="section-heading" id="food-name-display">Loading Dish Specification...</h3>
+            <p id="food-introduction-display" style="font-size: 16px; line-height: 1.6; color: #CCC; margin: 0;">Parsing culinary registry properties, please hold sequence loops...</p>
+        </div>
+
+        <!-- LAYER 2: Spicy Levels, Popularity Justifications, and Service Presentation Rules -->
+        <div class="block-section">
+            <h3 class="section-heading">Gourmet Curation Matrices</h3>
+            <div class="badge-spice" id="food-spice-display">Spice Profile Matrix</div>
+            
+            <h4 style="color: white; margin-top: 10px; margin-bottom: 8px; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;">Why It Is One Of Our Customer's Favourites:</h4>
+            <p id="food-favourite-display" style="font-size: 14px; line-height: 1.6; color: #AAA; margin-bottom: 25px;"></p>
+            
+            <h4 style="color: white; margin-top: 0; margin-bottom: 8px; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;">How We Like To Serve This Food Item To Our Customers:</h4>
+            <p id="food-serving-display" style="font-size: 14px; line-height: 1.6; color: #AAA; margin: 0;"></p>
+        </div>
+
+        <!-- LAYER 3: Pricing Metric Scales & Order Dispatch Button Shortcut Routing Loop -->
+        <div class="block-section" style="border-top: 3px solid var(--orange);">
+            <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #222;">Fulfillment Ledger Allocation</h3>
+            <div style="font-size: 11px; color: #666; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Bespoke Price Invoice Allocation Value:</div>
+            <div class="price-tag-large" id="food-price-display">\$0.00</div>
+            
+            <!-- ⚡ PLACE ORDER ON THAT BUTTON REDIRECTS DIRECTLY TO YOUR CART LAYOUT -->
+            <button onclick="executePriorityOrderPass()" class="btn-place-order">Place Order On That</button>
+        </div>
+
+        <div class="premium-footer">
+            KHAN'S CRAVINGS
+            <span>THE SUPREME CULINARY REVOLUTION FOR TRUE VIP GUESTS</span>
+        </div>
+    </main>
+
+    <!-- ⚙️ BACKEND DATA EXTRACTION ENGINE SCRIPT -->
+    <script>
+        // Comprehensive matrix database catalog holding details for all dishes
+        const culinaryMasterCatalog = {
+            "FOOD-HK902": {
+                name: "Heritage Spice Korma",
+                intro: "A deeply complex, slow-simmered regional classic layered with stone-ground heritage spice matrices and premium proteins.",
+                spice: "🌶️ Medium Spice Level Matrix (Customizable)",
+                favourite: "Our patrons appreciate the balance of rich, velvety textures mixed with deeply roasted aromatics that remain prominent without overpowering the dish.",
+                serving: "Served piping hot inside a heated hammered brass container, accompanied by single-source ghee glazes and fresh visual coriander nests.",
+                price: 12.50
+            },
+            "FOOD-RP441": {
+                name: "The Royal Regional Platter",
+                intro: "An extravagant, multi-tier traditional curation of our province's best slow-cooked premium cuts, master grain arrays, and house pickles.",
+                spice: "🌶️🌶️ Mildly Intense Accentuated Spice Matrix",
+                favourite: "It provides an expansive tour of varying culinary profiles on a single platter, making it the supreme choice for groups and true VIP tasters.",
+                serving: "Arranged symmetrically across an authentic hand-carved hardwood service shield, flanked by chilled yoghurt coolers and presentation herbs.",
+                price: 24.50
+            },
+           "FOOD-SC312": {
+                name: "Fiery Sweet Street Chaat",
+                intro: "A crispy, cold-shattered street artisan staple layered with iron-roasted chickpeas, spun spiced yoghurt curd, and honey chili reductions.",
+                spice: "🌶️🌶️🌶️ Sweet & Fiery Tangy High Spice Matrix",
+                favourite: "The contrast between thermal sweet elements and high-octane crisp crunch creates an addictive, refreshing palate sensation.",
+                serving: "Assembled instantly live table-side over chilled stone slabs, finished with raw pomegranate jewels and fine crisps.",
+                price: 6.00
+            },
+            "FOOD-AD701": {
+                name: "Aromatic Heritage Dahl",
+                intro: "Triple-washed slow-stewed ancient pulses tempered over woodfires with garlic oil infusions and toasted cumin stems.",
+                spice: "🌶. Mild Soothing Temperature Spice Matrix",
+                favourite: "Its rich, comforting earthiness delivers a foundational culinary baseline that balances beautifully with any rice pairing.",
+                serving: "Presented in cast-iron clay cauldrons with a volcanic puddle of browned ghee and smoked chili pods floating at the core.",
+                price: 9.50
+            },
+            "FOOD-not known": {
+                name: "Premium Basmati Pilaf Saffron",
+                intro: "Long-grain select basmati rice aged for 24 months, steamed gently under cloth wraps with authentic hand-harvested saffron threads.",
+                spice: "Fragrant Delicate Zero-Heat Herbal Spice Matrix",
+                favourite: "Each grain separates perfectly, carrying a rich, buttery saffron aroma that makes it an aromatic favorite.",
+                serving: "Dusted with edible gold leaf particles and roasted slivered almonds inside a domed silver steam shield wrapper.",
+                price: 11.00
+            },
+            "FOOD-not known": {
+                name: "Golden Garlic Naan Nest",
+        intro: "Leavened dough hand-slapped against white-hot clay tandoor walls, brushed generously with minced wild garlic cloves and churned cream butter.",
+        spice: "Toasted Garlic Savory Herbal Matrix",
+        favourite: "Patrons love the pillowy air pockets combined with the intense, smoky garlic crisp on the outer crust rim layers.",
+        serving: "Folded cleanly like a napkin inside a woven cloth-lined basket to lock moisture in, delivered within 60 seconds of baking.",
+        price: 3.50
+      },
+      "DSRT-not known": {
+        name: "Mango Infused Cardamom Mousse",
+        intro: "A velvety whipped cream cloud folded with wild Alphonso mango nectar pulp and green cardamom pod shells.",
+        spice: "❄️ Chilled Dessert Sweet Cardamom Profile",
+        favourite: "It is exceptionally light, providing a clean fruit finish that cuts through rich savory dinner elements beautifully.",
+        serving: "Poured inside a crystal coupe glass, layered with translucent spun sugar curls and frozen mint crystal shards.",
+        price: 7.50
+      },
+      "DSRT-not known": {
+        name: "Rosewater Saffron Glazed Dumplings",
+        intro: "Golden milk-solid globes fried gently in pure fats, soaked inside warm sugar syrup infused with organic rosewater essence.",
+        spice: "Warm Sweet Floral Aromatic Sugar Matrix",
+        favourite: "The soft, melt-in-the-mouth texture combined with the warm floral sweetness makes it an unbeatable choice for traditional dessert lovers.",
+        serving: "Served as pairs inside pre-warmed porcelain saucers, swimming in a shallow pool of syrup and crushed green pistachios.",
+        price: 8.00
+      },
+      "DSRT-not known": {
+        name: "Artisanal Pistachio Kulfi Slice",
+        intro: "Dense, slow-boiled milk ice cream reduction frozen solid inside conical copper molds, highly enriched with crushed select green nuts.",
+        spice: "❄️ Deeply Frozen Creamy Nutty Sweetness",
+        favourite: "Its dense texture makes it slow to melt, allowing the deep caramelized cream notes to slowly coat the palate.",
+        serving: "Sliced cleanly into horizontal discs across chilled dark slate platters, garnished with cardamom spray mists.",
+        price: 6.50
+      }
+    };
+      
+let currentActiveItem = null;
+
+function loadDishProperties() {
+  // Read the dish ID from the URL, e.g. page.html?id=DSRT-MM505
+  const URLParameters = new URLSearchParams(window.location.search);
+  const capturedID = URLParameters.get("id");
+  const targetDish = culinaryMasterCatalog[capturedID];
+
+  if (!targetDish) {
+    document.getElementById("food-name-display").innerText =
+      "Dish Profile Missing";
+    document.getElementById("food-introduction-display").innerText =
+      "The requested food identification token is not registered inside our priority menu system.";
+    return;
+  }
+
+ currentActiveItem = { id: capturedID, name: targetDish.name, price: targetDish.price };
+            
+            // Bind values dynamically straight onto your text frame layout layers
+            document.title = `${targetDish.name} - Khan's Cravings Specifications`;
+            document.getElementById('food-name-display').innerText = targetDish.name;
+            document.getElementById('food-introduction-display').innerText = targetDish.intro;
+            document.getElementById('food-spice-display').innerText = targetDish.spice;
+            document.getElementById('food-favourite-display').innerText = targetDish.favourite;
+            document.getElementById('food-serving-display').innerText = targetDish.serving;
+            document.getElementById('food-price-display').innerText = `$${targetDish.price.toFixed(2)}`;
+        }
+
+        function executePriorityOrderPass() {
+            if (!currentActiveItem) return;
+            
+            // Load up existing local database items or open a fresh workspace array structure
+            let currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
+            
+            // Check if item is already added to adjust quantities, or append fresh item mapping
+            let itemMatch = currentCartInstance.find(node => node.id === currentActiveItem.id);
+            if (itemMatch) {
+                itemMatch.quantity = (itemMatch.quantity || 1) + 1;
+            } else {
+                currentCartInstance.push({
+                    id: currentActiveItem.id,
+                    name: currentActiveItem.name,
+                    price: currentActiveItem.price,
+                    quantity: 1
+                });
+            }
+            
+            // Save back into local storage database and route directly to your cart form file
+            localStorage.setItem('khans_cart_vault', JSON.stringify(currentCartInstance));
+            window.location.href = "see your-cart.html";
+        }                     
+
+        window.onload = loadDishProperties;
+    </script>
+</body>
+</html>
 
