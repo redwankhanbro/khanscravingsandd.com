@@ -170,7 +170,7 @@
       }
     };
         
-        let currentActiveItem = null;
+    let currentActiveItem = null;
 
         function loadDishProperties() {
             const URLParameters = new URLSearchParams(window.location.search);
@@ -185,7 +185,7 @@
 
             currentActiveItem = { id: capturedID, name: targetDish.name, price: targetDish.price };
             
-            // ⚡ REPAIRED STRINGS TO USE TRUE BACKTICKS FOR METRICS RENDERING
+            // ⚡ Corrected variables utilizing JavaScript template literals (backticks)
             document.title = `${targetDish.name} - Khan's Cravings Specifications`;
             if (document.getElementById('food-title-header')) {
                 document.getElementById('food-title-header').innerText = `${targetDish.name} - Detailed Matrix Profile`;
@@ -222,4 +222,4 @@
         window.onload = loadDishProperties;
     </script>
 </body>
-</html>
+</html>    
