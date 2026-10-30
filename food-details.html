@@ -40,7 +40,7 @@
 </head>
 <body>
 
-    <!-- 🗺️ Universal Side Navigation Bar Menu Matrix Links -->
+    <!-- 🗺️ Universal Side Navigation Bar Menu -->
     <nav class="sidebar">
         <div>
             <h2>Khan's Cravings</h2>
@@ -54,14 +54,14 @@
         </div>
     </nav>
 
-    <!-- 🍱 Dynamic Content View Master Panel Canvas Layout -->
+    <!-- 🍱 Main Content Display Panel Canvas Layout -->
     <main class="content">
         <h1 class="page-title" id="food-title-header">Gourmet Matrix Specifications</h1>
 
         <!-- LAYER 1: Dish Heading & Primary Narrative Text Introduction -->
         <div class="block-section">
             <h3 class="section-heading" id="food-name-display">Loading Dish Specification...</h3>
-            <p id="food-introduction-display" style="font-size: 16px; line-height: 1.6; color: #CCC; margin: 0;">Parsing culinary registry properties, please hold sequence loops...</p>
+            <p id="food-introduction-display" style="font-size: 16px; line-height: 1.6; color: #CCC; margin: 0;">Parsing culinary registry properties...</p>
         </div>
 
         <!-- LAYER 2: Spicy Levels, Popularity Justifications, and Service Presentation Rules -->
@@ -80,7 +80,7 @@
         <div class="block-section" style="border-top: 3px solid var(--orange);">
             <h3 class="section-heading" style="color: var(--orange); border-bottom-color: #222;">Fulfillment Ledger Allocation</h3>
             <div style="font-size: 11px; color: #666; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Bespoke Price Invoice Allocation Value:</div>
-            <div class="price-tag-large" id="food-price-display">\$0.00</div>
+            <div class="price-tag-large" id="food-price-display">$0.00</div>
             
             <!-- ⚡ PLACE ORDER ON THAT BUTTON REDIRECTS DIRECTLY TO YOUR CART LAYOUT -->
             <button onclick="executePriorityOrderPass()" class="btn-place-order">Place Order On That</button>
@@ -94,9 +94,8 @@
 
     <!-- ⚙️ BACKEND DATA EXTRACTION ENGINE SCRIPT -->
     <script>
-        // Comprehensive matrix database catalog holding details for all dishes
         const culinaryMasterCatalog = {
-            "FOOD-HK902": {
+             "FOOD-HK902": {
                 name: "Heritage Spice Korma",
                 intro: "A deeply complex, slow-simmered regional classic layered with stone-ground heritage spice matrices and premium proteins.Heritage Spice Korma stands as a magnificent testament to ancestral slow-cooking methods passed down through generations . At its culinary core, this dish features exceptionally tender, premium hand-selected cuts of protein, slow-simmered for hours over low embers within specialized copper vessels . This patient process coaxes an unmatched silkiness from the meat, allowing it to absorb a complex structural lattice of flavor",
                 spice: "🌶️ Medium Spice Level Matrix (Customizable)", Far from an ordinary curry, our heritage matrix utilizes over fourteen distinct whole spices, hand-crushed on artisanal stone slabs immediately prior to tempering.• The Aromatics: Intoxicating notes of cracked green cardamom pods, sweet cassia bark, and shaved mace fronds form the base bouquet .• The Texture: A rich, velvety paste of toasted white poppy seeds, stone-ground cashews, and charred onions provides a luxurious body .• The Heat: Clean, vibrant accents of native red chilies linger elegantly on the palate without overwhelming the delicate cream baseline
@@ -128,6 +127,7 @@
                 serving: "Presented in cast-iron clay cauldrons with a volcanic puddle of browned ghee and smoked chili pods floating at the core.  Aromatic Heritage Dahl is presented in custom-fired cast-iron clay cauldrons, arriving at the table with the ghee still sizzling at its surface . At the absolute core of the dish floats a distinct, golden pool of browned garlic-ghee emulsion . The layout is beautifully garnished with micro-coriander leaves and served alongside a basket of fire-blistered flatbreads or domed rice wraps",
                 price: 9.50
             },
+         },
             "FOOD-not known": {
                 name: "Premium Basmati Pilaf Saffron",
                 intro: "Long-grain select basmati rice aged for 24 months, steamed gently under cloth wraps with authentic hand-harvested saffron threads.",
@@ -169,27 +169,27 @@
         price: 6.50
       }
     };
-      
-let currentActiveItem = null;
+        
+        let currentActiveItem = null;
 
-function loadDishProperties() {
-  // Read the dish ID from the URL, e.g. page.html?id=DSRT-MM505
-  const URLParameters = new URLSearchParams(window.location.search);
-  const capturedID = URLParameters.get("id");
-  const targetDish = culinaryMasterCatalog[capturedID];
-
-  if (!targetDish) {
-    document.getElementById("food-name-display").innerText =
-      "Dish Profile Missing";
-    document.getElementById("food-introduction-display").innerText =
-      "The requested food identification token is not registered inside our priority menu system.";
-    return;
-  }
-
- currentActiveItem = { id: capturedID, name: targetDish.name, price: targetDish.price };
+        function loadDishProperties() {
+            const URLParameters = new URLSearchParams(window.location.search);
+            const capturedID = URLParameters.get('id');
+            const targetDish = culinaryMasterCatalog[capturedID];
             
-            // Bind values dynamically straight onto your text frame layout layers
+            if (!targetDish) {
+                document.getElementById('food-name-display').innerText = "Dish Profile Missing";
+                document.getElementById('food-introduction-display').innerText = "The requested food identification token is not registered inside our priority menu system.";
+                return;
+            }
+
+            currentActiveItem = { id: capturedID, name: targetDish.name, price: targetDish.price };
+            
+            // ⚡ REPAIRED STRINGS TO USE TRUE BACKTICKS FOR METRICS RENDERING
             document.title = `${targetDish.name} - Khan's Cravings Specifications`;
+            if (document.getElementById('food-title-header')) {
+                document.getElementById('food-title-header').innerText = `${targetDish.name} - Detailed Matrix Profile`;
+            }
             document.getElementById('food-name-display').innerText = targetDish.name;
             document.getElementById('food-introduction-display').innerText = targetDish.intro;
             document.getElementById('food-spice-display').innerText = targetDish.spice;
@@ -201,11 +201,9 @@ function loadDishProperties() {
         function executePriorityOrderPass() {
             if (!currentActiveItem) return;
             
-            // Load up existing local database items or open a fresh workspace array structure
             let currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
-            
-            // Check if item is already added to adjust quantities, or append fresh item mapping
             let itemMatch = currentCartInstance.find(node => node.id === currentActiveItem.id);
+            
             if (itemMatch) {
                 itemMatch.quantity = (itemMatch.quantity || 1) + 1;
             } else {
@@ -217,13 +215,11 @@ function loadDishProperties() {
                 });
             }
             
-            // Save back into local storage database and route directly to your cart form file
             localStorage.setItem('khans_cart_vault', JSON.stringify(currentCartInstance));
             window.location.href = "see your-cart.html";
-        }                     
+        }
 
         window.onload = loadDishProperties;
     </script>
 </body>
 </html>
-
