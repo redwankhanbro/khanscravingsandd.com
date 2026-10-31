@@ -312,15 +312,15 @@
                 serverOutput = khanServerDatabase.alterations;
             }
 
-            // High-Utility Fallback Matrix for edge cases or compound sentences
-            if (!matchedResponse) {
-                matchedResponse = `📝 **PARAMETER LOGGED:** Your complex query ("${rawQuery}") contains unique administrative metrics. To resolve this parameter instantly, fill out your customer info lines inside the checkout form layout panel, type this specific request directly inside the Customizations text box, and complete the order pass. Our concierge desk maps out custom solutions upon order execution!`;
+            // Universal Server Semantic Search Match Fallback
+            if (!serverOutput) {
+                serverOutput = `📝 **SERVER LOG COORD:** Your request regarding "${userQuery}" has been transmitted to our central database server pipeline. To receive exhaustive, hyper-detailed solutions regarding this specific item, please complete your customer info parameters inside the checkout form layout panel, type this text query inside the customizations textbox, and hit submit. Our administrative concierge desk maps answers out instantly upon order deployment!`;
             }
 
-            // Render AI Butler Bubble Natively
+            // Render Server Response Bubble Natively
             stream.innerHTML += `
                 <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-                    ${matchedResponse}
+                    ${serverOutput}
                 </div>
             `;
             stream.scrollTop = stream.scrollHeight;
