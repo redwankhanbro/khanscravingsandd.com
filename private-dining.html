@@ -269,59 +269,55 @@
         }
     ];
 
-    function processPanelChatbotQuery() {
-        const inputField = document.getElementById('panel-user-input');
-        const stream = document.getElementById('panel-msg-stream');
-        const rawQuery = inputField.value.trim();
-        if (!rawQuery) return;
+            function processOmniIntelQuery() {
+                const inputField = document.getElementById('panel-user-input');
+                const stream = document.getElementById('panel-msg-stream');
+                const rawQuery = inputField.value.trim();
+                if (!rawQuery) return;
 
-        // Render User Query Bubble
-        stream.innerHTML += `
-            <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
-                ${rawQuery}
-            </div>
-        `;
+                // Render User bubble
+                stream.innerHTML += `
+                    <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
+                        ${rawQuery}
+                    </div>
+                `;
 
-        inputField.value = "";
-        stream.scrollTop = stream.scrollHeight;
+                inputField.value = "";
+                stream.scrollTop = stream.scrollHeight;
 
-        setTimeout(() => {
-            let matchedResponse = null;
-            const lowerQuery = rawQuery.toLowerCase();
-                
-            // 🧠 ADVANCED ALGORITHMIC ROUTING ENGINE
-            if (cleanQuery.includes("korma") || cleanQuery.includes("spice")) {
-                serverOutput = khanServerDatabase.korma;
-            } else if (cleanQuery.includes("platter") || cleanQuery.includes("royal")) {
-                serverOutput = khanServerDatabase.platter;
-            } else if (cleanQuery.includes("chaat") || cleanQuery.includes("sweet")) {
-                serverOutput = khanServerDatabase.chaat;
-            } else if (cleanQuery.includes("dahl") || cleanQuery.includes("lentil")) {
-                serverOutput = khanServerDatabase.dahl;
-            } else if (cleanQuery.includes("menu") || cleanQuery.includes("eat") || cleanQuery.includes("food") || cleanQuery.includes("dish")) {
-                serverOutput = khanServerDatabase.menu_summary;
-            } else if (cleanQuery.includes("fee") || cleanQuery.includes("tax") || cleanQuery.includes("charge") || cleanQuery.includes("cost") || cleanQuery.includes("price")) {
-                serverOutput = khanServerDatabase.fees;
-            } else if (cleanQuery.includes("vip") || cleanQuery.includes("member") || cleanQuery.includes("club") || cleanQuery.includes("card")) {
-                serverOutput = khanServerDatabase.vip_benefits;
-            } else if (cleanQuery.includes("book") || cleanQuery.includes("reserve") || cleanQuery.includes("room") || cleanQuery.includes("table")) {
-                serverOutput = khanServerDatabase.booking;
-            } else if (cleanQuery.includes("allergy") || cleanQuery.includes("allergic") || cleanQuery.includes("vegan") || cleanQuery.includes("halal") || cleanQuery.includes("nuts")) {
-                serverOutput = khanServerDatabase.dietary;
-            } else if (cleanQuery.includes("cancel") || cleanQuery.includes("refund") || cleanQuery.includes("return") || cleanQuery.includes("change")) {
-                serverOutput = khanServerDatabase.alterations;
-            }
+                setTimeout(() => {
+                    let finalAnswer = null;
+                    const cleanQuery = rawQuery.toLowerCase();
 
-            // Universal Server Semantic Search Match Fallback
-            if (!serverOutput) {
-                serverOutput = `📝 **SERVER LOG COORD:** Your request regarding "${userQuery}" has been transmitted to our central database server pipeline. To receive exhaustive, hyper-detailed solutions regarding this specific item, please complete your customer info parameters inside the checkout form layout panel, type this text query inside the customizations textbox, and hit submit. Our administrative concierge desk maps answers out instantly upon order deployment!`;
-            }
+                    // 🗺️ DETECT CULINARY OR RESTAURANT PACKAGES FIRST
+                    if (cleanQuery.includes("korma") || cleanQuery.includes("spice")) {
+                        finalAnswer = masterCulinaryDatabase.korma;
+                    } else if (cleanQuery.includes("platter") || cleanQuery.includes("royal")) {
+                        finalAnswer = masterCulinaryDatabase.platter;
+                    } else if (cleanQuery.includes("chaat") || cleanQuery.includes("sweet")) {
+                        finalAnswer = masterCulinaryDatabase.chaat;
+                    } else if (cleanQuery.includes("dahl") || cleanQuery.includes("lentil")) {
+                        finalAnswer = masterCulinaryDatabase.dahl;
+                    } else if (cleanQuery.includes("fee") || cleanQuery.includes("tax") || cleanQuery.includes("charge") || cleanQuery.includes("cost") || cleanQuery.includes("price")) {
+                        finalAnswer = masterCulinaryDatabase.billing;
+                    } else if (cleanQuery.includes("vip") || cleanQuery.includes("member") || cleanQuery.includes("club") || cleanQuery.includes("card")) {
+                        finalAnswer = masterCulinaryDatabase.vip;
+                    } else if (cleanQuery.includes("book") || cleanQuery.includes("reserve") || cleanQuery.includes("room") || cleanQuery.includes("table")) {
+                        finalAnswer = masterCulinaryDatabase.booking;
+                    } else if (cleanQuery.includes("cancel") || cleanQuery.includes("refund") || cleanQuery.includes("return") || cleanQuery.includes("change")) {
+                        finalAnswer = masterCulinaryDatabase.cancel;
+                    }
 
-            // Render Server Response Bubble Natively
-            stream.innerHTML += `
-                <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-                    ${serverOutput}
-                </div>
+                    // 🌐 LINGUISTIC FALLBACK MATRIX FOR NON-RESTAURANT TOPICS
+                    if (!finalAnswer) {
+                        finalAnswer = `🌐 **GLOBAL INTELLIGENCE MATRIX ENGINE:** I have processed your inquiry about "${rawQuery}". As Khan's Omni-Intelligence Butler, I can decipher that this is an external general query topic! While my server tracks general knowledge parameters, let me remind you that the real magic is happening here in our luxury dining hall. If you place your gourmet menu selection through our Shopping Cart loop, our physical concierge desk will gladly converse with you about any topic in the universe live over a hot plate of Heritage Korma!`;
+                    }
+
+                    // Render Bot response bubble
+                    stream.innerHTML += `
+                        <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
+                            ${finalAnswer}
+                        </div>
             `;
             stream.scrollTop = stream.scrollHeight;
         }, 400);
