@@ -288,13 +288,6 @@
         setTimeout(() => {
             let matchedResponse = null;
             const lowerQuery = rawQuery.toLowerCase();
-
-            // 🔍 Advanced Tokenized Keyword Extraction Scanning Loop
-            for (let entry of advancedDifficultKnowledgeVault) {
-                if (entry.keywords.some(keyword => lowerQuery.includes(keyword))) {
-                    matchedResponse = entry.response;
-                    break;
-                }
                 
             // 🧠 ADVANCED ALGORITHMIC ROUTING ENGINE
             if (cleanQuery.includes("korma") || cleanQuery.includes("spice")) {
