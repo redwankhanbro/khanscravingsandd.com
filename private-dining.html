@@ -199,125 +199,129 @@
             </div>
         </div>
 
-<!-- 🤖 DEPLOYABLE RESTAURANT PANEL CHATBOT (INTELLIGENT MATRIX CORE) -->
+<!-- 🤖 STANDALONE KHAN'S OMNI-INTELLIGENCE CHATBOT COMPONENT -->
 <div id="khans-extracted-chatbot-panel" style="background: #121212; border: 2px solid #FF6B01; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; max-width: 600px; margin: 20px auto;">
+    
+    <!-- Header Console Status Bar -->
     <div style="display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px;">
         <div style="font-size: 28px; color: #FF6B01;">👑</div>
         <div>
-            <h3 style="margin: 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Khan's Advanced AI Butler</h3>
-            <span style="font-size: 11px; color: #2ECC71; display: flex; align-items: center; gap: 4px;">● High-Signal Resolution Loop Online</span>
+            <h3 style="margin: 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Khan's Master AI Butler</h3>
+            <span style="font-size: 11px; color: #2ECC71; display: flex; align-items: center; gap: 4px;">● Global Intelligence Matrix Online</span>
         </div>
     </div>
 
-    <!-- Chat Output Stream Matrix -->
-    <div id="panel-msg-stream" style="height: 320px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0A0A0A; border: 1px solid #222; border-radius: 6px; margin-bottom: 15px;">
+    <!-- Live Chat Conversation Stream -->
+    <div id="panel-msg-stream" style="height: 350px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0A0A0A; border: 1px solid #222; border-radius: 6px; margin-bottom: 15px;">
         <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-            Greetings VIP Guest. My advanced diagnostic matrix is fully prepared. Inquire about complex event logistics, ingredient profiles, refunds, minimum allocations, or private bookings.
+            Greetings. I am connected straight to Khan's comprehensive data dictionary matrix. Inquire freely about menus, delivery logistics, allergy safeguards, refunds, or general knowledge questions!
         </div>
     </div>
 
-    <!-- Interactive Input Box Row -->
-    <form onsubmit="event.preventDefault(); processPanelChatbotQuery();" style="display: flex; gap: 10px; margin: 0; padding: 0; box-sizing: border-box;">
-        <input type="text" id="panel-user-input" required placeholder="Ask a difficult logistical or kitchen question..." style="flex: 1; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: white; font-size: 13px; outline: none;" onfocus="this.style.borderColor='#FF6B01'" onblur="this.style.borderColor='#333'">
-        <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 0 25px; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer;">Inquire</button>
+    <!-- Interactive User Input Field Console -->
+    <form onsubmit="event.preventDefault(); processOmniIntelQuery();" style="display: flex; gap: 10px; margin: 0; padding: 0; box-sizing: border-box;">
+        <input type="text" id="panel-user-input" required placeholder="Ask a menu, policy, or any external question..." style="flex: 1; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: white; font-size: 13px; outline: none; transition: 0.2s;" onfocus="this.style.borderColor='#FF6B01'" onblur="this.style.borderColor='#333'">
+        <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 0 25px; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.2s;">Inquire</button>
     </form>
 </div>
 
-<!-- ⚙️ ADVANCED RESOLUTION LOGIC AND STRINGS EXTRACTION MOTOR -->
+<!-- ⚙️ COMPREHENSIVE LINGUISTIC MAPPING MATRIX ENGINE -->
 <script>
-    // 🧠 Complex Matrix Catalog Handling High-Signal/Difficult Customer Questions
-    const advancedDifficultKnowledgeVault = [
+    // 🧠 MULTI-INTENT MASTER KNOWLEDGE CATALOG (Manage your keywords easily inside this array structure)
+    const masterKnowledgeCatalog = [
+        /* ---------------- CATEGORY A: THE CULINARY TRILOGY ---------------- */
         {
-           keywords: ["price", "cost", "spend", "rate", "fee", "money", "expensive", "dollar", "payment", "pay"], 
-            response: "Our private dining rooms operate on a minimum spending allocation metric baseline starting at $500 for evening configurations, covering all custom food preparation loops and butler service tiers." 
-            }, 
-            {
-          keywords: ["vip", "member", "club", "benefit", "privilege", "card", "cardholder", "pass", "reward"],
-         response: "Active Club Members and VIP cardholders unlock exclusive additional benefits on every individual product checkout processing run, dispatched and detailed directly to you via mail updates."
-           },
-           {
-         keywords: ["menu", "food", "dish", "korma", "platter", "chaat", "dahl", "rice", "dessert", "eat", "dinner", "cravings"],       
-         response: "Your private gathering can choose from our complete culinary trilogy: Heritage Spice Korma, The Royal Regional Platter, and Fiery Sweet Street Chaat, alongside custom premium desserts and drink pairing tiers."
-           },
-           {
-         keywords: ["capacity", "people", "seat", "guest", "size", "many", "room", "table", "chair", "crowd", "space"],
-         response: "The main imperial dining vault securely accommodates from 2 to 35 VIP guests symmetrically. For larger corporate galas or wedding receptions, layout arrays can stretch up to 50 delegates safely."
-          },
-          {
-          keywords: ["book", "reserve", "rent", "private", "schedule", "order", "checkout", "buy", "date", "time"], 
-         response: "To lock in your calendar allocation queue, select your dishes inside your Shopping Cart matrix, populate your fulfillment coordinates on the form, and execute the checkout pass!" 
-         },
-         {
-            keywords: ["cancel", "refund", "return", "money back", "change date", "postpone"],
-            response: "📌 **RESERVATION ALTERATION POLICY:** To protect our custom curation sourcing streams, private dining allocations can be altered or rescheduled up to 48 hours prior to your slot sequence. Cancellations within 48 hours route directly to a luxury house vault credit token issued automatically via mail."
+            keywords: ["korma", "heritage korma", "spice korma", "chicken", "meat", "curry"],
+            response: "👑 **HERITAGE SPICE KORMA:** A royal masterpiece featuring slow-simmered premium cuts of protein infused with over 14 distinct whole spices hand-crushed on stone slabs. Served inside a heated brass cauldron. Priced at $12.50."
         },
         {
-            keywords: ["allergy", "allergic", "nuts", "gluten", "vegan", "vegetarian", "ingredient", "halal"],
-            response: "🌱 **DIETARY AND INGREDIENT SAFEGUARDS:** Our head chef verifies every single matrix run. Specify all critical health parameters, ingredient changes, or allergy profiles inside the additional details field of your Shopping Cart form before hitting checkout. The kitchen isolates preparation boards completely for verified nodes."
+            keywords: ["platter", "royal platter", "regional platter", "feast", "big meal", "meat tray"],
+            response: "👑 **THE ROYAL REGIONAL PLATTER:** An opulent multi-tier grand feast. Features prime cuts of meat slow-cooked over split woodfires for 12 hours, served symmetrically across a hand-carved hardwood service shield over saffron basmati grains. Priced at $24.50."
         },
         {
-            keywords: ["outside catering", "bring my own", "alcohol", "corkage", "cake", "decorate"],
-            response: "🍾 **EXTERNAL CURATION RULES:** We prohibit outside food elements to enforce strict health registries. However, a luxury corkage pass fee of $50 applies for rare celebratory vintage bottles, and we permit custom celebration cakes if pre-logged with your butler manifest."     
+            keywords: ["chaat", "street chaat", "fiery", "sweet chaat", "wafer", "snack", "appetizer"],
+            response: "👑 **FIERY SWEET STREET CHAAT:** A spectacular street food staple utilizing crisp wafers layered over iron-roasted chickpeas, spun spiced yogurt curds, and a vibrant dual drizzle of honey-chili glaze and tamarind reduction. Priced at $6.00."
         },
         {
-            keywords: ["corporate", "event", "wedding", "buyout", "party", "meeting", "rent whole"],
-            response: "🏢 **FULL HALL BUYOUT PROTOCOL:** For entire hall takeovers stretching up to 50 VIP delegates, please email your corporate specification matrix straight to our desk or execute a layout queue by checking out multiple signature platters inside your ledger form."
+            keywords: ["dahl", "lentil", "pulse", "soup", "heritage dahl", "aromatic dahl"],
+            response: "HN **AROMATIC HERITAGE DAHL:** Organic ancient pulses slow-stewed over low embers until entirely creamy. Finished table-side via a volcanic tarka of hot ghee, wild garlic slivers, and whole crackling cumin stems. Priced at $9.50."
         },
         {
-            keywords: ["tax", "service charge", "hidden fee", "delivery cost", "extra"],
-            response: "💰 **FINANCIAL TRANSPARENCY BLOCK:** There are zero hidden costs. On your final checkout overview page (`finals and- order.html`), you can clearly track your exact item subtotal, a flat $5.00 delivery fee (waived if set to vault pickup), and a flat 5% gourmet handling service fee."
+            keywords: ["menu", "food", "dish", "dishes", "eat", "dinner", "lunch", "hungry", "cravings"],
+            response: "🍱 **CULINARY INVENTORY SUMMARY:** Our menu balances three distinct tiers: 1) Authentic Regional Delicacies (Korma, Platter, Chaat), 2) Aromatic Heritage Rice & Grains (Dahl, Basmati Pilaf, Garlic Naan), and 3) Handcrafted Desserts (Mousse, Dumplings, Kulfi)."
+        },
+
+        /* ---------------- CATEGORY B: LOGISTICS & BILLING METRICS ---------------- */
+        {
+            keywords: ["fee", "tax", "charge", "cost", "price", "delivery fee", "service fee", "expensive", "hidden"],
+            response: "💰 **TRANSPARENT BILLING METRICS:** There are zero hidden costs. Your final invoice consists purely of your item subtotals, a flat $5.00 delivery fee (completely waived if you choose self-arranged vault desk pickup), and a flat 5% luxury handling service fee."
+        },
+        {
+            keywords: ["vip", "member", "club", "benefit", "privilege", "card", "cardholder", "code", "hash"],
+            response: "👑 **VIP MEMBERSHIP ADVANTAGES:** Active Club Members and VIP cardholders unlock exclusive premium benefits and private promotions on every individual product checkout processing run, dispatched and detailed directly via mail updates."
+        },
+        {
+            keywords: ["book", "reserve", "rent", "private", "schedule", "dining room", "hall", "table", "chair"],
+            response: "📅 **RESERVATION ARCHITECTURE:** Private dining seating allocations require a minimum spending threshold of $500 for evening configurations. To lock in your date, select your dishes inside your Shopping Cart layout, complete the form, and execute your checkout pass."
+        },
+        {
+            keywords: ["cancel", "refund", "return", "money back", "change date", "postpone", "mistake"],
+            response: "📌 **CANCELLATION & REFUND MATRIX:** Rescheduling or altering your private dining sequence is entirely free up to 48 hours prior to your scheduled time slot. Cancellations within the 48-hour boundary route directly to an automated luxury house vault credit token."
+        },
+        {
+            keywords: ["allergy", "allergic", "nuts", "gluten", "vegan", "vegetarian", "ingredient", "halal", "healthy"],
+            response: "🌱 **DIETARY SAFEGUARDS:** Our kitchen enforces rigorous separation protocols. If you have allergy requirements or strict lifestyle parameters, simply type your notes explicitly inside the additional preparation customizations text box on your cart form."
+        },
+
+        /* ---------------- CATEGORY C: CASUAL SMALL TALK & GREETINGS ---------------- */
+        {
+            keywords: ["hello", "hi", "hey", "greetings", "good morning", "good evening", "yo", "sup"],
+            response: "👋 **GREETINGS VIP SELECTION:** Welcome to Khan's Omni-Intelligence hub! I am ready to parse your requests. Ask me anything about our signature menu items, pricing matrices, booking policies, or let me know if you want to chat about general topics!"
+        },
+        {
+            keywords: ["thank you", "thanks", "awesome", "perfect", "great", "helped", "cool"],
+            response: "✨ **AT YOUR SERVICE:** It is my absolute pleasure to maintain your luxury user experience loop! If your operational parameters are fully settled, make sure to execute your secure checkout pass inside the shopping cart form to lock in your priority cooking slot."
         }
     ];
 
-            function processOmniIntelQuery() {
-                const inputField = document.getElementById('panel-user-input');
-                const stream = document.getElementById('panel-msg-stream');
-                const rawQuery = inputField.value.trim();
-                if (!rawQuery) return;
+    function processOmniIntelQuery() {
+        const inputField = document.getElementById('panel-user-input');
+        const stream = document.getElementById('panel-msg-stream');
+        const rawQuery = inputField.value.trim();
+        if (!rawQuery) return;
 
-                // Render User bubble
-                stream.innerHTML += `
-                    <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
-                        ${rawQuery}
-                    </div>
-                `;
+        // Render User chat bubble
+        stream.innerHTML += `
+            <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
+                ${rawQuery}
+            </div>
+        `;
 
-                inputField.value = "";
-                stream.scrollTop = stream.scrollHeight;
+        inputField.value = "";
+        stream.scrollTop = stream.scrollHeight;
 
-                setTimeout(() => {
-                    let finalAnswer = null;
-                    const cleanQuery = rawQuery.toLowerCase();
+        setTimeout(() => {
+            let finalAnswer = null;
+            const cleanQuery = rawQuery.toLowerCase();
 
-                    // 🗺️ DETECT CULINARY OR RESTAURANT PACKAGES FIRST
-                    if (cleanQuery.includes("korma") || cleanQuery.includes("spice")) {
-                        finalAnswer = masterCulinaryDatabase.korma;
-                    } else if (cleanQuery.includes("platter") || cleanQuery.includes("royal")) {
-                        finalAnswer = masterCulinaryDatabase.platter;
-                    } else if (cleanQuery.includes("chaat") || cleanQuery.includes("sweet")) {
-                        finalAnswer = masterCulinaryDatabase.chaat;
-                    } else if (cleanQuery.includes("dahl") || cleanQuery.includes("lentil")) {
-                        finalAnswer = masterCulinaryDatabase.dahl;
-                    } else if (cleanQuery.includes("fee") || cleanQuery.includes("tax") || cleanQuery.includes("charge") || cleanQuery.includes("cost") || cleanQuery.includes("price")) {
-                        finalAnswer = masterCulinaryDatabase.billing;
-                    } else if (cleanQuery.includes("vip") || cleanQuery.includes("member") || cleanQuery.includes("club") || cleanQuery.includes("card")) {
-                        finalAnswer = masterCulinaryDatabase.vip;
-                    } else if (cleanQuery.includes("book") || cleanQuery.includes("reserve") || cleanQuery.includes("room") || cleanQuery.includes("table")) {
-                        finalAnswer = masterCulinaryDatabase.booking;
-                    } else if (cleanQuery.includes("cancel") || cleanQuery.includes("refund") || cleanQuery.includes("return") || cleanQuery.includes("change")) {
-                        finalAnswer = masterCulinaryDatabase.cancel;
-                    }
+            // 🔍 PARSE THROUGH THE MASTER DICTIONARY KEYWORDS ARRAY
+            for (let entry of masterKnowledgeCatalog) {
+                if (entry.keywords.some(keyword => cleanQuery.includes(keyword))) {
+                    finalAnswer = entry.response;
+                    break;
+                }
+            }
 
-                    // 🌐 LINGUISTIC FALLBACK MATRIX FOR NON-RESTAURANT TOPICS
-                    if (!finalAnswer) {
-                        finalAnswer = `🌐 **GLOBAL INTELLIGENCE MATRIX ENGINE:** I have processed your inquiry about "${rawQuery}". As Khan's Omni-Intelligence Butler, I can decipher that this is an external general query topic! While my server tracks general knowledge parameters, let me remind you that the real magic is happening here in our luxury dining hall. If you place your gourmet menu selection through our Shopping Cart loop, our physical concierge desk will gladly converse with you about any topic in the universe live over a hot plate of Heritage Korma!`;
-                    }
+            // 🌐 GENERAL LINGUISTIC FALLBACK MATRIX FOR NON-RESTAURANT TOPICS
+            if (!finalAnswer) {
+                finalAnswer = `🌐 **GLOBAL INTELLIGENCE MATRIX ENGINE:** I have processed your inquiry about "${rawQuery}". As Khan's Omni-Intelligence Butler, I recognize this falls under external general knowledge parameters! While I focus on running our luxury dining data registers, I can tell you that the best ideas are born over an amazing dinner. Head over to our Shopping Cart loop, lock in a hot plate of Heritage Korma, and our physical concierge desk will gladly chat with you about any topic in the universe live at your table!`;
+            }
 
-                    // Render Bot response bubble
-                    stream.innerHTML += `
-                        <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-                            ${finalAnswer}
-                        </div>
+            // Render Bot response bubble cleanly
+            stream.innerHTML += `
+                <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
+                    ${finalAnswer}
+                </div>
             `;
             stream.scrollTop = stream.scrollHeight;
         }, 400);
