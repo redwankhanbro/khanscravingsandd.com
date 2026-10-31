@@ -199,38 +199,54 @@
             </div>
         </div>
 
-<!-- 🤖 Standalone Restaurant Panel Chatbot Interface -->
-<div id="khans-embedded-chatbot-panel" style="background: #121212; border: 2px solid #FF6B01; border-radius: 12px; padding: 30px; margin-top: 20px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; max-width: 600px; margin-left: auto; margin-right: auto;">
+<!-- 🤖 DEPLOYABLE RESTAURANT PANEL CHATBOT (INTELLIGENT MATRIX CORE) -->
+<div id="khans-extracted-chatbot-panel" style="background: #121212; border: 2px solid #FF6B01; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; max-width: 600px; margin: 20px auto;">
     <div style="display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px;">
-        <div style="font-size: 28px; color: #FF6B01;">🤖</div>
+        <div style="font-size: 28px; color: #FF6B01;">👑</div>
         <div>
-            <h3 style="margin: 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Khan's Interactive AI Butler</h3>
-            <span style="font-size: 11px; color: #2ECC71; display: flex; align-items: center; gap: 4px;">● Restaurant Panel Concierge Online</span>
+            <h3 style="margin: 0; color: white; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Khan's Advanced AI Butler</h3>
+            <span style="font-size: 11px; color: #2ECC71; display: flex; align-items: center; gap: 4px;">● High-Signal Resolution Loop Online</span>
         </div>
     </div>
 
-    <!-- Chat Stream Area Container -->
-    <div id="panel-msg-stream" style="height: 300px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0A0A0A; border: 1px solid #222; border-radius: 6px; margin-bottom: 15px;">
+    <!-- Chat Output Stream Matrix -->
+    <div id="panel-msg-stream" style="height: 320px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0A0A0A; border: 1px solid #222; border-radius: 6px; margin-bottom: 15px;">
         <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
-            Welcome VIP Guest. I am your automated culinary guide. Ask me any questions about our seat pricing, custom event limits, VIP club code configuration, or booking methods!
+            Greetings VIP Guest. My advanced diagnostic matrix is fully prepared. Inquire about complex event logistics, ingredient profiles, refunds, minimum allocations, or private bookings.
         </div>
     </div>
 
-    <!-- Interactive Console Input Row Form -->
+    <!-- Interactive Input Box Row -->
     <form onsubmit="event.preventDefault(); processPanelChatbotQuery();" style="display: flex; gap: 10px; margin: 0; padding: 0; box-sizing: border-box;">
-        <input type="text" id="panel-user-input" required placeholder="Type your reservation query or ask about packages here..." style="flex: 1; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: white; font-size: 13px; outline: none; transition: 0.2s;" onfocus="this.style.borderColor='#FF6B01'" onblur="this.style.borderColor='#333'">
-        <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 0 25px; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.2s;">Inquire</button>
+        <input type="text" id="panel-user-input" required placeholder="Ask a difficult logistical or kitchen question..." style="flex: 1; padding: 12px; background: #050505; border: 1px solid #333; border-radius: 6px; color: white; font-size: 13px; outline: none;" onfocus="this.style.borderColor='#FF6B01'" onblur="this.style.borderColor='#333'">
+        <button type="submit" style="background: #FF6B01; color: white; border: none; padding: 0 25px; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer;">Inquire</button>
     </form>
 </div>
 
-<!-- ⚙️ BOT ENGINE FUZZY EXTENSION MATRICES -->
+<!-- ⚙️ ADVANCED RESOLUTION LOGIC AND STRINGS EXTRACTION MOTOR -->
 <script>
-    const panelKnowledgeVault = [
-        { keywords: ["price", "cost", "spend", "rate", "fee", "money", "expensive", "dollar", "payment", "pay"], response: "Our private dining rooms operate on a minimum spending allocation metric baseline starting at $500 for evening configurations, covering all custom food preparation loops and butler service tiers." },
-        { keywords: ["vip", "member", "club", "benefit", "privilege", "card", "cardholder", "pass", "reward"], response: "Active Club Members and VIP cardholders unlock exclusive additional benefits on every individual product checkout processing run, dispatched and detailed directly to you via mail updates." },
-        { keywords: ["menu", "food", "dish", "korma", "platter", "chaat", "dahl", "rice", "dessert", "eat", "dinner", "cravings"], response: "Your private gathering can choose from our complete culinary trilogy: Heritage Spice Korma, The Royal Regional Platter, and Fiery Sweet Street Chaat, alongside custom premium desserts and drink pairing tiers." },
-        { keywords: ["capacity", "people", "seat", "guest", "size", "many", "room", "table", "chair", "crowd", "space"], response: "The main imperial dining vault securely accommodates from 2 to 35 VIP guests symmetrically. For larger corporate galas or wedding receptions, layout arrays can stretch up to 50 delegates safely." },
-        { keywords: ["book", "reserve", "rent", "private", "schedule", "order", "checkout", "buy", "date", "time"], response: "To lock in your calendar allocation queue, select your dishes inside your Shopping Cart matrix, populate your fulfillment coordinates on the form, and execute the checkout pass!" }
+    // 🧠 Complex Matrix Catalog Handling High-Signal/Difficult Customer Questions
+    const advancedDifficultKnowledgeVault = [
+        {
+            keywords: ["cancel", "refund", "return", "money back", "change date", "postpone"],
+            response: "📌 **RESERVATION ALTERATION POLICY:** To protect our custom curation sourcing streams, private dining allocations can be altered or rescheduled up to 48 hours prior to your slot sequence. Cancellations within 48 hours route directly to a luxury house vault credit token issued automatically via mail."
+        },
+        {
+            keywords: ["allergy", "allergic", "nuts", "gluten", "vegan", "vegetarian", "ingredient", "halal"],
+            response: "🌱 **DIETARY AND INGREDIENT SAFEGUARDS:** Our head chef verifies every single matrix run. Specify all critical health parameters, ingredient changes, or allergy profiles inside the additional details field of your Shopping Cart form before hitting checkout. The kitchen isolates preparation boards completely for verified nodes."
+        },
+        {
+            keywords: ["outside catering", "bring my own", "alcohol", "corkage", "cake", "decorate"],
+            response: "🍾 **EXTERNAL CURATION RULES:** We prohibit outside food elements to enforce strict health registries. However, a luxury corkage pass fee of $50 applies for rare celebratory vintage bottles, and we permit custom celebration cakes if pre-logged with your butler manifest."
+        },
+        {
+            keywords: ["corporate", "event", "wedding", "buyout", "party", "meeting", "rent whole"],
+            response: "🏢 **FULL HALL BUYOUT PROTOCOL:** For entire hall takeovers stretching up to 50 VIP delegates, please email your corporate specification matrix straight to our desk or execute a layout queue by checking out multiple signature platters inside your ledger form."
+        },
+        {
+            keywords: ["tax", "service charge", "hidden fee", "delivery cost", "extra"],
+            response: "💰 **FINANCIAL TRANSPARENCY BLOCK:** There are zero hidden costs. On your final checkout overview page (`finals and- order.html`), you can clearly track your exact item subtotal, a flat $5.00 delivery fee (waived if set to vault pickup), and a flat 5% gourmet handling service fee."
+        }
     ];
 
     function processPanelChatbotQuery() {
@@ -239,6 +255,7 @@
         const rawQuery = inputField.value.trim();
         if (!rawQuery) return;
 
+        // Render User Query Bubble
         stream.innerHTML += `
             <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
                 ${rawQuery}
@@ -252,19 +269,20 @@
             let matchedResponse = null;
             const lowerQuery = rawQuery.toLowerCase();
 
-            // ⚡ ELASTIC INTENT MATRICES SCANNING FOR ANY PARTIAL CONNECTIONS
-            for (let entry of panelKnowledgeVault) {
+            // 🔍 Advanced Tokenized Keyword Extraction Scanning Loop
+            for (let entry of advancedDifficultKnowledgeVault) {
                 if (entry.keywords.some(keyword => lowerQuery.includes(keyword))) {
                     matchedResponse = entry.response;
                     break;
                 }
             }
 
-            // Fallback Engine if no matching intent keywords are parsed at all
+            // High-Utility Fallback Matrix for edge cases or compound sentences
             if (!matchedResponse) {
-                matchedResponse = `Thank you for inquiring about "${rawQuery}". Your request parameters have been logged. For direct scheduling configuration anomalies or special custom packages, our premium concierge manager will reach out straight to your verified email dashboard link once your order checkout pass executes!`;
+                matchedResponse = `📝 **PARAMETER LOGGED:** Your complex query ("${rawQuery}") contains unique administrative metrics. To resolve this parameter instantly, fill out your customer info lines inside the checkout form layout panel, type this specific request directly inside the Customizations text box, and complete the order pass. Our concierge desk maps out custom solutions upon order execution!`;
             }
 
+            // Render AI Butler Bubble Natively
             stream.innerHTML += `
                 <div style="align-self: flex-start; max-width: 85%; background: #161616; border-left: 3px solid #FF6B01; padding: 10px; border-radius: 0 8px 8px 8px; font-size: 13px; color: #E0E0E0; line-height: 1.5;">
                     ${matchedResponse}
