@@ -257,7 +257,7 @@
         },
         {
             keywords: ["outside catering", "bring my own", "alcohol", "corkage", "cake", "decorate"],
-            response: "🍾 **EXTERNAL CURATION RULES:** We prohibit outside food elements to enforce strict health registries. However, a luxury corkage pass fee of $50 applies for rare celebratory vintage bottles, and we permit custom celebration cakes if pre-logged with your butler manifest."
+            response: "🍾 **EXTERNAL CURATION RULES:** We prohibit outside food elements to enforce strict health registries. However, a luxury corkage pass fee of $50 applies for rare celebratory vintage bottles, and we permit custom celebration cakes if pre-logged with your butler manifest."     
         },
         {
             keywords: ["corporate", "event", "wedding", "buyout", "party", "meeting", "rent whole"],
@@ -295,6 +295,28 @@
                     matchedResponse = entry.response;
                     break;
                 }
+                
+            // 🧠 ADVANCED ALGORITHMIC ROUTING ENGINE
+            if (cleanQuery.includes("korma") || cleanQuery.includes("spice")) {
+                serverOutput = khanServerDatabase.korma;
+            } else if (cleanQuery.includes("platter") || cleanQuery.includes("royal")) {
+                serverOutput = khanServerDatabase.platter;
+            } else if (cleanQuery.includes("chaat") || cleanQuery.includes("sweet")) {
+                serverOutput = khanServerDatabase.chaat;
+            } else if (cleanQuery.includes("dahl") || cleanQuery.includes("lentil")) {
+                serverOutput = khanServerDatabase.dahl;
+            } else if (cleanQuery.includes("menu") || cleanQuery.includes("eat") || cleanQuery.includes("food") || cleanQuery.includes("dish")) {
+                serverOutput = khanServerDatabase.menu_summary;
+            } else if (cleanQuery.includes("fee") || cleanQuery.includes("tax") || cleanQuery.includes("charge") || cleanQuery.includes("cost") || cleanQuery.includes("price")) {
+                serverOutput = khanServerDatabase.fees;
+            } else if (cleanQuery.includes("vip") || cleanQuery.includes("member") || cleanQuery.includes("club") || cleanQuery.includes("card")) {
+                serverOutput = khanServerDatabase.vip_benefits;
+            } else if (cleanQuery.includes("book") || cleanQuery.includes("reserve") || cleanQuery.includes("room") || cleanQuery.includes("table")) {
+                serverOutput = khanServerDatabase.booking;
+            } else if (cleanQuery.includes("allergy") || cleanQuery.includes("allergic") || cleanQuery.includes("vegan") || cleanQuery.includes("halal") || cleanQuery.includes("nuts")) {
+                serverOutput = khanServerDatabase.dietary;
+            } else if (cleanQuery.includes("cancel") || cleanQuery.includes("refund") || cleanQuery.includes("return") || cleanQuery.includes("change")) {
+                serverOutput = khanServerDatabase.alterations;
             }
 
             // High-Utility Fallback Matrix for edge cases or compound sentences
