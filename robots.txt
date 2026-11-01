@@ -7,15 +7,22 @@ Allow: /menu.html
 Allow: /drinks.html
 Allow: /about.html
 Allow: /shops.html
-
+Allow: /bbq.html
+Allow: /live-buffet.html
+Allow: /club.html
 
 # 🔒 Explicitly Blocked Zones (Bots are strictly prohibited from entering these)
 Disallow: /see your-cart.html
 Disallow: /see%20your-cart.html
 Disallow: /finals and- order.html
 Disallow: /finals%20and-%20order.html
-Disallow: /private-dining.html
-
+Disallow: /private-dining.html  
+Disallow: /private-fiesta.html
+Disallow: /karaoke-panel.html
+Disallow: /reserve options.html
+Disallow: /reserve%20options.html
+Disallow: /cart.html
+Disallow: /checkout.html
 
 # 🗺️ Master Index Sitemap Target
 Sitemap: https://khanscravingsanddining.com
