@@ -8,6 +8,7 @@ Allow: /drinks.html
 Allow: /about.html
 Allow: /shops.html
 
+
 # 🔒 Explicitly Blocked Zones (Bots are strictly prohibited from entering these)
 Disallow: /see your-cart.html
 Disallow: /see%20your-cart.html
