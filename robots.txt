@@ -1,1 +1,20 @@
+# 👑 Optimized Search Crawler Directives for Khan's Cravings 
+User-agent: *
 
+# 🔓 Publicly Open & Optimized Front Gates (SEO Boost)
+Allow: /index.html
+Allow: /menu.html
+Allow: /drinks.html
+Allow: /about.html
+Allow: /shops.html
+
+# 🔒 Explicitly Blocked Zones (Bots are strictly prohibited from entering these)
+Disallow: /see your-cart.html
+Disallow: /see%20your-cart.html
+Disallow: /finals and- order.html
+Disallow: /finals%20and-%20order.html
+Disallow: /private-dining.html
+
+
+# 🗺️ Master Index Sitemap Target
+Sitemap: https://khanscravingsanddining.com
