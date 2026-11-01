@@ -22,7 +22,6 @@ Disallow: /karaoke-panel.html
 Disallow: /reserve options.html
 Disallow: /reserve%20options.html
 Disallow: /cart.html
-Disallow: /checkout.html
 
 # 🗺️ Master Index Sitemap Target
 Sitemap: https://khanscravingsanddining.com
