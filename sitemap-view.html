@@ -1,1 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Sitemap</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #fff8f0;
+      color: #3a2a1a;
+      padding: 48px 20px;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #ff7a3d, #e8432e);
+      color: #fff;
+      border-radius: 20px;
+      padding: 36px 32px;
+      margin-bottom: 28px;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 8px; }
+    .count {
+      display: inline-block;
+      margin-top: 16px;
+      background: rgba(255,255,255,0.2);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .grid { display: grid; gap: 14px; }
+    .card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border: 1px solid #f1dfcc;
+      border-radius: 14px;
+      padding: 18px 22px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .15s, border-color .15s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: #ff7a3d; }
+    .page { font-weight: 700; font-size: 1.05rem; text-transform: capitalize; }
+    .url { font-size: 0.85rem; color: #9a7b60; margin-top: 4px; word-break: break-all; }
+    .date {
+      white-space: nowrap;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e8432e;
+      background: #ffeee4;
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    .msg { text-align: center; color: #9a7b60; padding: 40px 0; }
+    @media (max-width: 560px) { .card { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Sitemap</h1>
+      <p>Every page on the site, all in one place.</p>
+      <span class="count" id="count">Loading...</span>
+    </header>
+    <div class="grid" id="list"><p class="msg">Loading sitemap...</p></div>
+  </div>
 
+  <script>
+    fetch("sitemap.xml")
+      .then(res => res.text())
+      .then(text => {
+        const xml = new DOMParser().parseFromString(text, "application/xml");
+        const urls = [...xml.getElementsByTagName("url")];
+        const list = document.getElementById("list");
+        list.innerHTML = "";
+        document.getElementById("count").textContent = urls.length + " pages";
+
+        urls.forEach(u => {
+          const loc = u.getElementsByTagName("loc")[0]?.textContent.trim() || "";
+          const date = u.getElementsByTagName("lastmod")[0]?.textContent.trim() || "";
+          const file = loc.split("/").filter(Boolean).pop() || "";
+          let name = file.replace(".html", "").replace(/[-_]/g, " ");
+          if (!file.includes(".html")) name = "Home";
+
+          const card = document.createElement("a");
+          card.className = "card";
+          card.href = loc;
+          card.innerHTML =
+            '<div><div class="page"></div><div class="url"></div></div>' +
+            (date ? '<span class="date"></span>' : "");
+          card.querySelector(".page").textContent = name;
+          card.querySelector(".url").textContent = loc;
+          if (date) card.querySelector(".date").textContent = "Updated " + date;
+          list.appendChild(card);
+        });
+      })
+      .catch(() => {
+        document.getElementById("list").innerHTML =
+          '<p class="msg">Could not load the sitemap.</p>';
+      });
+  </script>
+</body>
+</html>
