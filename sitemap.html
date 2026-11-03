@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sitemap | Khan's Cravings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #fff8f0;
+      color: #3a2a1a;
+      padding: 48px 20px;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #ff7a3d, #e8432e);
+      color: #fff;
+      border-radius: 20px;
+      padding: 36px 32px;
+      margin-bottom: 28px;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 8px; }
+    .grid { display: grid; gap: 14px; }
+    .card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border: 1px solid #f1dfcc;
+      border-radius: 14px;
+      padding: 18px 22px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .15s, border-color .15s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: #ff7a3d; }
+    .page { font-weight: 700; font-size: 1.05rem; }
+    .url { font-size: 0.85rem; color: #9a7b60; margin-top: 4px; word-break: break-all; }
+    .date {
+      white-space: nowrap;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e8432e;
+      background: #ffeee4;
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    @media (max-width: 560px) { .card { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Khan's Cravings Sitemap</h1>
+      <p>Every page on the site, all in one place.</p>
+    </header>
 
+    <div class="grid">
+      <a class="card" href="./">
+        <div><div class="page">Home</div><div class="url">redwankhanbro.github.io/khanscravingsand/</div></div>
+        <span class="date">Updated 2026-11-02</span>
+      </a>
+      <a class="card" href="drinks.html">
+        <div><div class="page">Drinks</div><div class="url">/drinks.html</div></div>
+        <span class="date">Updated 2026-11-02</span>
+      </a>
+      <a class="card" href="club.html">
+        <div><div class="page">Club</div><div class="url">/club.html</div></div>
+        <span class="date">Updated 2026-11-02</span>
+      </a>
+      <a class="card" href="shops.html">
+        <div><div class="page">Shops</div><div class="url">/shops.html</div></div>
+        <span class="date">Updated 2026-11-02</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
