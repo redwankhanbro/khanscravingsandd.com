@@ -14,42 +14,83 @@
       padding: 48px 20px;
     }
     .wrap { max-width: 860px; margin: 0 auto; }
+
     header {
       background: linear-gradient(135deg, #ff7a3d, #e8432e);
       color: #fff;
       border-radius: 20px;
       padding: 36px 32px;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
-    header h1 { font-size: 2rem; margin-bottom: 8px; }
-    .count {
-      display: inline-block;
-      margin-top: 16px;
+    header h1 { font-size: 2rem; margin-bottom: 8px; text-transform: capitalize; }
+    .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .pill {
       background: rgba(255,255,255,0.2);
       padding: 6px 14px;
       border-radius: 999px;
       font-weight: 600;
       font-size: 0.9rem;
     }
+
+    h2 {
+      font-size: 1.1rem;
+      margin: 0 0 14px;
+      color: #e8432e;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    section { margin-bottom: 36px; }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      background: #fff;
+      border: 1px solid #f1dfcc;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font: inherit;
+      font-weight: 600;
+      color: #e8432e;
+      cursor: pointer;
+    }
+    .back:hover { border-color: #e8432e; }
+
+    .spotlight, .card {
+      width: 100%;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      background: #fff;
+      cursor: pointer;
+      transition: transform .15s, border-color .15s;
+    }
+    .spotlight {
+      display: block;
+      border: 2px solid #ff7a3d;
+      border-radius: 18px;
+      padding: 26px 28px;
+    }
+    .spotlight .page { font-size: 1.5rem; }
+    .spotlight .when { font-size: 1rem; margin-top: 10px; }
+
     .grid { display: grid; gap: 14px; }
     .card {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      background: #fff;
       border: 1px solid #f1dfcc;
       border-radius: 14px;
       padding: 18px 22px;
-      text-decoration: none;
-      color: inherit;
-      transition: transform .15s, border-color .15s;
     }
-    .card:hover { transform: translateY(-2px); border-color: #ff7a3d; }
+    .card:hover, .spotlight:hover { transform: translateY(-2px); border-color: #e8432e; }
+
     .page { font-weight: 700; font-size: 1.05rem; text-transform: capitalize; }
-    .url { font-size: 0.85rem; color: #9a7b60; margin-top: 4px; word-break: break-all; }
-    .date {
-      white-space: nowrap;
+    .when { color: #6b5440; font-size: 0.9rem; margin-top: 6px; }
+    .hint { color: #9a7b60; font-size: 0.8rem; margin-top: 6px; }
+    .right { text-align: right; white-space: nowrap; }
+    .ago {
+      display: inline-block;
       font-size: 0.8rem;
       font-weight: 600;
       color: #e8432e;
@@ -57,53 +98,280 @@
       padding: 6px 12px;
       border-radius: 999px;
     }
+    .new {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      background: #2dc75c;
+      padding: 3px 8px;
+      border-radius: 999px;
+      vertical-align: middle;
+    }
+
+    .boxes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .box {
+      background: #fff;
+      border: 1px solid #f1dfcc;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+    .box .num { font-size: 2rem; font-weight: 700; color: #e8432e; }
+    .box .label { font-size: 0.85rem; color: #6b5440; margin-top: 4px; }
+
+    .timeline { list-style: none; border-left: 3px solid #f8d3af; margin-left: 8px; }
+    .timeline li { position: relative; padding: 0 0 18px 24px; }
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: -9px; top: 4px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid #ff7a3d;
+    }
+    .timeline li:first-child::before { background: #ff7a3d; }
+    .timeline .t-date { font-weight: 600; }
+    .timeline .t-ago { font-size: 0.85rem; color: #9a7b60; margin-top: 2px; }
+
     .msg { text-align: center; color: #9a7b60; padding: 40px 0; }
-    @media (max-width: 560px) { .card { flex-direction: column; align-items: flex-start; } }
+    footer { text-align: center; font-size: 0.85rem; color: #9a7b60; }
+    @media (max-width: 560px) {
+      .card { flex-direction: column; align-items: flex-start; }
+      .right { text-align: left; }
+      .boxes { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1>Sitemap</h1>
-      <p>Every page on the site, all in one place.</p>
-      <span class="count" id="count">Loading...</span>
-    </header>
-    <div class="grid" id="list"><p class="msg">Loading sitemap...</p></div>
+    <div id="app"><p class="msg">Loading sitemap...</p></div>
+    <footer>Times are shown in your local time zone.</footer>
   </div>
 
   <script>
-    fetch("sitemap.xml")
-      .then(res => res.text())
-      .then(text => {
+    // Settings
+    const OWNER = "redwankhanbro";
+    const REPO = "khanscravingsand";
+    const NEW_DAYS = 7;   // "New" badge if updated within this many days
+    const HISTORY = 30;   // how many past updates to show per page
+
+    let pages = [];
+    const app = document.getElementById("app");
+
+    function el(tag, cls, text) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text !== undefined) e.textContent = text;
+      return e;
+    }
+
+    function slugOf(loc) {
+      const file = loc.split("/").filter(Boolean).pop() || "";
+      if (!file.includes(".html") || file === "index.html") return "home";
+      return file.replace(".html", "");
+    }
+
+    function filePath(loc) {
+      let path = loc.split("/" + REPO + "/")[1] || "";
+      if (path === "" || path.endsWith("/")) path += "index.html";
+      return path;
+    }
+
+    function timeAgo(date) {
+      const sec = Math.floor((Date.now() - date) / 1000);
+      const units = [["year", 31536000], ["month", 2592000], ["week", 604800],
+                     ["day", 86400], ["hour", 3600], ["minute", 60]];
+      for (const [name, size] of units) {
+        const n = Math.floor(sec / size);
+        if (n >= 1) return n + " " + name + (n > 1 ? "s" : "") + " ago";
+      }
+      return "just now";
+    }
+
+    function fullDate(date) {
+      return date.toLocaleString(undefined, {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      });
+    }
+
+    // Gets only the update TIMES from GitHub, never the content or messages
+    async function githubHistory(path) {
+      const key = "smh_" + path;
+      const cached = sessionStorage.getItem(key);
+      if (cached) return JSON.parse(cached).map(d => new Date(d));
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${OWNER}/${REPO}/commits?path=${encodeURIComponent(path)}&per_page=${HISTORY}`
+        );
+        if (!res.ok) return null;
+        const data = await res.json();
+        const dates = data.map(c => c?.commit?.committer?.date).filter(Boolean);
+        sessionStorage.setItem(key, JSON.stringify(dates));
+        return dates.map(d => new Date(d));
+      } catch { return null; }
+    }
+
+    function isNew(date) {
+      return date && (Date.now() - date) / 86400000 <= NEW_DAYS;
+    }
+
+    function buildCard(p, spotlight) {
+      const btn = el("button", spotlight ? "spotlight" : "card");
+      btn.type = "button";
+      btn.onclick = () => { location.hash = p.slug; };
+
+      const left = el("div");
+      const name = el("div", "page", p.name);
+      if (isNew(p.date)) name.appendChild(el("span", "new", "New"));
+      left.appendChild(name);
+      left.appendChild(el("div", "when",
+        p.date ? "Updated " + fullDate(p.date) : "Update time unknown"));
+      left.appendChild(el("div", "hint", "Tap to see update history"));
+      btn.appendChild(left);
+
+      if (p.date) {
+        const right = el("div", "right");
+        right.appendChild(el("span", "ago", timeAgo(p.date)));
+        btn.appendChild(right);
+      }
+      return btn;
+    }
+
+    function header(title, subtitle, pills) {
+      const h = el("header");
+      h.appendChild(el("h1", "", title));
+      h.appendChild(el("p", "", subtitle));
+      const s = el("div", "stats");
+      pills.filter(Boolean).forEach(t => s.appendChild(el("span", "pill", t)));
+      h.appendChild(s);
+      return h;
+    }
+
+    function renderList() {
+      document.title = "Sitemap";
+      app.innerHTML = "";
+      const latest = pages[0];
+      app.appendChild(header("Sitemap", "See when each page on the site was last updated.", [
+        pages.length + " pages",
+        latest?.date ? "Site last updated " + timeAgo(latest.date) : ""
+      ]));
+
+      const s1 = el("section");
+      s1.appendChild(el("h2", "", "Latest update"));
+      if (latest) s1.appendChild(buildCard(latest, true));
+      app.appendChild(s1);
+
+      const s2 = el("section");
+      s2.appendChild(el("h2", "", "All pages, newest first"));
+      const grid = el("div", "grid");
+      pages.forEach(p => grid.appendChild(buildCard(p, false)));
+      s2.appendChild(grid);
+      app.appendChild(s2);
+    }
+
+    function renderDetail(p) {
+      document.title = p.name + " | Sitemap";
+      app.innerHTML = "";
+      window.scrollTo(0, 0);
+
+      const back = el("button", "back", "Back to all pages");
+      back.type = "button";
+      back.onclick = () => { location.hash = ""; };
+      app.appendChild(back);
+
+      const count = p.dates.length;
+      const totalLabel = count >= HISTORY ? HISTORY + "+" : String(count);
+      app.appendChild(header(p.name, "Update activity for this page.", [
+        p.date ? "Last updated " + timeAgo(p.date) : "Update time unknown",
+        count ? totalLabel + " updates recorded" : ""
+      ]));
+
+      // Latest update
+      const s1 = el("section");
+      s1.appendChild(el("h2", "", "Latest update"));
+      const box = el("div", "spotlight");
+      box.style.cursor = "default";
+      const nm = el("div", "page", p.date ? fullDate(p.date) : "Unknown");
+      if (isNew(p.date)) nm.appendChild(el("span", "new", "New"));
+      box.appendChild(nm);
+      if (p.date) box.appendChild(el("div", "when", timeAgo(p.date)));
+      s1.appendChild(box);
+      app.appendChild(s1);
+
+      // Activity
+      const now = Date.now();
+      const in7 = p.dates.filter(d => now - d <= 7 * 86400000).length;
+      const in30 = p.dates.filter(d => now - d <= 30 * 86400000).length;
+      const s2 = el("section");
+      s2.appendChild(el("h2", "", "Activity"));
+      const boxes = el("div", "boxes");
+      [[in7, "Updates in last 7 days"], [in30, "Updates in last 30 days"], [totalLabel, "Total updates"]]
+        .forEach(([n, label]) => {
+          const b = el("div", "box");
+          b.appendChild(el("div", "num", String(n)));
+          b.appendChild(el("div", "label", label));
+          boxes.appendChild(b);
+        });
+      s2.appendChild(boxes);
+      app.appendChild(s2);
+
+      // Update history
+      const s3 = el("section");
+      s3.appendChild(el("h2", "", "Update history"));
+      if (p.dates.length) {
+        const ul = el("ul", "timeline");
+        p.dates.forEach(d => {
+          const li = el("li");
+          li.appendChild(el("div", "t-date", fullDate(d)));
+          li.appendChild(el("div", "t-ago", timeAgo(d)));
+          ul.appendChild(li);
+        });
+        s3.appendChild(ul);
+      } else {
+        s3.appendChild(el("p", "msg", "No update history available yet."));
+      }
+      app.appendChild(s3);
+    }
+
+    function route() {
+      const slug = decodeURIComponent(location.hash.slice(1));
+      const p = pages.find(x => x.slug === slug);
+      p ? renderDetail(p) : renderList();
+    }
+
+    async function load() {
+      try {
+        const text = await (await fetch("sitemap.xml", { cache: "no-store" })).text();
         const xml = new DOMParser().parseFromString(text, "application/xml");
         const urls = [...xml.getElementsByTagName("url")];
-        const list = document.getElementById("list");
-        list.innerHTML = "";
-        document.getElementById("count").textContent = urls.length + " pages";
 
-        urls.forEach(u => {
+        pages = await Promise.all(urls.map(async u => {
           const loc = u.getElementsByTagName("loc")[0]?.textContent.trim() || "";
-          const date = u.getElementsByTagName("lastmod")[0]?.textContent.trim() || "";
-          const file = loc.split("/").filter(Boolean).pop() || "";
-          let name = file.replace(".html", "").replace(/[-_]/g, " ");
-          if (!file.includes(".html")) name = "Home";
+          const lastmod = u.getElementsByTagName("lastmod")[0]?.textContent.trim();
+          let dates = (await githubHistory(filePath(loc))) || [];
+          if (!dates.length && lastmod) dates = [new Date(lastmod)];
+          const slug = slugOf(loc);
+          return {
+            slug,
+            name: slug === "home" ? "Home" : slug.replace(/[-_]/g, " "),
+            dates,
+            date: dates[0] || null
+          };
+        }));
 
-          const card = document.createElement("a");
-          card.className = "card";
-          card.href = loc;
-          card.innerHTML =
-            '<div><div class="page"></div><div class="url"></div></div>' +
-            (date ? '<span class="date"></span>' : "");
-          card.querySelector(".page").textContent = name;
-          card.querySelector(".url").textContent = loc;
-          if (date) card.querySelector(".date").textContent = "Updated " + date;
-          list.appendChild(card);
-        });
-      })
-      .catch(() => {
-        document.getElementById("list").innerHTML =
-          '<p class="msg">Could not load the sitemap.</p>';
-      });
+        pages.sort((a, b) => (b.date || 0) - (a.date || 0));
+        window.addEventListener("hashchange", route);
+        route();
+      } catch {
+        app.innerHTML = '<p class="msg">Could not load the sitemap.</p>';
+      }
+    }
+
+    load();
   </script>
 </body>
 </html>
