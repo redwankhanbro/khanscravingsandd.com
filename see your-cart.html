@@ -248,31 +248,93 @@
             if(activeCart.length === 0) {
                 alert("Your cart ledger is currently empty!");
                 return;
-            }
 
-            let subtotal = 0;
-            activeCart.forEach(item => subtotal += parseFloat(item.price) * (item.quantity || 1));
-            
-            const selectedMethod = document.querySelector('input[name="pay-method"]:checked').value;
-            const mode = document.getElementById('cust-fulfillment-mode').value;
+  // ---- Read REAL form values (your actual IDs) ----
+  const customerName = document.getElementById('cust-name').value.trim();
+  const customerEmail = document.getElementById('cust-email').value.trim();
+  const customerPhone = document.getElementById('cust-phone').value.trim();
+  const deliveryAddress = document.getElementById('cust-location').value.trim();
+  const fulfillmentMethod = document.getElementById('cust-fulfillment-mode').value; // "Delivery" or "Pickup"
+  const productIds = document.getElementById('cust-product-ids').value;
+  const orderNotes = document.getElementById('cust-details').value.trim();
+  const paymentMethod = document.querySelector('input[name="pay-method"]:checked')?.value || "";
+  const vipCode = document.getElementById('cust-privilege-code').value.trim();
+// 🚀 PASTE THE TWO VARIABLE LINES RIGHT HERE NATIVELY!
+  const selectedMethod = document.querySelector('input[name="pay-method"]:checked')?.value || "";
+  const mode = document.getElementById('cust-fulfillment-mode').value;
+                
+  // Basic validation
+  if (!customerName || !customerEmail || !customerPhone || !deliveryAddress) {
+    alert("Please fill in name, email, phone and location.");
+    return;
+  }
+  if (!paymentMethod) {
+    alert("Please select a payment method.");
+    return;
+  }
 
-            const checkoutMeta = {
-                name: document.getElementById('cust-name').value,
-                email: document.getElementById('cust-email').value,
-                phone: document.getElementById('cust-phone').value,
-                location: document.getElementById('cust-location').value,
-                fulfillmentMode: mode,
-                ids: document.getElementById('cust-product-ids').value,
-                details: document.getElementById('cust-details').value,
-                paymentMethod: selectedMethod,
-                subtotal: subtotal.toFixed(2)
-            };
+  let subtotal = 0;
+  activeCart.forEach(item => {
+    subtotal += parseFloat(item.price || 0) * (item.quantity || 1);
+  });
 
-            localStorage.setItem('khans_active_checkout_session', JSON.stringify(checkoutMeta));
-            
-            // Safe URL-encoded routing path mapping to your preferred file title text line
-            window.location.href = "finals%20and-%20order.html";
-        }
+  // Keep your existing localStorage handoff
+  const checkoutMeta = {
+    name: customerName,
+    email: customerEmail,
+    phone: customerPhone,
+    location: deliveryAddress,
+    fulfillmentMode: fulfillmentMethod,
+    ids: productIds,
+    details: orderNotes,
+    paymentMethod: paymentMethod,
+    vipCode: vipCode,
+    subtotal: subtotal.toFixed(2)
+  };
+  localStorage.setItem('khans_active_checkout_session', JSON.stringify(checkoutMeta));
+
+  // ---- REAL cloud write (no fake defaults) ----
+  const orderPayload = {
+    customerName: customerName,
+    customerEmail: customerEmail,
+    customerPhone: customerPhone,
+    deliveryAddress: deliveryAddress,          // from #cust-location
+    fulfillmentMethod: fulfillmentMethod,      // "Delivery" or "Pickup"
+    paymentMethod: paymentMethod,              // exact radio value
+    vipCode: vipCode || null,
+    productIds: productIds,
+    orderNotes: orderNotes,
+    items: activeCart,                         // full cart
+    subtotal: Number(subtotal.toFixed(2)),
+    orderStatus: "Reviewed & Active",          // real submitted status
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+    sessionSource: "see your-cart.html"
+  };
+
+  // If you already started an Active session earlier, update it; otherwise create new
+  const sessionId = sessionStorage.getItem("khan_session_id");
+
+  const writePromise = sessionId
+    ? db.collection("imperial_orders").doc(sessionId).update(orderPayload)
+    : db.collection("imperial_orders").add(orderPayload);
+
+  writePromise
+    .then((ref) => {
+      const id = sessionId || ref.id;
+      console.log("Order saved:", id);
+      sessionStorage.removeItem("khan_session_id");
+      // optional: clear cart after successful save
+      // localStorage.removeItem('khans_cart_vault');
+      window.location.href = "finals%20and-%20order.html";
+    })
+    .catch((err) => {
+      console.error("Firebase write failed:", err);
+      alert("Could not save order to cloud. Please try again.");
+      // Still allow local handoff if you want:
+      // window.location.href = "finals%20and-%20order.html";
+    });
+}          
 
         window.onload = renderSelectionLedger;
     </script>
