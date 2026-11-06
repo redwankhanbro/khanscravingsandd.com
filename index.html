@@ -487,6 +487,233 @@
             // Fire an elegant alert notification block confirming capture success loop parameters
             alert(`🎉 ${productName} [ID: ${productId}] has been appended to your select bin ledger!`);
         }
+
+       <!-- ===================== KHAN INDEX.HTML BOTTOM SCRIPTS ===================== -->
+<!-- Keep any existing scripts above this (e.g. app-core.js) -->
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // ========== PASTE YOUR REAL FIREBASE CONFIG ==========
+  const firebaseConfig = {
+    apiKey: "YOUR_REAL_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+  const trackingDB = db; // same database
+
+  // ========== TRAFFIC TRACKER ==========
+  function getSessionId() {
+    let id = sessionStorage.getItem("khan_traffic_session");
+    if (!id) {
+      id = "SESSION-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9);
+      sessionStorage.setItem("khan_traffic_session", id);
+    }
+    return id;
+  }
+
+  // Auto page view for index.html
+  (function logPageView() {
+    const page = window.location.pathname.split("/").pop() || "index.html";
+    trackingDB.collection("live_traffic_ledger").add({
+      filePath: "/" + decodeURIComponent(page),
+      fullUrl: window.location.href,
+      userAction: "page_view",
+      sessionHash: getSessionId(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      userAgent: navigator.userAgent.slice(0, 120)
+    }).catch(err => console.error("Traffic log failed:", err));
+  })();
+
+  // Call from buttons: onclick="logUserAction('Clicked Menu Hub')"
+  function logUserAction(actionDescription) {
+    const page = window.location.pathname.split("/").pop() || "index.html";
+    trackingDB.collection("live_traffic_ledger").add({
+      filePath: "/" + decodeURIComponent(page),
+      userAction: actionDescription,
+      sessionHash: getSessionId(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(err => console.error("Action log failed:", err));
+  }
+
+  // ========== ADMIN PANEL (open with #khanadmin) ==========
+  const SECRET_ADMIN_HASH = "khanadmin";
+
+  function runGatewayAuthorizationCheck() {
+    const hash = window.location.hash.substring(1);
+    const overlay = document.getElementById("khans-secure-gateway-overlay");
+    const authGate = document.getElementById("admin-auth-gate");
+    const workspace = document.getElementById("true-admin-workspace");
+    if (!overlay) return;
+
+    if (hash === SECRET_ADMIN_HASH) {
+      overlay.classList.remove("hidden");
+      overlay.style.display = "flex";
+      if (auth.currentUser) {
+        authGate.classList.add("hidden");
+        workspace.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+        switchMainframeSection("orders");
+      } else {
+        authGate.classList.remove("hidden");
+        workspace.classList.add("hidden");
+      }
+    } else {
+      overlay.classList.add("hidden");
+      overlay.style.display = "none";
+      document.body.style.overflow = "";
+    }
+  }
+
+  function executeMainframeAuthentication() {
+    const email = document.getElementById("auth-email").value.trim();
+    const password = document.getElementById("auth-password").value;
+    const errLog = document.getElementById("auth-error-log");
+    errLog.innerText = "Authorizing...";
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        errLog.innerText = "";
+        runGatewayAuthorizationCheck();
+      })
+      .catch(err => {
+        errLog.innerText = "ACCESS REJECTED: " + err.message;
+      });
+  }
+
+  function terminateAdminSession() {
+    auth.signOut().then(() => {
+      window.location.hash = "";
+      window.location.reload();
+    });
+  }
+
+  function switchMainframeSection(targetSection) {
+    const board = document.getElementById("mainframe-data-board");
+    const statusLog = document.getElementById("mainframe-status-log");
+    if (!board) return;
+
+    board.innerHTML = '<div style="color:#888;text-align:center;padding:40px;">Loading...</div>';
+
+    if (targetSection === "orders") {
+      statusLog.innerText = "[LEDGER]: Loading imperial_orders...";
+      db.collection("imperial_orders").orderBy("timestamp", "desc").limit(50).get()
+        .then(snap => {
+          if (snap.empty) {
+            board.innerHTML = '<p style="color:#666;text-align:center;">No orders yet.</p>';
+            return;
+          }
+          let html = '<h3 style="color:#fff;font-size:14px;">Orders / Sessions</h3><table style="width:100%;font-size:12px;border-collapse:collapse;">';
+          html += '<tr style="color:#888;text-align:left;"><th style="padding:8px;">ID</th><th>Name</th><th>Status</th><th>Payment</th><th>Total</th></tr>';
+          snap.forEach(doc => {
+            const d = doc.data();
+            const st = d.orderStatus || "Unknown";
+            html += `<tr style="border-bottom:1px solid #222;">
+              <td style="padding:8px;color:#FF6B01;">${doc.id.slice(0,8)}</td>
+              <td>${d.customerName || "—"}</td>
+              <td>${st}</td>
+              <td>${d.paymentMethod || "—"}</td>
+              <td>$${parseFloat(d.subtotal || 0).toFixed(2)}</td>
+            </tr>`;
+          });
+          html += "</table>";
+          board.innerHTML = html;
+          statusLog.innerText = `[LEDGER]: ${snap.size} order(s).`;
+        })
+        .catch(e => {
+          board.innerHTML = `<p style="color:#ff6464;">${e.message}</p>`;
+        });
+    } else if (targetSection === "traffic") {
+      statusLog.innerText = "[LEDGER]: Loading live_traffic_ledger...";
+      db.collection("live_traffic_ledger").orderBy("timestamp", "desc").limit(100).get()
+        .then(snap => {
+          if (snap.empty) {
+            board.innerHTML = '<p style="color:#666;text-align:center;">No traffic logs yet.</p>';
+            return;
+          }
+          let html = '<h3 style="color:#fff;font-size:14px;">Page views & actions</h3>';
+          snap.forEach(doc => {
+            const d = doc.data();
+            html += `<div style="background:#111;border:1px solid #222;padding:10px;margin-bottom:8px;border-radius:6px;font-size:12px;">
+              <strong style="color:#FF6B01;">${d.filePath || "—"}</strong>
+              — ${d.userAction || "—"}
+              <span style="color:#666;"> (${d.sessionHash || ""})</span>
+            </div>`;
+          });
+          board.innerHTML = html;
+          statusLog.innerText = `[LEDGER]: ${snap.size} traffic event(s).`;
+        })
+        .catch(e => {
+          board.innerHTML = `<p style="color:#ff6464;">${e.message}</p>`;
+        });
+    } else if (targetSection === "checkouts") {
+      switchMainframeSection("orders"); // same data for now
+    } else if (targetSection === "cache") {
+      board.innerHTML = `
+        <p style="color:#aaa;">Clear this browser's local storage / session</p>
+        <button onclick="localStorage.clear();sessionStorage.clear();alert('Cleared');location.reload();"
+          style="background:#ff6464;color:#fff;border:none;padding:12px 20px;border-radius:6px;cursor:pointer;">
+          Clear local caches
+        </button>`;
+      statusLog.innerText = "[LOCAL]: Cache tools ready.";
+    }
+  }
+
+  window.addEventListener("hashchange", runGatewayAuthorizationCheck);
+  window.addEventListener("DOMContentLoaded", runGatewayAuthorizationCheck);
+  auth.onAuthStateChanged(() => {
+    if (location.hash.substring(1) === SECRET_ADMIN_HASH) runGatewayAuthorizationCheck();
+  });
+
+<!-- Admin overlay UI (hidden until #khanadmin) -->
+<div id="khans-secure-gateway-overlay" class="hidden" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0A0A0A;z-index:1000000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div id="admin-auth-gate" class="hidden" style="width:100%;max-width:420px;background:#121212;border:2px solid #FF6B01;border-radius:12px;padding:35px;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <span style="font-size:40px;">🔒</span>
+      <h3 style="color:#fff;margin:10px 0 5px;">Admin Access</h3>
+    </div>
+    <form onsubmit="event.preventDefault();executeMainframeAuthentication();" style="display:flex;flex-direction:column;gap:12px;">
+      <input type="email" id="auth-email" required placeholder="admin@email.com" style="padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:#fff;">
+      <input type="password" id="auth-password" required placeholder="Password" style="padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:#fff;">
+      <button type="submit" style="background:#FF6B01;color:#fff;border:none;padding:12px;border-radius:6px;font-weight:bold;cursor:pointer;">Login</button>
+    </form>
+    <div id="auth-error-log" style="color:#ff6464;font-size:12px;margin-top:12px;text-align:center;"></div>
+  </div>
+
+  <div id="true-admin-workspace" class="hidden" style="display:none;width:100%;max-width:1100px;height:90vh;background:#121212;border:2px solid #FF6B01;border-radius:16px;padding:25px;flex-direction:column;color:#E0E0E0;box-sizing:border-box;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;border-bottom:1px solid #222;padding-bottom:12px;">
+      <h3 style="margin:0;color:#fff;">Khan's Command Panel</h3>
+      <button onclick="terminateAdminSession();" style="background:none;border:1px solid #ff6464;color:#ff6464;padding:6px 14px;border-radius:999px;cursor:pointer;">Disconnect</button>
+    </div>
+    <div style="display:grid;grid-template-columns:220px 1fr;gap:16px;flex:1;min-height:0;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="adm-tab-btn" onclick="switchMainframeSection('orders')" style="text-align:left;padding:12px;background:#1c0e02;border:1px solid #FF6B01;color:#FF6B01;border-radius:6px;cursor:pointer;">Orders</button>
+        <button class="adm-tab-btn" onclick="switchMainframeSection('traffic')" style="text-align:left;padding:12px;background:#111;border:1px solid #222;color:#aaa;border-radius:6px;cursor:pointer;">Traffic</button>
+        <button class="adm-tab-btn" onclick="switchMainframeSection('cache')" style="text-align:left;padding:12px;background:#111;border:1px solid #222;color:#aaa;border-radius:6px;cursor:pointer;">Cache</button>
+      </div>
+      <div id="mainframe-data-board" style="background:#0A0A0A;border:1px solid #222;border-radius:10px;padding:16px;overflow:auto;"></div>
+    </div>
+    <div id="mainframe-status-log" style="margin-top:12px;font-size:11px;color:#888;font-family:monospace;">Ready.</div>
+  </div>
+</div>
+
+<style>
+  .hidden { display: none !important; }
+  #khans-secure-gateway-overlay:not(.hidden) { display: flex !important; }
+  #true-admin-workspace:not(.hidden) { display: flex !important; }
+</style>
+ 
     </script>
 </body>
 </html>
