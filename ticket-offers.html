@@ -309,5 +309,62 @@
             document.getElementById('modal-details-block').style.display = "none";
         }
     </script>
+
+ <!-- Real Firebase SDKs (not gstatic.com) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // Use YOUR real config (same as orders admin)
+  const firebaseConfig = {
+    apiKey: "YOUR_REAL_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const trackingDB = firebase.firestore();
+
+  // Stable session for this browser tab (survives page navigation)
+  function getSessionId() {
+    let id = sessionStorage.getItem("khan_traffic_session");
+    if (!id) {
+      id = "SESSION-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9);
+      sessionStorage.setItem("khan_traffic_session", id);
+    }
+    return id;
+  }
+
+  /** 1. Automatic page view */
+  (function logPageView() {
+    const page = window.location.pathname.split("/").pop() || "index.html";
+
+    trackingDB.collection("live_traffic_ledger").add({
+      filePath: "/" + page,
+      fullUrl: window.location.href,
+      userAction: "page_view",
+      sessionHash: getSessionId(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      userAgent: navigator.userAgent.slice(0, 120)
+    }).catch(err => console.error("Traffic log failed:", err));
+  })();
+
+  /** 2. Manual click / action logger */
+  function logUserAction(actionDescription) {
+    const page = window.location.pathname.split("/").pop() || "index.html";
+
+    trackingDB.collection("live_traffic_ledger").add({
+      filePath: "/" + page,
+      userAction: actionDescription,
+      sessionHash: getSessionId(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(err => console.error("Action log failed:", err));
+  }
+</script>               
 </body>
 </html> 
