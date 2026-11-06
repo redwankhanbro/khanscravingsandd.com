@@ -336,7 +336,423 @@
     });
 }          
 
-        window.onload = renderSelectionLedger;
+        window.onload = renderSelectionLedger; 
     </script>
+     <!-- Firebase Compat SDKs (working versions) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<!-- 🔒 ADMIN OVERLAY (your original UI kept) -->
+<div id="khans-secure-gateway-overlay" class="hidden" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0A0A0A;z-index:1000000;font-family:'Segoe UI',Arial,sans-serif;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <!-- A) Login form -->
+  <div id="admin-auth-gate" class="hidden" style="width:100%;max-width:420px;background:#121212;border:2px solid #FF6B01;border-radius:12px;padding:35px;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+    <div style="text-align:center;margin-bottom:25px;">
+      <span style="font-size:40px;">🔒</span>
+      <h3 style="margin:10px 0 5px 0;color:white;text-transform:uppercase;font-size:16px;letter-spacing:1px;">Mainframe Cryptographic Access</h3>
+      <p style="color:#666;font-size:12px;margin:0;">Authorized Admin Terminal Verification Required</p>
+    </div>
+    <form onsubmit="event.preventDefault(); executeMainframeAuthentication();" style="display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <label style="display:block;color:#888;font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:6px;">Secure Operator Identity</label>
+        <input type="email" id="auth-email" required placeholder="admin@khanscravingsanddining.com" style="width:100%;padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:white;font-size:13px;outline:none;border-left:2px solid #FF6B01;">
+      </div>
+      <div>
+        <label style="display:block;color:#888;font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:6px;">Cryptographic Key Cipher</label>
+        <input type="password" id="auth-password" required placeholder="••••••••" style="width:100%;padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:white;font-size:13px;outline:none;border-left:2px solid #FF6B01;">
+      </div>
+      <button type="submit" style="background:#FF6B01;color:white;border:none;padding:12px;border-radius:6px;font-weight:bold;text-transform:uppercase;font-size:12px;cursor:pointer;margin-top:10px;">Verify Credentials</button>
+    </form>
+    <div id="auth-error-log" style="color:#ff6464;font-size:12px;margin-top:15px;text-align:center;font-weight:600;"></div>
+  </div>
+
+  <!-- B) Admin workspace -->
+  <div id="true-admin-workspace" class="hidden" style="width:100%;max-width:1100px;height:90vh;background:#121212;border:2px solid #FF6B01;border-radius:16px;padding:25px;box-shadow:0 15px 50px rgba(0,0,0,0.7);display:flex;flex-direction:column;justify-content:space-between;color:#E0E0E0;">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;padding-bottom:15px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:28px;color:#FF6B01;">👑</span>
+        <div>
+          <h3 style="margin:0;color:white;font-size:18px;text-transform:uppercase;letter-spacing:0.5px;">Khan's Cloud Central Command Panel</h3>
+          <span style="font-size:11px;color:#2ECC71;display:flex;align-items:center;gap:4px;">● Firebase Cloud Instance Synchronized</span>
+        </div>
+      </div>
+      <button onclick="terminateAdminSession();" style="background:none;border:1px solid #ff6464;color:#ff6464;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:bold;cursor:pointer;">Disconnect Terminal</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;flex-grow:1;min-height:0;margin-bottom:20px;">
+      <div style="background:#0A0A0A;border:1px solid #222;border-radius:10px;padding:15px;display:flex;flex-direction:column;gap:8px;">
+        <h4 style="font-size:11px;text-transform:uppercase;color:#666;letter-spacing:1px;margin-bottom:8px;border-bottom:1px solid #1a1a1a;padding-bottom:4px;">Cloud Databases</h4>
+        <button class="adm-tab-btn active" onclick="switchMainframeSection('orders')" style="text-align:left;width:100%;background:#1c0e02;border:1px solid #FF6B01;color:#FF6B01;padding:12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">📋 Fulfillment Ledgers</button>
+        <button class="adm-tab-btn" onclick="switchMainframeSection('checkouts')" style="text-align:left;width:100%;background:#111;border:1px solid #222;color:#aaa;padding:12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">💰 Checkout Data States</button>
+        <button class="adm-tab-btn" onclick="switchMainframeSection('traffic')" style="text-align:left;width:100%;background:#111;border:1px solid #222;color:#aaa;padding:12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">💳 Payment Selections</button>
+        <h4 style="font-size:11px;text-transform:uppercase;color:#666;letter-spacing:1px;margin-top:15px;margin-bottom:8px;border-bottom:1px solid #1a1a1a;padding-bottom:4px;">Optimization Control</h4>
+        <button class="adm-tab-btn" onclick="switchMainframeSection('cache')" style="text-align:left;width:100%;background:#111;border:1px solid #222;color:#aaa;padding:12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">⚡ Browser Cache Pools</button>
+      </div>
+      <div id="mainframe-data-board" style="background:#0A0A0A;border:1px solid #222;border-radius:10px;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:15px;min-height:0;"></div>
+    </div>
+    <div id="mainframe-status-log" style="background:#050505;border:1px solid #1a1a1a;font-family:Consolas,monospace;font-size:11px;color:#888;padding:10px;border-radius:6px;">[MAIN FRAME]: Server data connection status: Awaiting validation.</div>
+  </div>
+</div>
+
+<script>
+  // Change this hash if you want (still visible in source — not real security)
+  const SECRET_ADMIN_HASH = "khanadmin";
+
+  // ⚠️ PASTE YOUR REAL FIREBASE CONFIG FROM THE CONSOLE HERE
+  const firebaseConfig = {
+    apiKey: "AIzaSy...",                    // real key
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef..."
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+    
+// Stable session for this browser tab (survives page navigation)
+  function getSessionId() {
+    let id = sessionStorage.getItem("khan_traffic_session");
+    if (!id) {
+      id = "SESSION-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9);
+      sessionStorage.setItem("khan_traffic_session", id);
+    }
+    return id;
+  }
+
+  /** 1. Automatic page view */
+  (function logPageView() {
+    const page = window.location.pathname.split("/").pop() || "index.html";
+
+    trackingDB.collection("live_traffic_ledger").add({
+      filePath: "/" + page,
+      fullUrl: window.location.href,
+      userAction: "page_view",
+      sessionHash: getSessionId(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      userAgent: navigator.userAgent.slice(0, 120)
+    }).catch(err => console.error("Traffic log failed:", err));
+  })();
+
+  /** 2. Manual click / action logger */
+  function logUserAction(actionDescription) {
+    const page = window.location.pathname.split("/").pop() || "index.html";
+
+    trackingDB.collection("live_traffic_ledger").add({
+      filePath: "/" + page,
+      userAction: actionDescription,
+      sessionHash: getSessionId(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(err => console.error("Action log failed:", err));
+  }
+    
+  function runGatewayAuthorizationCheck() {
+    const hash = window.location.hash.substring(1);
+    const overlay = document.getElementById('khans-secure-gateway-overlay');
+    const authGate = document.getElementById('admin-auth-gate');
+    const workspace = document.getElementById('true-admin-workspace');
+
+    if (hash === SECRET_ADMIN_HASH) {
+      overlay.classList.remove('hidden');
+      if (auth.currentUser) {
+        authGate.classList.add('hidden');
+        workspace.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        switchMainframeSection('orders');
+      } else {
+        authGate.classList.remove('hidden');
+        workspace.classList.add('hidden');
+      }
+    } else {
+      overlay.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function executeMainframeAuthentication() {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errLog = document.getElementById('auth-error-log');
+    errLog.innerText = "Authorizing transaction session...";
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        errLog.innerText = "";
+        runGatewayAuthorizationCheck();
+      })
+      .catch(error => {
+        errLog.innerText = `⚠️ ACCESS REJECTED: ${error.message}`;
+      });
+  }
+
+  function terminateAdminSession() {
+    auth.signOut().then(() => {
+      window.location.hash = "";
+      window.location.reload();
+    });
+  }
+
+  function switchMainframeSection(targetSection) {
+    const board = document.getElementById('mainframe-data-board');
+    const statusLog = document.getElementById('mainframe-status-log');
+    board.innerHTML = `<div style="color:#888;font-size:13px;text-align:center;padding:40px;">Querying cloud record registers...</div>`;
+
+    // Highlight active tab
+    document.querySelectorAll('.adm-tab-btn').forEach(btn => {
+      btn.style.background = '#111';
+      btn.style.borderColor = '#222';
+      btn.style.color = '#aaa';
+    });
+    if (event && event.currentTarget) {
+      event.currentTarget.style.background = '#1c0e02';
+      event.currentTarget.style.borderColor = '#FF6B01';
+      event.currentTarget.style.color = '#FF6B01';
+    }
+
+    // Example queries – change collection names to match what you actually store
+    if (targetSection === 'orders') {
+    statusLog.innerText = "[DATABASE LEDGER]: Streaming live fulfillment ledger arrays directly from Cloud Firestore.";
+
+    db.collection("imperial_orders")
+      .orderBy("timestamp", "desc")
+      .get()
+      .then(snapshot => {
+        let html = `<h3 style="text-transform:uppercase; font-size:14px; color:#fff; letter-spacing:0.5px; margin-bottom:15px;">📋 Active Fulfillment Ledger Arrays</h3>`;
+
+        if (snapshot.empty) {
+          html += `<p style="color:#666; font-size:13px;">No transaction records logged inside cloud storage nodes yet.</p>`;
+          board.innerHTML = html;
+          return;
+        }
+
+        html += `
+          <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <thead>
+              <tr style="border-bottom:1px solid #333; color:#888; text-align:left;">
+                <th style="padding:8px;">Order ID</th>
+                <th style="padding:8px;">Client Name</th>
+                <th style="padding:8px;">Address</th>
+                <th style="padding:8px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          html += `
+            <tr style="border-bottom:1px solid #1a1a1a;">
+              <td style="padding:10px 8px; color:#FF6B01; font-weight:600;">${doc.id.slice(0, 8).toUpperCase()}</td>
+              <td style="padding:10px 8px; color:#fff;">${data.customerName || "VIP Guest"}</td>
+              <td style="padding:10px 8px; color:#ccc;">${data.deliveryAddress || "Vault Desk Pickup"}</td>
+              <td style="padding:10px 8px;">
+                <span style="background:#2a1606; color:#FF6B01; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">
+                  ${data.orderStatus || "Approved"}
+                </span>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        board.innerHTML = html;
+        statusLog.innerText = `[DATABASE LEDGER]: ${snapshot.size} order(s) loaded.`;
+      })
+      .catch(err => {
+        board.innerHTML = `<p style="color:#ff6464; padding:20px;">Error loading orders: ${err.message}</p>`;
+        statusLog.innerText = "[DATABASE LEDGER]: Query failed.";
+        console.error(err);
+      });
+  }
+
+  // ========== CHECKOUTS ==========
+  else if (targetSection === 'checkouts') {
+    statusLog.innerText = "[DATABASE LEDGER]: Tracking transaction checkout totals and active cart review states.";
+
+    db.collection("imperial_orders")
+      .get()
+      .then(snapshot => {
+        let html = `<h3 style="text-transform:uppercase; font-size:14px; color:#fff; letter-spacing:0.5px; margin-bottom:15px;">💰 Active Checkout Data States</h3>`;
+        html += `<div style="display:flex; flex-direction:column; gap:10px;">`;
+
+        if (snapshot.empty) {
+          html += `<p style="color:#666;">No checkout records found.</p>`;
+        } else {
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+              <div style="background:#111; border:1px solid #222; padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <h4 style="margin:0 0 4px 0; color:#fff;">
+                    Invoice Subtotal: 
+                    <span style="color:#2DC75C;">$${parseFloat(data.subtotal || 0).toFixed(2)}</span>
+                  </h4>
+                  <small style="color:#666;">Fulfillment Class: ${data.fulfillmentMethod || "Delivery"}</small>
+                </div>
+                <span style="background:#2a1606; color:#FF6B01; font-size:11px; font-weight:800; padding:4px 10px; border-radius:4px; text-transform:uppercase;">
+                  Session Verified
+                </span>
+              </div>
+            `;
+          });
+        }
+
+        html += `</div>`;
+        board.innerHTML = html;
+        statusLog.innerText = `[DATABASE LEDGER]: ${snapshot.size} checkout record(s) loaded.`;
+      })
+      .catch(err => {
+        board.innerHTML = `<p style="color:#ff6464;">${err.message}</p>`;
+        statusLog.innerText = "[DATABASE LEDGER]: Checkout query failed.";
+      });
+  }
+
+  // ========== PAYMENT ==========
+  else if (targetSection === 'traffic') {
+    statusLog.innerText = "[DATABASE LEDGER]: Extracting user gateway payment selections metrics.";
+
+    db.collection("imperial_orders")
+      .get()
+      .then(snapshot => {
+        let html = `<h3 style="text-transform:uppercase; font-size:14px; color:#fff; letter-spacing:0.5px; margin-bottom:15px;">💳 Active Payment Selections</h3>`;
+
+        html += `
+          <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <thead>
+              <tr style="border-bottom:1px solid #333; color:#888; text-align:left;">
+                <th style="padding:8px;">Transaction Reference</th>
+                <th style="padding:8px;">Payment Gateway Mode</th>
+                <th style="padding:8px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          html += `
+            <tr style="border-bottom:1px solid #1a1a1a;">
+              <td style="padding:10px 8px; color:#FF6B01;">${doc.id}</td>
+              <td style="padding:10px 8px; color:#ccc;">${data.paymentMethod || "Cash Vault Desk"}</td>
+              <td style="padding:10px 8px;">
+                <span style="background:#1a2a1a; color:#2DC75C; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">
+                  Settled
+                </span>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        board.innerHTML = html;
+        statusLog.innerText = `[DATABASE LEDGER]: ${snapshot.size} payment record(s) loaded.`;
+      })
+      .catch(err => {
+        board.innerHTML = `<p style="color:#ff6464;">${err.message}</p>`;
+        statusLog.innerText = "[DATABASE LEDGER]: Payment query failed.";
+      });
+  }
+
+  } else if (targetSection === "traffic") {
+    statusLog.innerText = "Loading traffic events...";
+
+    db.collection("live_traffic_ledger")
+      .orderBy("timestamp", "desc")
+      .limit(100)
+      .get()
+      .then(snapshot => {
+        let html = `
+          <h3 style="font-size:14px;color:#fff;margin-bottom:15px;">Recent Traffic Events</h3>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+        `;
+
+        if (snapshot.empty) {
+          html += '<p style="color:#666;">No traffic footprints logged in cloud nodes yet.</p>';
+        } else {
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const timeString = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString() : "Recent";
+            
+            html += `
+              <div style="background:#050505;border:1px solid #1a1a1a;padding:12px;border-radius:6px;display:grid;grid-template-columns:100px 1fr;align-items:center;font-size:13px;box-sizing:border-box;">
+                <span style="color:#888;font-family:monospace;">[${timeString}]</span>
+                <div>
+                  <b style="color:#fff;">Path:</b> <span style="color:#FF6B01;font-family:monospace;">${escapeHtml(data.filePath || "/index.html")}</span>
+                  <br><small style="color:#aaa;">Action Layer: <span style="color:#2DC75C;font-weight:600;">${escapeHtml(data.userAction || "page_view")}</span></small>
+                  <span style="color:#555;font-family:monospace;font-size:11px;">(${escapeHtml(data.sessionHash || "")})</span>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        board.innerHTML = html + "</div>";
+        statusLog.innerText = `${snapshot.size} traffic event(s) loaded successfully.`;
+      })
+      .catch(error => {
+        board.innerHTML = `<p style="color:#ff6464;">Error loading traffic: ${escapeHtml(error.message)}</p>`;
+        statusLog.innerText = "Traffic query failed.";
+        console.error(error);
+      });    
+  }
+      
+  // ========== CACHE ==========
+  else if (targetSection === 'cache') {
+    statusLog.innerText = "[LOCAL SYSTEM]: Manipulating live browser session cache pools and local database registers.";
+
+    board.innerHTML = `
+      <h3 style="text-transform:uppercase; font-size:14px; color:#fff; letter-spacing:0.5px; margin-bottom:10px;">⚡ Live Browser Session Cache Pools</h3>
+      <p style="color:#888; font-size:13px; margin:0 0 15px 0;">
+        Manages localized offline templates and shopping storage registries directly on the client machine.
+      </p>
+      <div style="background:#111; border:1px solid #222; border-radius:8px; padding:20px; display:flex; flex-direction:column; gap:12px; text-align:center;">
+        <h4 style="color:#fff; margin:0;">Purge Local Cache Registries</h4>
+        <p style="color:#666; font-size:12px; margin:0; max-width:550px; margin:0 auto;">
+          Wiping local cache layers discards duplicate entry objects, refreshes template structures, and forces the browser to pull clean updates from your GitHub Pages files.
+        </p>
+        <button onclick="executeLocalMainframeWipe()" 
+                style="background:#ff6464; color:#fff; border:none; padding:12px 24px; border-radius:6px; font-weight:bold; font-size:12px; text-transform:uppercase; cursor:pointer; margin:10px auto 0; width:fit-content;">
+          Clear Local Storage &amp; Cache Pools
+        </button>
+      </div>
+    `;
+  }
+}
+
+// Simple cache wipe (no KhanEngine needed)
+async function executeLocalMainframeWipe() {
+  if (confirm("Wipe local browser storage parameters and cache frames?")) {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Clear Cache API if available
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+
+      alert("Wipe completed.\nLocal storage, session storage and caches cleared.\nPage will now reload.");
+      window.location.reload();
+    } catch (err) {
+      alert("Error while wiping cache: " + err.message);
+    }
+  }
+}
+
+// Listeners (keep these)
+window.addEventListener('DOMContentLoaded', runGatewayAuthorizationCheck);
+window.addEventListener('hashchange', runGatewayAuthorizationCheck);
+auth.onAuthStateChanged(user => {
+  // Only re-check the gateway when the hash is the admin hash
+  if (window.location.hash.substring(1) === SECRET_ADMIN_HASH) {
+    runGatewayAuthorizationCheck();
+  }
+});
+</script   
 </body>
 </html>         
