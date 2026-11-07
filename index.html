@@ -698,8 +698,6 @@
   auth.onAuthStateChanged(() => {
     if (location.hash.substring(1) === SECRET_ADMIN_HASH) runGatewayAuthorizationCheck();
   });
-
-</script> 
    
 <!-- Admin overlay UI (hidden until #khanadmin) -->
 <div id="khans-secure-gateway-overlay" class="hidden" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0A0A0A;z-index:1000000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
@@ -739,66 +737,6 @@
   #true-admin-workspace:not(.hidden) { display: flex !important; }
 </style>
    
-<script>   
-   (() => {
-    "use strict";
-
-    // 🔑 YOUR MASTER ADMINISTRATOR ENTRY KEY
-    const SECRET_ADMIN_HASH = "khanadmin";
-
-    // 📡 DYNAMIC HASHTAG ROUTER STATE MANAGER
-   function runGatewayAuthorizationCheck() {
-      const hash = window.location.hash.substring(1);
-      const overlay = document.getElementById("khans-secure-gateway-overlay");
-      const authGate = document.getElementById("admin-auth-gate");
-      const workspace = document.getElementById("true-admin-workspace");
-      
-      if (!overlay) return;
-
-      if (hash === SECRET_ADMIN_HASH) {
-        // 🔓 PASSWORD CORRESPONDENCE MATCHED: Render the full-screen terminal canvas layout
-        overlay.classList.remove("hidden");
-        overlay.style.setProperty("display", "flex", "important");
-        
-        // If already authorized by Firebase token persistence, skip login form directly
-        if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
-          if (authGate) authGate.classList.add("hidden");
-          if (workspace) {
-            workspace.classList.remove("hidden");
-            workspace.style.setProperty("display", "flex", "important");
-          }
-          document.body.style.overflow = "hidden";
-          if (typeof window.switchMainframeSection === "function") {
-            window.switchMainframeSection("orders");
-          }
-        } else {
-          if (authGate) authGate.classList.remove("hidden");
-          if (workspace) workspace.classList.add("hidden");
-        }
-      } else {
-        // 🔒 MISMATCH: Lock everything out completely from the UI grid canvas
-        overlay.classList.add("hidden");
-        overlay.style.setProperty("display", "none", "important");
-        document.body.style.overflow = "";
-      }
-    }
-
-    // Attach listener parameters to monitor URL state transitions natively
-    window.addEventListener("hashchange", runGatewayAuthorizationCheck);
-    window.addEventListener("DOMContentLoaded", runGatewayAuthorizationCheck);
-    
-    // Bind fallback sync hook for asynchronous Firebase initialization loops
-    setTimeout(() => {
-      if (typeof firebase !== "undefined" && firebase.auth()) {
-        firebase.auth().onAuthStateChanged(() => {
-          if (window.location.hash.substring(1) === SECRET_ADMIN_HASH) {
-            runGatewayAuthorizationCheck();
-          }
-        });
-      }
-    }, 1000);
-
-  })();
     </script>
 </body>
 </html>
