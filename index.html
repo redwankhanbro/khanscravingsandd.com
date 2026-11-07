@@ -466,8 +466,8 @@
 
         // ⚡ EXACT MATRICES CALIBRATED TO CORRECT FOR ALL CONSOLE CASINGS
         function addToCart(productId, productName, productPrice) {
-            // Read the exact same matching storage key variable used by see your-cart.html
-            let currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
+            // Ensure your homepage utilizes this exact storage key name string consistently
+          let currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
             
             // Push the clean, non-undefined data properties securely into the array loop matrix
             currentCartInstance.push({
