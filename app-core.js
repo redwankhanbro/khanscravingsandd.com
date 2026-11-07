@@ -1,12 +1,14 @@
 /**
  * 👑 KHAN'S CRAVINGS - SYSTEM ENGINE & STORAGE CORE
- * High-performance, secure local storage cart database manager.
+ * Fixed key allocation array to align directly with homepage buttons
  */
 (() => {
     "use strict";
 
-    const STORE_KEY = "khan_orders";
+    // 🌟 MUST MATCH YOUR HOMEPAGE STORAGE KEY EXACTLY!
+    const STORE_KEY = "khans_cart_vault"; 
     const DRAFT_KEY = "khan_checkout_draft";
+
 
     // ---------- 🛡️ SAFE STORAGE PARSING UTILITIES ----------
     const safeParse = (raw, fallback = {}) => {
