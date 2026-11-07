@@ -699,6 +699,8 @@
     if (location.hash.substring(1) === SECRET_ADMIN_HASH) runGatewayAuthorizationCheck();
   });
 
+</script> 
+   
 <!-- Admin overlay UI (hidden until #khanadmin) -->
 <div id="khans-secure-gateway-overlay" class="hidden" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0A0A0A;z-index:1000000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
   <div id="admin-auth-gate" class="hidden" style="width:100%;max-width:420px;background:#121212;border:2px solid #FF6B01;border-radius:12px;padding:35px;">
@@ -736,7 +738,8 @@
   #khans-secure-gateway-overlay:not(.hidden) { display: flex !important; }
   #true-admin-workspace:not(.hidden) { display: flex !important; }
 </style>
-
+   
+<script>   
    (() => {
     "use strict";
 
