@@ -464,28 +464,49 @@
             document.getElementById('sidebar-cart-counter').innerText = activeCartItems.length + (activeCartItems.length === 1 ? ' Item' : ' Items');
         }
 
-        // ⚡ EXACT MATRICES CALIBRATED TO CORRECT FOR ALL CONSOLE CASINGS
-        function addToCart(productId, productName, productPrice) {
-            // Read the exact same matching storage key variable used by see your-cart.html
-            let currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
-            
-            // Push the clean, non-undefined data properties securely into the array loop matrix
-            currentCartInstance.push({
+       // EXACT OBJECT-BASED MATRICES TO CORRECT ID RENDERING ON CART PAGE
+     function addToCart(productId, productName, productPrice) {
+        // Read the exact same matching storage key variable used by see your-cart.html
+        // We use an Object {} fallback instead of an Array [] fallback to keep data structured
+        let currentCartInstance = {};
+        try {
+            currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || {};
+            if (Array.isArray(currentCartInstance)) { currentCartInstance = {}; } // Reset old array blocks
+        } catch(e) {
+            currentCartInstance = {};
+        }
+
+        const quantity = 1;
+        const unitPrice = parseFloat(productPrice) || 0;
+
+        // If item already exists in local storage map, just increase its quantity loop
+        if (currentCartInstance[productId]) {
+            currentCartInstance[productId].quantity += quantity;
+        } else {
+            // Securely create the object record structured exactly how cart.html reads it!
+            currentCartInstance[productId] = {
                 id: productId,
-                name: productName,
-                price: parseFloat(productPrice)
-            });
-            
-            // Lock the updated state back securely inside the persistent browser local memory
-            localStorage.setItem('khans_cart_vault', JSON.stringify(currentCartInstance));
-            
-            // Instantly refresh your bottom-left sidebar status string indicator row side-by-side
-            if (document.getElementById('sidebar-cart-counter')) {
-                document.getElementById('sidebar-cart-counter').innerText = currentCartInstance.length + (currentCartInstance.length === 1 ? ' Item' : ' Items');
-            }
-            
-            // Fire an elegant alert notification block confirming capture success loop parameters
-            alert(`🎉 ${productName} [ID: ${productId}] has been appended to your select bin ledger!`);
+                name: String(productName),
+                price: unitPrice,
+                quantity: quantity
+            };
+        }
+
+        // Lock the updated object back securely inside the persistent browser local memory
+        localStorage.setItem('khans_cart_vault', JSON.stringify(currentCartInstance));
+
+        // Instantly refresh your bottom-left sidebar counter text row badge safely
+        const count = Object.keys(currentCartInstance).length;
+        if (document.getElementById('sidebar-cart-counter')) {
+            document.getElementById('sidebar-cart-counter').innerText = count + (count === 1 ? ' Item' : ' Items');
+        }
+        
+        // Fire your alert notification block confirming capture success loop parameters
+        alert(`✨ ${productName} [ID: ${productId}] has been appended to your select bin ledger!`);
+        
+        // Dynamic analytical click stream hook tracker (Dispatches event to your Firebase console live)
+        if (typeof window.logUserAction === "function") {
+            window.logUserAction(`Added item to cart: ${productName}`);
         }
     </script>     
 
