@@ -519,53 +519,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
-<!-- Admin overlay UI (hidden until #khanadmin) -->
-<div id="khans-secure-gateway-overlay" class="hidden" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0A0A0A;z-index:1000000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <div id="admin-auth-gate" class="hidden" style="width:100%;max-width:420px;background:#121212;border:2px solid #FF6B01;border-radius:12px;padding:35px;">
-    <div style="text-align:center;margin-bottom:20px;">
-      <span style="font-size:40px;">🔒</span>
-      <h3 style="color:#fff;margin:10px 0 5px;">Admin Access</h3>
-    </div>
-    <form onsubmit="event.preventDefault();executeMainframeAuthentication();" style="display:flex;flex-direction:column;gap:12px;">
-      <input type="email" id="auth-email" required placeholder="admin@email.com" style="padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:#fff;">
-      <input type="password" id="auth-password" required placeholder="Password" style="padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:#fff;">
-      <button type="submit" style="background:#FF6B01;color:#fff;border:none;padding:12px;border-radius:6px;font-weight:bold;cursor:pointer;">Login</button>
-    </form>
-    <div id="auth-error-log" style="color:#ff6464;font-size:12px;margin-top:12px;text-align:center;"></div>
-  </div>
-
-  <div id="true-admin-workspace" class="hidden" style="display:none;width:100%;max-width:1100px;height:90vh;background:#121212;border:2px solid #FF6B01;border-radius:16px;padding:25px;flex-direction:column;color:#E0E0E0;box-sizing:border-box;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;border-bottom:1px solid #222;padding-bottom:12px;">
-      <h3 style="margin:0;color:#fff;">Khan's Command Panel</h3>
-      <button onclick="terminateAdminSession();" style="background:none;border:1px solid #ff6464;color:#ff6464;padding:6px 14px;border-radius:999px;cursor:pointer;">Disconnect</button>
-    </div>
-    <div style="display:grid;grid-template-columns:220px 1fr;gap:16px;flex:1;min-height:0;">
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <button class="adm-tab-btn" onclick="switchMainframeSection('orders')" style="text-align:left;padding:12px;background:#1c0e02;border:1px solid #FF6B01;color:#FF6B01;border-radius:6px;cursor:pointer;">Orders</button>
-        <button class="adm-tab-btn" onclick="switchMainframeSection('traffic')" style="text-align:left;padding:12px;background:#111;border:1px solid #222;color:#aaa;border-radius:6px;cursor:pointer;">Traffic</button>
-        <button class="adm-tab-btn" onclick="switchMainframeSection('cache')" style="text-align:left;padding:12px;background:#111;border:1px solid #222;color:#aaa;border-radius:6px;cursor:pointer;">Cache</button>
-      </div>
-      <div id="mainframe-data-board" style="background:#0A0A0A;border:1px solid #222;border-radius:10px;padding:16px;overflow:auto;"></div>
-    </div>
-    <div id="mainframe-status-log" style="margin-top:12px;font-size:11px;color:#888;font-family:monospace;">Ready.</div>
-  </div>
-</div>
-
-<style>
-  .hidden { display: none !important; }
-  #khans-secure-gateway-overlay:not(.hidden) { display: flex !important; }
-  #true-admin-workspace:not(.hidden) { display: flex !important; }
-</style>   
-
 <script>
-   (() => {
-    "use strict";
-
-    const SECRET_ADMIN_HASH = "khanadmin";
-
   // ========== PASTE YOUR REAL FIREBASE CONFIG ==========
   const firebaseConfig = {
-     apiKey: "AIzaSyCqa_faROzMaRH7lx234IXD5e0G_CS04f0",
+  apiKey: "AIzaSyCqa_faROzMaRH7lx234IXD5e0G_CS04f0",
   authDomain: "khans-cravings-admin-dashboard.firebaseapp.com",
   projectId: "khans-cravings-admin-dashboard",
   storageBucket: "khans-cravings-admin-dashboard.firebasestorage.app",
@@ -742,7 +699,45 @@
   auth.onAuthStateChanged(() => {
     if (location.hash.substring(1) === SECRET_ADMIN_HASH) runGatewayAuthorizationCheck();
   });
-   </script> 
+</script>
+
+<!-- Admin overlay UI (hidden until #khanadmin) -->
+<div id="khans-secure-gateway-overlay" class="hidden" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0A0A0A;z-index:1000000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div id="admin-auth-gate" class="hidden" style="width:100%;max-width:420px;background:#121212;border:2px solid #FF6B01;border-radius:12px;padding:35px;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <span style="font-size:40px;">🔒</span>
+      <h3 style="color:#fff;margin:10px 0 5px;">Admin Access</h3>
+    </div>
+    <form onsubmit="event.preventDefault();executeMainframeAuthentication();" style="display:flex;flex-direction:column;gap:12px;">
+      <input type="email" id="auth-email" required placeholder="admin@email.com" style="padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:#fff;">
+      <input type="password" id="auth-password" required placeholder="Password" style="padding:12px;background:#050505;border:1px solid #333;border-radius:6px;color:#fff;">
+      <button type="submit" style="background:#FF6B01;color:#fff;border:none;padding:12px;border-radius:6px;font-weight:bold;cursor:pointer;">Login</button>
+    </form>
+    <div id="auth-error-log" style="color:#ff6464;font-size:12px;margin-top:12px;text-align:center;"></div>
+  </div>
+
+  <div id="true-admin-workspace" class="hidden" style="display:none;width:100%;max-width:1100px;height:90vh;background:#121212;border:2px solid #FF6B01;border-radius:16px;padding:25px;flex-direction:column;color:#E0E0E0;box-sizing:border-box;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;border-bottom:1px solid #222;padding-bottom:12px;">
+      <h3 style="margin:0;color:#fff;">Khan's Command Panel</h3>
+      <button onclick="terminateAdminSession();" style="background:none;border:1px solid #ff6464;color:#ff6464;padding:6px 14px;border-radius:999px;cursor:pointer;">Disconnect</button>
+    </div>
+    <div style="display:grid;grid-template-columns:220px 1fr;gap:16px;flex:1;min-height:0;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="adm-tab-btn" onclick="switchMainframeSection('orders')" style="text-align:left;padding:12px;background:#1c0e02;border:1px solid #FF6B01;color:#FF6B01;border-radius:6px;cursor:pointer;">Orders</button>
+        <button class="adm-tab-btn" onclick="switchMainframeSection('traffic')" style="text-align:left;padding:12px;background:#111;border:1px solid #222;color:#aaa;border-radius:6px;cursor:pointer;">Traffic</button>
+        <button class="adm-tab-btn" onclick="switchMainframeSection('cache')" style="text-align:left;padding:12px;background:#111;border:1px solid #222;color:#aaa;border-radius:6px;cursor:pointer;">Cache</button>
+      </div>
+      <div id="mainframe-data-board" style="background:#0A0A0A;border:1px solid #222;border-radius:10px;padding:16px;overflow:auto;"></div>
+    </div>
+    <div id="mainframe-status-log" style="margin-top:12px;font-size:11px;color:#888;font-family:monospace;">Ready.</div>
+  </div>
+</div>
+
+<style>
+  .hidden { display: none !important; }
+  #khans-secure-gateway-overlay:not(.hidden) { display: flex !important; }
+  #true-admin-workspace:not(.hidden) { display: flex !important; }
+</style>
       
 </body>
 </html>
