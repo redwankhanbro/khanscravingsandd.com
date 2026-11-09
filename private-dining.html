@@ -408,6 +408,12 @@
         }     
     ];
 
+    function processOmniIntelQuery() {
+        const inputField = document.getElementById('panel-user-input');
+        const stream = document.getElementById('panel-msg-stream');
+        const rawQuery = inputField.value.trim();
+        if (!rawQuery) return;
+
         // Render User chat bubble
         stream.innerHTML += `
             <div style="align-self: flex-end; max-width: 85%; background: #FF6B01; color: white; padding: 10px; border-radius: 8px 0 8px 8px; font-size: 13px; line-height: 1.5; font-weight: 600;">
@@ -836,7 +842,8 @@ async function processOmniIntelQuery() {
     const fallback = "Our host line is momentarily delayed. Please utilize our primary booking form or inquire with our concierge desk.";
     appendChatBubble("host", fallback);
     await logChat("host", fallback);
- }
+  }
+}
 }    
 </script>        
 </body>
