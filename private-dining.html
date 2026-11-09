@@ -745,7 +745,11 @@ const WORKER_URL = "https://khan-dining-concierge.redwankhanbro.workers.dev/";
 
 const messagesEl = document.getElementById("concierge-messages");
 const panel = document.getElementById("concierge-panel");
-let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
+const myChatForm = document.getElementById("concierge-form") || document.getElementById("chat-form") || document.querySelector("form");
+ const inputEl = document.getElementById("concierge-input") || document.getElementById("chat-input");
+    
+ // Initialize or pull the chat session token globally
+  let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
 
 // Toggle layout display status natively on user clicks
 if (document.getElementById("concierge-toggle")) {
