@@ -739,106 +739,112 @@
     }).catch(err => console.error("Action log failed:", err));
   }
 
-// 1. LINK TO YOUR HIDDEN CLOUDFLARE AT EDGE NODE
-// Overwrite this placeholder with your real live Cloudflare URL endpoint link!
-const WORKER_URL = "https://khan-dining-concierge.redwankhanbro.workers.dev/";
+// Global Session ID for this browser tab
+let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
 
-const messagesEl = document.getElementById("concierge-messages");
-const panel = document.getElementById("concierge-panel");
-const myChatForm = document.getElementById("concierge-form") || document.getElementById("chat-form") || document.querySelector("form");
- const inputEl = document.getElementById("concierge-input") || document.getElementById("chat-input");
-    
- // Initialize or pull the chat session token globally
-  let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
-
-// Toggle layout display status natively on user clicks
-if (document.getElementById("concierge-toggle")) {
-  document.getElementById("concierge-toggle").onclick = () => {
-    if (panel) panel.style.display = panel.style.display === "none" ? "block" : "none";
-  };
-}
-
-// Visual bubble layout injector function
-function appendMsg(role, text) {
-  if (!messagesEl) return;
-  const div = document.createElement("div");
-  div.style.marginBottom = "10px";
-  div.style.padding = "8px 10px";
-  div.style.borderRadius = "8px";
-  div.style.background = role === "user" ? "#1a1a1a" : "#1c0e02";
-  div.style.border = role === "user" ? "1px solid #333" : "1px solid #FF6B01";
-  div.innerHTML = `<strong style="color:${role === "user" ? "#FF6B01" : "#2ECC71"}">${role === "user" ? "You" : "Host"}</strong>
-    <div style="margin-top:4px;color:#ccc;">${text.replace(/</g, "&lt;")}</div>`;
-  messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-
-  // 📊 LAYER 1: TRACK EVERYTHING VIA THE BROWSER DIRECTLY TO FIRESTORE
-  // Uses 'trackingDB' to perfectly align with your page view counters!
-  async function logChat(role, text) {
-    if (typeof trackingDB === "undefined") return;
-    try {
-      if (!chatSessionId) {
-        // Group the customer conversation rows together under a distinct chat timeline token
-        const ref = await trackingDB.collection("chat_sessions").add({
-          page: window.location.pathname,
-          startedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          userAgent: navigator.userAgent.slice(0, 120)
-        });
-        chatSessionId = ref.id;
-        sessionStorage.setItem("khan_chat_session", chatSessionId);
-      }
-      
-      // Log the exact text strings cleanly inside your cloud tracking logs
-      await trackingDB.collection("ai_chat_queries").add({
-        sessionId: chatSessionId,
-        role: String(role), // "user" | "host"
-        userPrompt: String(text).slice(0, 4000),
-        filePath: "private-dining",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+// Helper to log every chat exchange directly to Firebase Firestore
+async function logChat(role, text) {
+  if (typeof trackingDB === "undefined") return;
+  try {
+    if (!chatSessionId) {
+      const ref = await trackingDB.collection("chat_sessions").add({
+        page: window.location.pathname,
+        userAgent: navigator.userAgent.slice(0, 150),
+        startedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    } catch (e) {
-      console.error("Chat metric track drop:", e);
+      chatSessionId = ref.id;
+      sessionStorage.setItem("khan_chat_session", chatSessionId);
+    }
+
+    await trackingDB.collection("ai_chat_queries").add({
+      sessionId: chatSessionId,
+      role: String(role), // "user" or "host"
+      userPrompt: String(text).slice(0, 4000),
+      filePath: "private-dining",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (e) {
+    console.error("Chat metric track drop:", e);
+  }
+}
+
+// Helper to append chat bubbles cleanly into the stream
+function appendChatBubble(role, content) {
+  const stream = document.getElementById("panel-msg-stream");
+  if (!stream) return null;
+  const isUser = role === "user";
+  const div = document.createElement("div");
+  div.style.alignSelf = isUser ? "flex-end" : "flex-start";
+  div.style.maxWidth = "85%";
+  div.style.background = isUser ? "#FF6B01" : "#161616";
+  div.style.color = isUser ? "#FFFFFF" : "#E0E0E0";
+  div.style.padding = "10px";
+  div.style.borderRadius = isUser ? "8px 0 8px 8px" : "0 8px 8px 8px";
+  div.style.fontSize = "13px";
+  div.style.lineHeight = "1.5";
+  if (!isUser) div.style.borderLeft = "3px solid #FF6B01";
+  div.innerHTML = content;
+  stream.appendChild(div);
+  stream.scrollTop = stream.scrollHeight;
+  return div;
+}
+
+// 🧠 HYBRID QUERY PROCESSOR: Local Keywords First -> Cloudflare Worker Fallback
+async function processOmniIntelQuery() {
+  const inputField = document.getElementById("panel-user-input");
+  const rawQuery = inputField?.value?.trim();
+  if (!rawQuery) return;
+
+  // 1. Render user message & log to Firebase
+  appendChatBubble("user", rawQuery);
+  inputField.value = "";
+  await logChat("user", rawQuery);
+
+  // 2. LAYER 1: Fast local keyword check (0ms response)
+  const cleanQuery = rawQuery.toLowerCase();
+  let localAnswer = null;
+
+  if (typeof masterKnowledgeCatalog !== "undefined" && Array.isArray(masterKnowledgeCatalog)) {
+    for (let entry of masterKnowledgeCatalog) {
+      if (entry.keywords.some((keyword) => cleanQuery.includes(keyword))) {
+        localAnswer = entry.response;
+        break;
+      }
     }
   }
 
-  // ⚡ LAYER 2: INTERCEPT DISPATCH AND CONTACT THE BLIND CLOUDFLARE SERVER
-  if (document.getElementById("concierge-form")) {
-    document.getElementById("concierge-form").onsubmit = async (e) => {
-      e.preventDefault();
-      const input = document.getElementById("concierge-input");
-      const message = input?.value.trim();
-      if (!message) return;
-      
-      input.value = "";
-      appendMsg("user", message);
-      await logChat("user", message); // Record prompt to Firebase
+  // If a local keyword matched, reply immediately and save
+  if (localAnswer) {
+    appendChatBubble("host", localAnswer);
+    await logChat("host", localAnswer);
+    return;
+  }
 
-      appendMsg("host", "One moment…");
-      const thinking = messagesEl?.lastChild;
+  // 3. LAYER 2: No keyword match -> Consult Cloudflare Worker (AI Host)
+  const WORKER_URL = "https://khan-dining-concierge.redwankhanbro.workers.dev/";
+  const thinkingBubble = appendChatBubble("host", "<em>Consulting private dining host…</em>");
 
-      try {
-        // Blind HTTPS POST: Ships the plain text string with ZERO database keys attached
-        const res = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
-        });
-        const data = await res.json();
-        const reply = data.reply || "How can I assist with your private dining plans?";
-        
-        if (thinking) thinking.remove();
-        appendMsg("host", reply);
-        await logChat("host", reply); // Record AI response text to Firebase
-        
-      } catch (err) {
-        if (thinking) thinking.remove();
-        const fallback = "Our host line is temporarily experiencing network latency. Please utilize our primary booking form.";
-        appendMsg("host", fallback);
-        await logChat("host", fallback);
-      }
-    };
-  }    
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: rawQuery })
+    });
+
+    const data = await res.json();
+    const reply = data.reply || "Welcome to Khan's Cravings. How may I assist with your private dining plans?";
+
+    if (thinkingBubble) thinkingBubble.remove();
+    appendChatBubble("host", reply);
+    await logChat("host", reply);
+  } catch (err) {
+    if (thinkingBubble) thinkingBubble.remove();
+    const fallback = "Our host line is momentarily delayed. Please utilize our primary booking form or inquire with our concierge desk.";
+    appendChatBubble("host", fallback);
+    await logChat("host", fallback);
+  }
+}
+}    
 </script>        
 </body>
 </html>
