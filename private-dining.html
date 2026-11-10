@@ -751,15 +751,19 @@
     }).catch(err => console.error("Action log failed:", err));
   }
 
-// Global Session ID for this browser tab
+// Global Session ID & Cached Geolocation for this browser tab
 let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
 let guestTelemetry = null;
 
-// 📍 1. AUTO-DETECT LOCATION ONCE WHEN CHAT STARTS
-async function initVisitorLocation() {
+// 📍 GUARANTEE REAL IP & LOCATION ON EVERY SINGLE MESSAGE
+async function getVisitorTelemetry() {
+  if (guestTelemetry && guestTelemetry.ip) return guestTelemetry;
   const cached = sessionStorage.getItem("khan_guest_telemetry");
   if (cached) {
-    try { guestTelemetry = JSON.parse(cached); return; } catch(e) {}
+    try {
+      guestTelemetry = JSON.parse(cached);
+      if (guestTelemetry && guestTelemetry.ip) return guestTelemetry;
+    } catch(e) {}
   }
   try {
     const res = await fetch("https://khan-dining-concierge.redwankhanbro.workers.dev/", {
@@ -771,28 +775,18 @@ async function initVisitorLocation() {
     if (data.telemetry && data.telemetry.ip) {
       guestTelemetry = data.telemetry;
       sessionStorage.setItem("khan_guest_telemetry", JSON.stringify(guestTelemetry));
+      return guestTelemetry;
     }
   } catch(e) {
-    console.warn("Location init check deferred:", e.message);
+    console.warn("Location probe deferred:", e.message);
   }
+  return { ip: "Direct/Local", city: "Unknown", country: "" };
 }
-// Run location detection in the background immediately
-initVisitorLocation();
 
 // Helper to log every chat exchange directly to Firebase Firestore
-async function logChat(role, text) {
+async function logChat(role, text, forensics = {}) {
   if (typeof trackingDB === "undefined") return;
   try {
-    // If telemetry isn't loaded yet, try pulling from sessionStorage
-    if (!guestTelemetry) {
-      const cached = sessionStorage.getItem("khan_guest_telemetry");
-      if (cached) {
-        try { guestTelemetry = JSON.parse(cached); } catch(e) {}
-      }
-    }
-
-    const currentGeo = guestTelemetry || {};
-
     if (!chatSessionId) {
       const ref = await trackingDB.collection("chat_sessions").add({
         page: window.location.pathname,
@@ -803,16 +797,16 @@ async function logChat(role, text) {
       sessionStorage.setItem("khan_chat_session", chatSessionId);
     }
 
-    // Always records userAgent, IP, and City!
+    // Always records userAgent, Real IP, and Real City!
     await trackingDB.collection("ai_chat_queries").add({
       sessionId: chatSessionId,
       role: String(role),
       userPrompt: String(text).slice(0, 4000),
       filePath: "private-dining",
       userAgent: navigator.userAgent.slice(0, 150),
-      ipAddress: currentGeo.ip || "Direct/Local",
-      location: currentGeo.city ? `${currentGeo.city}, ${currentGeo.country}` : "Detecting...",
-      threatLevel: currentGeo.threatLevel || "SAFE",
+      ipAddress: forensics.ip || "Direct/Local",
+      location: forensics.city && forensics.country ? `${forensics.city}, ${forensics.country}` : (forensics.city || "Unknown"),
+      threatLevel: forensics.threatLevel || "SAFE",
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch (e) {
@@ -847,12 +841,17 @@ async function processOmniIntelQuery() {
   const rawQuery = inputField?.value?.trim();
   if (!rawQuery) return;
 
-  // 1. Render user message & log to Firebase immediately
+  // 1. Render user message in UI immediately
   appendChatBubble("user", rawQuery);
   inputField.value = "";
-  await logChat("user", rawQuery);
 
-  // 2. LAYER 1: Fast local keyword check (0ms response)
+  // 2. WAIT for Real IP & Location before saving to database!
+  const geo = await getVisitorTelemetry();
+
+  // 3. Log user question with REAL IP & REAL LOCATION
+  await logChat("user", rawQuery, geo);
+
+  // 4. LAYER 1: Fast local keyword check (0ms response)
   const cleanQuery = rawQuery.toLowerCase();
   let localAnswer = null;
 
@@ -865,14 +864,14 @@ async function processOmniIntelQuery() {
     }
   }
 
-  // If a local keyword matched, reply immediately
+  // If a local keyword matched, reply immediately and log with REAL IP & LOCATION!
   if (localAnswer) {
     appendChatBubble("host", localAnswer);
-    await logChat("host", localAnswer);
+    await logChat("host", localAnswer, geo);
     return;
   }
 
-  // 3. LAYER 2: No keyword match -> Consult Cloudflare Worker (AI Host)
+  // 5. LAYER 2: No keyword match -> Consult Cloudflare Worker (AI Host)
   const WORKER_URL = "https://khan-dining-concierge.redwankhanbro.workers.dev/";
   const thinkingBubble = appendChatBubble("host", "<em>Consulting private dining host…</em>");
 
@@ -885,20 +884,18 @@ async function processOmniIntelQuery() {
 
     const data = await res.json();
     const reply = data.reply || "Welcome to Khan's Cravings. How may I assist with your private dining plans?";
-
-    if (data.telemetry && data.telemetry.ip) {
-      guestTelemetry = data.telemetry;
-      sessionStorage.setItem("khan_guest_telemetry", JSON.stringify(guestTelemetry));
-    }
+    const telemetry = data.telemetry || geo;
 
     if (thinkingBubble) thinkingBubble.remove();
     appendChatBubble("host", reply);
-    await logChat("host", reply);
+
+    // Log AI answer with REAL IP & REAL LOCATION!
+    await logChat("host", reply, telemetry);
   } catch (err) {
     if (thinkingBubble) thinkingBubble.remove();
     const fallback = "Our host line is momentarily delayed. Please utilize our primary booking form or inquire with our concierge desk.";
     appendChatBubble("host", fallback);
-    await logChat("host", fallback);
+    await logChat("host", fallback, geo);
   }
 }
 </script>
