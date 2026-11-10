@@ -741,11 +741,46 @@
 
 // Global Session ID for this browser tab
 let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
+let guestTelemetry = null;
+
+// 📍 1. AUTO-DETECT LOCATION ONCE WHEN CHAT STARTS
+async function initVisitorLocation() {
+  const cached = sessionStorage.getItem("khan_guest_telemetry");
+  if (cached) {
+    try { guestTelemetry = JSON.parse(cached); return; } catch(e) {}
+  }
+  try {
+    const res = await fetch("https://khan-dining-concierge.redwankhanbro.workers.dev/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "ping_location_init" })
+    });
+    const data = await res.json();
+    if (data.telemetry && data.telemetry.ip) {
+      guestTelemetry = data.telemetry;
+      sessionStorage.setItem("khan_guest_telemetry", JSON.stringify(guestTelemetry));
+    }
+  } catch(e) {
+    console.warn("Location init check deferred:", e.message);
+  }
+}
+// Run location detection in the background immediately
+initVisitorLocation();
 
 // Helper to log every chat exchange directly to Firebase Firestore
-async function logChat(role, text, forensics = {}) {
+async function logChat(role, text) {
   if (typeof trackingDB === "undefined") return;
   try {
+    // If telemetry isn't loaded yet, try pulling from sessionStorage
+    if (!guestTelemetry) {
+      const cached = sessionStorage.getItem("khan_guest_telemetry");
+      if (cached) {
+        try { guestTelemetry = JSON.parse(cached); } catch(e) {}
+      }
+    }
+
+    const currentGeo = guestTelemetry || {};
+
     if (!chatSessionId) {
       const ref = await trackingDB.collection("chat_sessions").add({
         page: window.location.pathname,
@@ -756,16 +791,16 @@ async function logChat(role, text, forensics = {}) {
       sessionStorage.setItem("khan_chat_session", chatSessionId);
     }
 
-    // Save prompt & reply alongside userAgent and Cloudflare security forensics
+    // Always records userAgent, IP, and City!
     await trackingDB.collection("ai_chat_queries").add({
       sessionId: chatSessionId,
       role: String(role),
       userPrompt: String(text).slice(0, 4000),
       filePath: "private-dining",
       userAgent: navigator.userAgent.slice(0, 150),
-      ipAddress: forensics.ip || "Direct/Local",
-      location: forensics.city ? `${forensics.city}, ${forensics.country}` : "Unknown",
-      threatLevel: forensics.threatLevel || "SAFE",
+      ipAddress: currentGeo.ip || "Direct/Local",
+      location: currentGeo.city ? `${currentGeo.city}, ${currentGeo.country}` : "Detecting...",
+      threatLevel: currentGeo.threatLevel || "SAFE",
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch (e) {
@@ -800,7 +835,7 @@ async function processOmniIntelQuery() {
   const rawQuery = inputField?.value?.trim();
   if (!rawQuery) return;
 
-  // 1. Render user message & log to Firebase
+  // 1. Render user message & log to Firebase immediately
   appendChatBubble("user", rawQuery);
   inputField.value = "";
   await logChat("user", rawQuery);
@@ -838,11 +873,15 @@ async function processOmniIntelQuery() {
 
     const data = await res.json();
     const reply = data.reply || "Welcome to Khan's Cravings. How may I assist with your private dining plans?";
-    const telemetry = data.telemetry || {};
+
+    if (data.telemetry && data.telemetry.ip) {
+      guestTelemetry = data.telemetry;
+      sessionStorage.setItem("khan_guest_telemetry", JSON.stringify(guestTelemetry));
+    }
 
     if (thinkingBubble) thinkingBubble.remove();
     appendChatBubble("host", reply);
-    await logChat("host", reply, telemetry); // Saves reply + IP + Location to Firebase
+    await logChat("host", reply);
   } catch (err) {
     if (thinkingBubble) thinkingBubble.remove();
     const fallback = "Our host line is momentarily delayed. Please utilize our primary booking form or inquire with our concierge desk.";
@@ -850,6 +889,6 @@ async function processOmniIntelQuery() {
     await logChat("host", fallback);
   }
 }
-</script> 
+</script>
 </body>
 </html>
