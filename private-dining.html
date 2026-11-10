@@ -755,16 +755,14 @@
 let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
 let guestTelemetry = null;
 
-// 📍 GUARANTEE REAL IP & LOCATION ON EVERY SINGLE MESSAGE
+// 📍 DUAL-LAYER PROBE: Cloudflare Edge -> Public IP Fallback
 async function getVisitorTelemetry() {
-  if (guestTelemetry && guestTelemetry.ip) return guestTelemetry;
-  const cached = sessionStorage.getItem("khan_guest_telemetry");
-  if (cached) {
-    try {
-      guestTelemetry = JSON.parse(cached);
-      if (guestTelemetry && guestTelemetry.ip) return guestTelemetry;
-    } catch(e) {}
+  // If we already have a real public IP, use it (ignore "Direct/Local")
+  if (guestTelemetry && guestTelemetry.ip && guestTelemetry.ip !== "Direct/Local") {
+    return guestTelemetry;
   }
+
+  // 1. Primary: Cloudflare Edge Worker Probe
   try {
     const res = await fetch("https://khan-dining-concierge.redwankhanbro.workers.dev/", {
       method: "POST",
@@ -772,14 +770,35 @@ async function getVisitorTelemetry() {
       body: JSON.stringify({ message: "ping_location_init" })
     });
     const data = await res.json();
-    if (data.telemetry && data.telemetry.ip) {
+    if (data.telemetry && data.telemetry.ip && data.telemetry.ip !== "Direct/Local") {
       guestTelemetry = data.telemetry;
       sessionStorage.setItem("khan_guest_telemetry", JSON.stringify(guestTelemetry));
       return guestTelemetry;
     }
-  } catch(e) {
-    console.warn("Location probe deferred:", e.message);
+  } catch (err) {
+    console.warn("Primary probe deferred, checking backup geo API...");
   }
+
+  // 2. Backup: Direct IP Geolocation API (Never blocked by adblockers)
+  try {
+    const backupRes = await fetch("https://ipapi.co/json/");
+    const bData = await backupRes.json();
+    if (bData && bData.ip) {
+      guestTelemetry = {
+        ip: bData.ip,
+        city: bData.city || "Unknown",
+        region: bData.region || "",
+        country: bData.country_name || bData.country || "",
+        isp: bData.org || "Visitor Network",
+        threatLevel: "SAFE"
+      };
+      sessionStorage.setItem("khan_guest_telemetry", JSON.stringify(guestTelemetry));
+      return guestTelemetry;
+    }
+  } catch (err) {
+    console.warn("Backup geo probe error:", err);
+  }
+
   return { ip: "Direct/Local", city: "Unknown", country: "" };
 }
 
