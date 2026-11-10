@@ -739,14 +739,16 @@
     }).catch(err => console.error("Traffic log failed:", err));
   })();
 
-  /** 2. Manual click / action logger */
+  /** 2. Manual click / action logger with live action sync */
   function logUserAction(actionDescription) {
     const page = window.location.pathname.split("/").pop() || "index.html";
 
     trackingDB.collection("live_traffic_ledger").add({
       filePath: "/" + page,
+      fullUrl: window.location.href,
       userAction: actionDescription,
       sessionHash: getSessionId(),
+      userAgent: navigator.userAgent.slice(0, 120),
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(err => console.error("Action log failed:", err));
   }
@@ -859,6 +861,11 @@ async function processOmniIntelQuery() {
   const inputField = document.getElementById("panel-user-input");
   const rawQuery = inputField?.value?.trim();
   if (!rawQuery) return;
+    
+// 🌟 ADD THIS LINE: Instantly records in live_traffic_ledger!
+  if (typeof logUserAction === "function") {
+    logUserAction("used_chatbot: " + rawQuery.slice(0, 100));
+  }
 
   // 1. Render user message in UI immediately
   appendChatBubble("user", rawQuery);
