@@ -743,7 +743,7 @@
 let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
 
 // Helper to log every chat exchange directly to Firebase Firestore
-async function logChat(role, text) {
+async function logChat(role, text, forensics = {}) {
   if (typeof trackingDB === "undefined") return;
   try {
     if (!chatSessionId) {
@@ -756,11 +756,16 @@ async function logChat(role, text) {
       sessionStorage.setItem("khan_chat_session", chatSessionId);
     }
 
+    // Save prompt & reply alongside userAgent and Cloudflare security forensics
     await trackingDB.collection("ai_chat_queries").add({
       sessionId: chatSessionId,
-      role: String(role), // "user" or "host"
+      role: String(role),
       userPrompt: String(text).slice(0, 4000),
       filePath: "private-dining",
+      userAgent: navigator.userAgent.slice(0, 150),
+      ipAddress: forensics.ip || "Direct/Local",
+      location: forensics.city ? `${forensics.city}, ${forensics.country}` : "Unknown",
+      threatLevel: forensics.threatLevel || "SAFE",
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch (e) {
@@ -813,7 +818,7 @@ async function processOmniIntelQuery() {
     }
   }
 
-  // If a local keyword matched, reply immediately and save
+  // If a local keyword matched, reply immediately
   if (localAnswer) {
     appendChatBubble("host", localAnswer);
     await logChat("host", localAnswer);
@@ -833,10 +838,11 @@ async function processOmniIntelQuery() {
 
     const data = await res.json();
     const reply = data.reply || "Welcome to Khan's Cravings. How may I assist with your private dining plans?";
+    const telemetry = data.telemetry || {};
 
     if (thinkingBubble) thinkingBubble.remove();
     appendChatBubble("host", reply);
-    await logChat("host", reply);
+    await logChat("host", reply, telemetry); // Saves reply + IP + Location to Firebase
   } catch (err) {
     if (thinkingBubble) thinkingBubble.remove();
     const fallback = "Our host line is momentarily delayed. Please utilize our primary booking form or inquire with our concierge desk.";
@@ -844,7 +850,6 @@ async function processOmniIntelQuery() {
     await logChat("host", fallback);
   }
 }
-}    
-</script>        
+</script> 
 </body>
 </html>
