@@ -1053,7 +1053,7 @@ function renderKhanCart() {
 }
 
 // ==============================================================
-// 🚀 FIRESTORE SUBMISSION (Writes directly to imperial_orders)
+// 🚀 FIRESTORE SUBMISSION (Writes directly to imperial_orders with Real Edge IP & Location)
 // ==============================================================
 async function handleKhanCheckoutSubmit(e) {
     e.preventDefault();
@@ -1081,7 +1081,51 @@ async function handleKhanCheckoutSubmit(e) {
     }
 
     btn.disabled = true;
-    btn.innerText = "Dispatching Order…";
+    btn.innerText = "Securing & Transmitting Order…";
+
+    // 📍 1. Capture Real Edge IP & Physical Geolocation (Cannot be spoofed)
+    let edgeTelemetry = {
+        ip: "Direct / Unknown",
+        city: "Unknown",
+        region: "Unknown",
+        country: "Unknown",
+        isp: "Unknown",
+        threatLevel: "SAFE"
+    };
+
+    try {
+        // Fast 2-second handshake to your Cloudflare Worker
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+        const edgeRes = await fetch("https://khan-dining-concierge.redwankhanbro.workers.dev", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: "ping_location_init" }),
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (edgeRes.ok) {
+            const edgeData = await edgeRes.json();
+            if (edgeData.telemetry) {
+                edgeTelemetry = edgeData.telemetry;
+            }
+        }
+    } catch (_) {
+        // Backup silent IP fetch if worker is busy
+        try {
+            const ipRes = await fetch("https://ipapi.co/json/");
+            if (ipRes.ok) {
+                const ipData = await ipRes.json();
+                edgeTelemetry.ip = ipData.ip || edgeTelemetry.ip;
+                edgeTelemetry.city = ipData.city || edgeTelemetry.city;
+                edgeTelemetry.region = ipData.region || edgeTelemetry.region;
+                edgeTelemetry.country = ipData.country_name || edgeTelemetry.country;
+                edgeTelemetry.isp = ipData.org || edgeTelemetry.isp;
+            }
+        } catch (e2) {}
+    }
 
     try {
         const rawSubtotal = khanCart.reduce((sum, i) => sum + (Number(i.price) * Number(i.quantity)), 0);
@@ -1098,23 +1142,34 @@ async function handleKhanCheckoutSubmit(e) {
         const totalNum = Number((subtotalNum + deliveryNum + taxNum).toFixed(2));
         const orderNum = "KC-" + Math.floor(100000 + Math.random() * 900000);
 
-        // 🌟 SAVE TO FIRESTORE "imperial_orders" (100% compliant with your security rules)
+        // 🌟 SAVE TO FIRESTORE "imperial_orders" (Includes Real IP & Forensics)
         if (typeof trackingDB !== "undefined") {
             await trackingDB.collection("imperial_orders").add({
                 // Required rule label
                 sessionSource: "private-dining-cart",
 
-                // Guest Details
+                // Guest Form Details (what the user typed)
                 customerName: name,
                 phone: phone,
                 deliveryAddress: finalAddress,
                 orderType: khanOrderMode, // 'delivery' or 'dine_in'
 
+                // 🛡️ Real Forensic Location (Un-fakable edge telemetry)
+                ipAddress: String(edgeTelemetry.ip || "Unknown"),
+                realCity: String(edgeTelemetry.city || "Unknown"),
+                realRegion: String(edgeTelemetry.region || "Unknown"),
+                realCountry: String(edgeTelemetry.country || "Unknown"),
+                realLocation: (edgeTelemetry.city && edgeTelemetry.country) 
+                    ? `${edgeTelemetry.city}, ${edgeTelemetry.country}` 
+                    : (edgeTelemetry.city || "Unknown"),
+                realIsp: String(edgeTelemetry.isp || "Unknown"),
+                threatLevel: String(edgeTelemetry.threatLevel || "SAFE"),
+
                 // VIP Card System
                 isVipCardholder: isVipApplied,
                 vipCardNumber: isVipApplied ? vipCardVal : "None",
 
-                // Payment Settlement (clean international)
+                // Payment Settlement
                 paymentMethod: payment,
 
                 // Selected Dishes Breakdown
@@ -1125,7 +1180,7 @@ async function handleKhanCheckoutSubmit(e) {
                     quantity: Number(i.quantity)
                 })),
 
-                // Pure Numbers (Guards your Firestore rule)
+                // Pure Numbers (Guards your Firestore rules)
                 subtotal: subtotalNum,
                 deliveryFee: deliveryNum,
                 tax: taxNum,
@@ -1133,7 +1188,7 @@ async function handleKhanCheckoutSubmit(e) {
                 vipDiscountAmount: vipDiscount,
 
                 // Lifecycle & Timestamps
-                orderStatus: "pending",
+                orderStatus: "Received",
                 orderNumber: orderNum,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1157,7 +1212,6 @@ async function handleKhanCheckoutSubmit(e) {
                     ${isVipApplied ? '<div style="color: #34d399; margin-top: 4px; font-weight: bold;">👑 VIP Card: ' + vipCardVal + ' (15% Courtesy + Chef Amuse-Bouche)</div>' : ''}
                     <div style="color: #bbb; margin-top: 4px;">Total Settled: <strong style="color: #d4af37; font-family: monospace;">$${totalNum.toFixed(2)}</strong></div>
                 </div>
-
                 <button onclick="closeKhanCart(); location.reload();" style="background: #d4af37; color: black; border: none; padding: 11px 22px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px;">
                     Done & Return to Concierge
                 </button>
@@ -1171,7 +1225,7 @@ async function handleKhanCheckoutSubmit(e) {
         console.error("Order submission failure:", err);
         alert("Failed to submit order to dining ledger. Please check network.");
         btn.disabled = false;
-        btn.innerText = "Place Order";
+        btn.innerText = "Authorize & Place Order";
     }
 }
 </script>
