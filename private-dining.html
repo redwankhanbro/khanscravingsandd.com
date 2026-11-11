@@ -690,6 +690,301 @@
             document.getElementById('inspector-overlay-window').style.display = "flex";
         }
     </script>
+        
+<!-- ========================================================== -->
+<!-- 🛒 KHAN'S CRAVINGS - LUXURY CART, MENU & CHECKOUT SYSTEM    -->
+<!-- ========================================================== -->
+
+<!-- Floating Cart Button -->
+<button id="khan-cart-floating-btn" onclick="openKhanCart()" style="position: fixed; bottom: 25px; right: 25px; z-index: 99998; background: linear-gradient(135deg, #FF6B01, #e05500); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 25px rgba(255, 107, 1, 0.45); display: flex; items-center; gap: 8px; transition: 0.2s;">
+    🛒 Bag (<span id="khan-cart-floating-count">0</span>)
+</button>
+
+<!-- Slide-Out Cart & Checkout Modal -->
+<div id="khan-cart-modal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); z-index: 99999; justify-content: flex-end;">
+    <div style="background: #0d0e14; border-left: 1px solid #333; width: 100%; max-width: 520px; height: 100%; display: flex; flex-direction: column; color: white; font-family: inherit; box-sizing: border-box;">
+        
+        <!-- Header -->
+        <div style="padding: 18px 20px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; background: #14151f;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;">🛍️</span>
+                <div>
+                    <h3 style="margin: 0; font-size: 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #FF6B01;">Gourmet Dining Cart</h3>
+                    <p style="margin: 2px 0 0; font-size: 11px; color: #888;">Direct Kitchen & Delivery Dispatch</p>
+                </div>
+            </div>
+            <button onclick="closeKhanCart()" style="background: none; border: none; color: #aaa; font-size: 22px; cursor: pointer; padding: 0 5px;">&times;</button>
+        </div>
+
+        <!-- Body Area -->
+        <div id="khan-cart-body" style="flex: 1; overflow-y: auto; padding: 20px;">
+            <!-- Cart Items Section -->
+            <div style="background: #151620; border-radius: 10px; padding: 15px; border: 1px solid #282830; margin-bottom: 20px;">
+                <h4 style="margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; display: flex; justify-content: space-between;">
+                    <span>Selected Dishes</span>
+                    <span id="khan-cart-total-badge" style="color: #FF6B01; font-weight: bold;">0 Items</span>
+                </h4>
+                <div id="khan-cart-items-list" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="text-align: center; padding: 20px 0; color: #666; font-size: 12px;">Your dining bag is empty. Pick signature dishes below!</div>
+                </div>
+            </div>
+
+            <!-- Signature Menu Quick Pick -->
+            <div style="margin-bottom: 20px;">
+                <h4 style="margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #FF6B01;">🔥 Signature Dishes (1-Click Add)</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div style="background: #141520; border: 1px solid #282830; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <strong style="font-size: 12px; color: #fff;">Royal Heritage Korma</strong>
+                            <div style="color: #FF6B01; font-size: 11px; font-weight: bold; margin: 3px 0;">$34.00</div>
+                        </div>
+                        <button onclick="khanAddToCart('korma', 'Royal Heritage Korma', 34)" style="background: #252636; border: 1px solid #FF6B01; color: #FF6B01; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 5px;">+ Add to Bag</button>
+                    </div>
+
+                    <div style="background: #141520; border: 1px solid #282830; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <strong style="font-size: 12px; color: #fff;">Imperial Dum Biryani</strong>
+                            <div style="color: #FF6B01; font-size: 11px; font-weight: bold; margin: 3px 0;">$28.00</div>
+                        </div>
+                        <button onclick="khanAddToCart('biryani', 'Imperial Dum Biryani', 28)" style="background: #252636; border: 1px solid #FF6B01; color: #FF6B01; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 5px;">+ Add to Bag</button>
+                    </div>
+
+                    <div style="background: #141520; border: 1px solid #282830; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <strong style="font-size: 12px; color: #fff;">Chili-Honey Mousse</strong>
+                            <div style="color: #FF6B01; font-size: 11px; font-weight: bold; margin: 3px 0;">$18.00</div>
+                        </div>
+                        <button onclick="khanAddToCart('mousse', 'Chili-Honey Dark Chocolate Mousse', 18)" style="background: #252636; border: 1px solid #FF6B01; color: #FF6B01; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 5px;">+ Add to Bag</button>
+                    </div>
+
+                    <div style="background: #141520; border: 1px solid #282830; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <strong style="font-size: 12px; color: #fff;">Spiced Saffron Cake</strong>
+                            <div style="color: #FF6B01; font-size: 11px; font-weight: bold; margin: 3px 0;">$22.00</div>
+                        </div>
+                        <button onclick="khanAddToCart('cake', 'Spiced Saffron Honey Cake', 22)" style="background: #252636; border: 1px solid #FF6B01; color: #FF6B01; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 5px;">+ Add to Bag</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Checkout Destination Form -->
+            <form id="khan-checkout-form" onsubmit="handleKhanCheckoutSubmit(event)">
+                <h4 style="margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa;">📍 Delivery Destination</h4>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div>
+                        <label style="font-size: 11px; color: #888; display: block; margin-bottom: 4px;">Full Name</label>
+                        <input type="text" id="khan-cust-name" required placeholder="e.g. Tariq Al-Mansoor" style="width: 100%; box-sizing: border-box; background: #07070a; border: 1px solid #333; border-radius: 6px; padding: 10px; color: white; font-size: 12px; outline: none;">
+                    </div>
+
+                    <div>
+                        <label style="font-size: 11px; color: #888; display: block; margin-bottom: 4px;">Phone Number (For Rider Updates)</label>
+                        <input type="tel" id="khan-cust-phone" required placeholder="e.g. +880 1712-345678" style="width: 100%; box-sizing: border-box; background: #07070a; border: 1px solid #333; border-radius: 6px; padding: 10px; color: white; font-size: 12px; outline: none;">
+                    </div>
+
+                    <div>
+                        <label style="font-size: 11px; color: #888; display: block; margin-bottom: 4px;">Street Address & House / Floor</label>
+                        <textarea id="khan-cust-address" required rows="2" placeholder="House 42, Road 11, Banani Block D, Dhaka" style="width: 100%; box-sizing: border-box; background: #07070a; border: 1px solid #333; border-radius: 6px; padding: 10px; color: white; font-size: 12px; outline: none; resize: none;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 11px; color: #888; display: block; margin-bottom: 4px;">Payment Method</label>
+                        <select id="khan-cust-payment" style="width: 100%; box-sizing: border-box; background: #07070a; border: 1px solid #333; border-radius: 6px; padding: 10px; color: white; font-size: 12px; outline: none;">
+                            <option value="cash_on_delivery">💵 Cash on Delivery</option>
+                            <option value="bkash_mobile_pay">📱 bKash / Mobile Wallet</option>
+                            <option value="credit_card">💳 Card on Arrival</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer / Checkout Action -->
+        <div style="padding: 18px 20px; border-top: 1px solid #222; background: #14151f;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-bottom: 4px;">
+                <span>Subtotal:</span>
+                <span id="khan-cart-subtotal">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-bottom: 8px;">
+                <span>Delivery Charge:</span>
+                <span id="khan-cart-delivery">$5.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; color: white; margin-bottom: 15px; border-top: 1px solid #282830; padding-top: 8px;">
+                <span>Grand Total:</span>
+                <span id="khan-cart-grandtotal" style="color: #FF6B01; font-family: monospace;">$5.00</span>
+            </div>
+
+            <button id="khan-submit-order-btn" onclick="document.getElementById('khan-checkout-form').requestSubmit()" style="width: 100%; background: #FF6B01; color: white; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.2s;">
+                Place Delivery Order
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// 🧠 CART & FIRESTORE INTEGRATION ENGINE
+// ==========================================
+let khanCart = [];
+
+function openKhanCart() {
+    const modal = document.getElementById('khan-cart-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeKhanCart() {
+    const modal = document.getElementById('khan-cart-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function khanAddToCart(id, name, price) {
+    const existing = khanCart.find(i => i.id === id);
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        khanCart.push({ id, name, price, quantity: 1 });
+    }
+    renderKhanCart();
+    openKhanCart();
+}
+
+function khanUpdateCartQty(id, delta) {
+    const item = khanCart.find(i => i.id === id);
+    if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+            khanCart = khanCart.filter(i => i.id !== id);
+        }
+    }
+    renderKhanCart();
+}
+
+function renderKhanCart() {
+    const list = document.getElementById('khan-cart-items-list');
+    const badge = document.getElementById('khan-cart-floating-count');
+    const totalBadge = document.getElementById('khan-cart-total-badge');
+    const subtotalEl = document.getElementById('khan-cart-subtotal');
+    const grandtotalEl = document.getElementById('khan-cart-grandtotal');
+    const btn = document.getElementById('khan-submit-order-btn');
+
+    const totalQty = khanCart.reduce((sum, i) => sum + i.quantity, 0);
+    const subtotal = khanCart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+    const delivery = totalQty > 0 ? 5.0 : 0.0;
+    const tax = subtotal * 0.05;
+    const grandTotal = subtotal > 0 ? (subtotal + delivery + tax) : 0;
+
+    if (badge) badge.innerText = totalQty;
+    if (totalBadge) totalBadge.innerText = `${totalQty} Items`;
+    if (subtotalEl) subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
+    if (grandtotalEl) grandtotalEl.innerText = `$${grandTotal.toFixed(2)}`;
+
+    if (btn) {
+        btn.disabled = totalQty === 0;
+        btn.style.opacity = totalQty === 0 ? "0.4" : "1";
+    }
+
+    if (!list) return;
+
+    if (khanCart.length === 0) {
+        list.innerHTML = `<div style="text-align: center; padding: 20px 0; color: #666; font-size: 12px;">Your dining bag is empty. Pick signature dishes below!</div>`;
+        return;
+    }
+
+    list.innerHTML = khanCart.map(item => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #08090d; padding: 8px 12px; border-radius: 6px; border: 1px solid #222;">
+            <div>
+                <strong style="font-size: 12px; color: white;">${item.name}</strong>
+                <div style="font-size: 11px; color: #FF6B01; font-family: monospace;">$${item.price.toFixed(2)} each</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button onclick="khanUpdateCartQty('${item.id}', -1)" style="background: #222; color: white; border: none; width: 22px; height: 22px; border-radius: 4px; cursor: pointer;">-</button>
+                <span style="font-family: monospace; font-weight: bold; font-size: 12px;">${item.quantity}</span>
+                <button onclick="khanUpdateCartQty('${item.id}', 1)" style="background: #FF6B01; color: white; border: none; width: 22px; height: 22px; border-radius: 4px; cursor: pointer;">+</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ==========================================
+// 🚀 FIRESTORE SUBMISSION HANDLER
+// ==========================================
+async function handleKhanCheckoutSubmit(e) {
+    e.preventDefault();
+    if (khanCart.length === 0) {
+        alert("Please add at least one dish to your cart.");
+        return;
+    }
+
+    const name = document.getElementById('khan-cust-name').value.trim();
+    const phone = document.getElementById('khan-cust-phone').value.trim();
+    const address = document.getElementById('khan-cust-address').value.trim();
+    const payment = document.getElementById('khan-cust-payment').value;
+    const btn = document.getElementById('khan-submit-order-btn');
+
+    btn.disabled = true;
+    btn.innerText = "Dispatching to Kitchen…";
+
+    try {
+        // Grab real IP & geolocation forensics
+        const geo = (typeof getVisitorTelemetry === "function") ? await getVisitorTelemetry() : { ip: "Direct", city: "Local" };
+        const orderNum = "KC-" + Math.floor(100000 + Math.random() * 900000);
+
+        const subtotal = khanCart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        const deliveryFee = 5.0;
+        const tax = subtotal * 0.05;
+        const total = parseFloat((subtotal + deliveryFee + tax).toFixed(2));
+
+        // 🌟 SAVE DIRECTLY TO FIRESTORE "orders" COLLECTION
+        if (typeof trackingDB !== "undefined") {
+            await trackingDB.collection("orders").add({
+                orderNumber: orderNum,
+                customerName: name,
+                phone: phone,
+                deliveryAddress: address,
+                paymentMethod: payment,
+                items: khanCart,
+                subtotal: subtotal,
+                deliveryFee: deliveryFee,
+                tax: tax,
+                total: total,
+                status: "pending",
+                sessionId: (typeof chatSessionId !== "undefined") ? chatSessionId : "web_order",
+                ipAddress: geo.ip || "Direct/Local",
+                location: geo.city && geo.country ? `${geo.city}, ${geo.country}` : (geo.city || "Unknown"),
+                threatLevel: geo.threatLevel || "SAFE",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+
+        // Display Success Screen in Drawer
+        const body = document.getElementById('khan-cart-body');
+        body.innerHTML = `
+            <div style="text-align: center; padding: 40px 10px; color: white;">
+                <div style="font-size: 45px; margin-bottom: 10px;">🛎️</div>
+                <h3 style="color: #FF6B01; font-size: 18px; margin: 0 0 5px; text-transform: uppercase;">Order Confirmed!</h3>
+                <p style="font-size: 12px; color: #aaa; margin: 0 0 15px;">Order Number: <strong style="color: #fff; font-family: monospace;">${orderNum}</strong></p>
+                <div style="background: #141520; border: 1px solid #333; border-radius: 8px; padding: 15px; text-align: left; font-size: 12px; margin-bottom: 20px;">
+                    <div style="color: #FF6B01; font-weight: bold; margin-bottom: 8px;">Estimated Delivery: 35–45 Mins</div>
+                    <div style="color: #bbb;">Recipient: <strong>${name}</strong> (${phone})</div>
+                    <div style="color: #bbb; margin-top: 4px;">Destination: ${address}</div>
+                    <div style="color: #bbb; margin-top: 4px;">Total Amount: <strong style="color: #fff;">$${total.toFixed(2)}</strong> (${payment.replace(/_/g, ' ')})</div>
+                </div>
+                <button onclick="closeKhanCart(); location.reload();" style="background: #FF6B01; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">Done & Return to Menu</button>
+            </div>
+        `;
+        khanCart = [];
+        const floatingBadge = document.getElementById('khan-cart-floating-count');
+        if (floatingBadge) floatingBadge.innerText = "0";
+
+    } catch (err) {
+        console.error("Order dispatch error:", err);
+        alert("Failed to connect to order ledger. Please verify your connection.");
+        btn.disabled = false;
+        btn.innerText = "Place Delivery Order";
+    }
+}
+</script>
+        
 
 <!-- your existing scripts, e.g. app-core.js -->
     <script src="app-core.js"></script>
@@ -739,14 +1034,16 @@
     }).catch(err => console.error("Traffic log failed:", err));
   })();
 
-  /** 2. Manual click / action logger */
+  /** 2. Manual click / action logger with live action sync */
   function logUserAction(actionDescription) {
     const page = window.location.pathname.split("/").pop() || "index.html";
 
     trackingDB.collection("live_traffic_ledger").add({
       filePath: "/" + page,
+      fullUrl: window.location.href,
       userAction: actionDescription,
       sessionHash: getSessionId(),
+      userAgent: navigator.userAgent.slice(0, 120),
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(err => console.error("Action log failed:", err));
   }
@@ -859,6 +1156,11 @@ async function processOmniIntelQuery() {
   const inputField = document.getElementById("panel-user-input");
   const rawQuery = inputField?.value?.trim();
   if (!rawQuery) return;
+    
+// 🌟 ADD THIS LINE: Instantly records in live_traffic_ledger!
+  if (typeof logUserAction === "function") {
+    logUserAction("used_chatbot: " + rawQuery.slice(0, 100));
+  }
 
   // 1. Render user message in UI immediately
   appendChatBubble("user", rawQuery);
