@@ -1144,20 +1144,15 @@ async function handleKhanCheckoutSubmit(e) {
 
        // 🌟 SAVE DIRECTLY TO "imperial_orders" ONLY (No Live Traffic Logs)
         if (typeof trackingDB !== "undefined") {
-            // 🗺️ 100% Automatic Global Area & State Resolver (No lists needed)
-            const cCode = String(edgeTelemetry.country || "").trim().toUpperCase();
-            const city = String(edgeTelemetry.city || "Unknown").trim();
-            const region = String(edgeTelemetry.region || "").trim();
-            const postal = String(edgeTelemetry.postal || "").trim();
-
-            // Rule: Strictly "None" for Bangladesh; real state for USA/India/etc.
-            const stateResult = (cCode === "BD" || cCode === "BANGLADESH") ? "None" : (region && region !== city ? region : "None");
-
-            // Real Area: Automatically captures their real postal area/sub-district worldwide
-            const areaResult = postal 
-                ? `${city} Sub-district (Postal: ${postal})` 
-                : `${city} Urban District`;
+            // 1. Resolve State Rule & Specific District/Area
+            const isNoState = (edgeTelemetry.country === "Bangladesh" || edgeTelemetry.countryCode === "BD");
+            const stateResult = isNoState ? "None" : (edgeTelemetry.region && edgeTelemetry.region !== edgeTelemetry.city ? edgeTelemetry.region : "None");
             
+            // Resolve Area (e.g. Dhaka Gulshan/Banani/Dhanmondi zone or general postal district)
+            const areaResult = edgeTelemetry.postal 
+                ? `${edgeTelemetry.city} (Postal Area: ${edgeTelemetry.postal})` 
+                : `${edgeTelemetry.city} Metropolitan District`;
+
             await trackingDB.collection("imperial_orders").add({
                 // Required rule label
                 sessionSource: "private-dining-cart",
