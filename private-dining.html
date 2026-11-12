@@ -1142,8 +1142,17 @@ async function handleKhanCheckoutSubmit(e) {
         const totalNum = Number((subtotalNum + deliveryNum + taxNum).toFixed(2));
         const orderNum = "KC-" + Math.floor(100000 + Math.random() * 900000);
 
-        // 🌟 SAVE TO FIRESTORE "imperial_orders" (Includes Real IP & Forensics)
+       // 🌟 SAVE DIRECTLY TO "imperial_orders" ONLY (No Live Traffic Logs)
         if (typeof trackingDB !== "undefined") {
+            // 1. Resolve State Rule & Specific District/Area
+            const isNoState = (edgeTelemetry.country === "Bangladesh" || edgeTelemetry.countryCode === "BD");
+            const stateResult = isNoState ? "None" : (edgeTelemetry.region && edgeTelemetry.region !== edgeTelemetry.city ? edgeTelemetry.region : "None");
+            
+            // Resolve Area (e.g. Dhaka Gulshan/Banani/Dhanmondi zone or general postal district)
+            const areaResult = edgeTelemetry.postal 
+                ? `${edgeTelemetry.city} (Postal Area: ${edgeTelemetry.postal})` 
+                : `${edgeTelemetry.city} Metropolitan District`;
+
             await trackingDB.collection("imperial_orders").add({
                 // Required rule label
                 sessionSource: "private-dining-cart",
@@ -1152,42 +1161,32 @@ async function handleKhanCheckoutSubmit(e) {
                 customerName: name,
                 phone: phone,
                 deliveryAddress: finalAddress,
-                orderType: khanOrderMode, // 'delivery' or 'dine_in'
+                orderType: khanOrderMode,
 
-                // 🛡️ Real Forensic Location (Un-fakable edge telemetry)
+                // 🛡️ Real Forensic Location (Stored ONLY inside this order)
                 ipAddress: String(edgeTelemetry.ip || "Unknown"),
+                realArea: areaResult,
+                realState: stateResult, // "None" for Bangladesh; real state for USA/India
                 realCity: String(edgeTelemetry.city || "Unknown"),
-                realRegion: String(edgeTelemetry.region || "Unknown"),
                 realCountry: String(edgeTelemetry.country || "Unknown"),
-                realLocation: (edgeTelemetry.city && edgeTelemetry.country) 
-                    ? `${edgeTelemetry.city}, ${edgeTelemetry.country}` 
-                    : (edgeTelemetry.city || "Unknown"),
+                realLocation: `${edgeTelemetry.city || "Unknown"}, ${edgeTelemetry.country || ""}`.trim(),
                 realIsp: String(edgeTelemetry.isp || "Unknown"),
                 threatLevel: String(edgeTelemetry.threatLevel || "SAFE"),
 
-                // VIP Card System
+                // VIP & Order Details
                 isVipCardholder: isVipApplied,
                 vipCardNumber: isVipApplied ? vipCardVal : "None",
-
-                // Payment Settlement
                 paymentMethod: payment,
-
-                // Selected Dishes Breakdown
                 items: khanCart.map(i => ({
                     id: String(i.id),
                     name: String(i.name),
                     price: Number(i.price),
                     quantity: Number(i.quantity)
                 })),
-
-                // Pure Numbers (Guards your Firestore rules)
                 subtotal: subtotalNum,
                 deliveryFee: deliveryNum,
                 tax: taxNum,
                 total: totalNum,
-                vipDiscountAmount: vipDiscount,
-
-                // Lifecycle & Timestamps
                 orderStatus: "Received",
                 orderNumber: orderNum,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
