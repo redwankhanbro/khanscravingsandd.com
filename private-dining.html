@@ -1083,49 +1083,74 @@ async function handleKhanCheckoutSubmit(e) {
     btn.disabled = true;
     btn.innerText = "Securing & Transmitting Order…";
 
-    // 📍 1. Capture Real Edge IP & Physical Geolocation (Cannot be spoofed)
+    // 📍 1. Dual-Source Real Edge IP, Postal Area & Timezone Telemetry (Silent)
     let edgeTelemetry = {
         ip: "Direct / Unknown",
         city: "Unknown",
         region: "Unknown",
         country: "Unknown",
+        countryCode: "",
+        countryName: "",
+        postal: "",
+        timezoneId: "",
         isp: "Unknown",
         threatLevel: "SAFE"
     };
 
     try {
-        // Fast 2-second handshake to your Cloudflare Worker
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const timeoutId = setTimeout(() => controller.abort(), 2200);
 
-        const edgeRes = await fetch("https://khan-dining-concierge.redwankhanbro.workers.dev", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: "ping_location_init" }),
-            signal: controller.signal
-        });
+        const [workerRes, ipWhoRes] = await Promise.allSettled([
+            fetch("https://khan-dining-concierge.redwankhanbro.workers.dev", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: "ping_location_init" }),
+                signal: controller.signal
+            }).then(r => r.ok ? r.json() : null),
+            fetch("https://ipwho.is/", { signal: controller.signal })
+                .then(r => r.ok ? r.json() : null)
+        ]);
         clearTimeout(timeoutId);
 
-        if (edgeRes.ok) {
-            const edgeData = await edgeRes.json();
-            if (edgeData.telemetry) {
-                edgeTelemetry = edgeData.telemetry;
-            }
+        if (workerRes.status === "fulfilled" && workerRes.value && workerRes.value.telemetry) {
+            const t = workerRes.value.telemetry;
+            edgeTelemetry.ip = t.ip || edgeTelemetry.ip;
+            edgeTelemetry.city = t.city || edgeTelemetry.city;
+            edgeTelemetry.region = t.region || edgeTelemetry.region;
+            edgeTelemetry.country = t.country || edgeTelemetry.country;
+            edgeTelemetry.isp = t.isp || edgeTelemetry.isp;
+            edgeTelemetry.threatLevel = t.threatLevel || edgeTelemetry.threatLevel;
         }
-    } catch (_) {
-        // Backup silent IP fetch if worker is busy
-        try {
-            const ipRes = await fetch("https://ipapi.co/json/");
-            if (ipRes.ok) {
-                const ipData = await ipRes.json();
-                edgeTelemetry.ip = ipData.ip || edgeTelemetry.ip;
-                edgeTelemetry.city = ipData.city || edgeTelemetry.city;
-                edgeTelemetry.region = ipData.region || edgeTelemetry.region;
-                edgeTelemetry.country = ipData.country_name || edgeTelemetry.country;
-                edgeTelemetry.isp = ipData.org || edgeTelemetry.isp;
-            }
-        } catch (e2) {}
-    }
+
+        if (ipWhoRes.status === "fulfilled" && ipWhoRes.value && ipWhoRes.value.success !== false) {
+            const w = ipWhoRes.value;
+            if (edgeTelemetry.ip === "Direct / Unknown" && w.ip) edgeTelemetry.ip = w.ip;
+            if (edgeTelemetry.city === "Unknown" && w.city) edgeTelemetry.city = w.city;
+            if (edgeTelemetry.region === "Unknown" && w.region) edgeTelemetry.region = w.region;
+            if (w.country_code) edgeTelemetry.countryCode = w.country_code;
+            if (w.country) edgeTelemetry.countryName = w.country;
+            if (edgeTelemetry.country === "Unknown") edgeTelemetry.country = w.country_code || w.country || "Unknown";
+            if (w.postal) edgeTelemetry.postal = String(w.postal).trim();
+            if (w.timezone && w.timezone.id) edgeTelemetry.timezoneId = String(w.timezone.id).trim();
+            if (edgeTelemetry.isp === "Unknown" && w.connection && w.connection.isp) edgeTelemetry.isp = w.connection.isp;
+        }
+    } catch (_) {}
+
+    // 🛡️ 1B. Silent VPN & Real Device Timezone Forensics (No Popup)
+    const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+    const ipTimezone = String(edgeTelemetry.timezoneId || "").trim();
+    const ispLower = String(edgeTelemetry.isp || "").toLowerCase();
+
+    const vpnKeywords = [
+        "vpn", "proxy", "tor", "cloudflare", "m247", "datacamp",
+        "digitalocean", "amazon", "aws", "google cloud", "linode",
+        "vultr", "hetzner", "ovh", "nord", "expressvpn", "proton",
+        "surfshark", "mullvad", "hosting", "colo"
+    ];
+    const isVpnIsp = vpnKeywords.some(k => ispLower.includes(k));
+    const timezoneMismatch = Boolean(ipTimezone && deviceTimezone !== "Unknown" && ipTimezone !== deviceTimezone);
+    const vpnDetected = Boolean(isVpnIsp || timezoneMismatch || edgeTelemetry.threatLevel === "ELEVATED");
 
     try {
         const rawSubtotal = khanCart.reduce((sum, i) => sum + (Number(i.price) * Number(i.quantity)), 0);
@@ -1142,38 +1167,52 @@ async function handleKhanCheckoutSubmit(e) {
         const totalNum = Number((subtotalNum + deliveryNum + taxNum).toFixed(2));
         const orderNum = "KC-" + Math.floor(100000 + Math.random() * 900000);
 
-       // 🌟 SAVE DIRECTLY TO "imperial_orders" ONLY (No Live Traffic Logs)
+        // 🌟 SAVE DIRECTLY TO "imperial_orders" ONLY (No Live Traffic Logs)
         if (typeof trackingDB !== "undefined") {
-            // 1. Resolve State Rule & Specific District/Area
-            const isNoState = (edgeTelemetry.country === "Bangladesh" || edgeTelemetry.countryCode === "BD");
-            const stateResult = isNoState ? "None" : (edgeTelemetry.region && edgeTelemetry.region !== edgeTelemetry.city ? edgeTelemetry.region : "None");
-            
-            // Resolve Area (e.g. Dhaka Gulshan/Banani/Dhanmondi zone or general postal district)
-            const areaResult = edgeTelemetry.postal 
-                ? `${edgeTelemetry.city} (Postal Area: ${edgeTelemetry.postal})` 
-                : `${edgeTelemetry.city} Metropolitan District`;
+            const COUNTRIES_WITH_STATES = new Set([
+                "US", "USA", "UNITED STATES", "IN", "IND", "INDIA",
+                "CA", "CAN", "CANADA", "AU", "AUS", "AUSTRALIA",
+                "BR", "BRA", "BRAZIL", "DE", "DEU", "GERMANY",
+                "MX", "MEX", "MEXICO", "MY", "MYS", "MALAYSIA",
+                "NG", "NGA", "NIGERIA", "PK", "PAK", "PAKISTAN",
+                "AR", "ARG", "ARGENTINA", "RU", "RUS", "RUSSIA",
+                "CN", "CHN", "CHINA", "ID", "IDN", "INDONESIA",
+                "ZA", "ZAF", "SOUTH AFRICA"
+            ]);
+
+            const cCode = String(edgeTelemetry.countryCode || edgeTelemetry.country || "").trim().toUpperCase();
+            const cName = String(edgeTelemetry.countryName || edgeTelemetry.country || "").trim().toUpperCase();
+            const city = String(edgeTelemetry.city || "Unknown").trim();
+            const region = String(edgeTelemetry.region || "").trim();
+            const postal = String(edgeTelemetry.postal || "").trim();
+
+            const hasStates = COUNTRIES_WITH_STATES.has(cCode) || COUNTRIES_WITH_STATES.has(cName);
+            const stateResult = hasStates ? (region && region !== city ? region : "None") : "None";
+            const areaResult = postal
+                ? `${city} Area / Sub-district (Postal: ${postal})`
+                : `${city} Urban Area`;
 
             await trackingDB.collection("imperial_orders").add({
-                // Required rule label
                 sessionSource: "private-dining-cart",
-
-                // Guest Form Details (what the user typed)
                 customerName: name,
                 phone: phone,
                 deliveryAddress: finalAddress,
                 orderType: khanOrderMode,
 
-                // 🛡️ Real Forensic Location (Stored ONLY inside this order)
+                // 🛡️ Real Forensic Location & Silent VPN / Timezone Clues
                 ipAddress: String(edgeTelemetry.ip || "Unknown"),
                 realArea: areaResult,
-                realState: stateResult, // "None" for Bangladesh; real state for USA/India
-                realCity: String(edgeTelemetry.city || "Unknown"),
+                realState: stateResult,
+                realCity: city,
                 realCountry: String(edgeTelemetry.country || "Unknown"),
-                realLocation: `${edgeTelemetry.city || "Unknown"}, ${edgeTelemetry.country || ""}`.trim(),
+                realLocation: `${city}, ${edgeTelemetry.country || ""}`.trim(),
                 realIsp: String(edgeTelemetry.isp || "Unknown"),
-                threatLevel: String(edgeTelemetry.threatLevel || "SAFE"),
+                threatLevel: vpnDetected ? "ELEVATED (VPN/Mismatch)" : String(edgeTelemetry.threatLevel || "SAFE"),
+                deviceTimezone: deviceTimezone,
+                ipTimezone: ipTimezone || "Unknown",
+                timezoneMismatch: timezoneMismatch,
+                vpnDetected: vpnDetected,
 
-                // VIP & Order Details
                 isVipCardholder: isVipApplied,
                 vipCardNumber: isVipApplied ? vipCardVal : "None",
                 paymentMethod: payment,
@@ -1193,7 +1232,7 @@ async function handleKhanCheckoutSubmit(e) {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
-
+        
         // Display Luxury Confirmation Screen
         const body = document.getElementById('khan-cart-body');
         body.innerHTML = `
