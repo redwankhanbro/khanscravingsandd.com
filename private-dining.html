@@ -901,11 +901,176 @@ function openKhanCart() {
     if (modal) modal.style.display = 'flex';
 }
 
+ let khanCheckoutHasTyped = false;
+let khanOrderWasSubmitted = false;
+let khanUnsubmittedLocLogged = false;
+let cachedCheckoutForensics = null;
+let checkoutClearTimer = null;
+
+async function fetchRealForensicsCached() {
+    if (cachedCheckoutForensics) return cachedCheckoutForensics;
+
+    let edgeTelemetry = {
+        ip: "Direct / Unknown", city: "Unknown", region: "Unknown",
+        country: "Unknown", countryCode: "", countryName: "",
+        postal: "", timezoneId: "", isp: "Unknown", threatLevel: "SAFE"
+    };
+
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2200);
+        const [workerRes, ipWhoRes] = await Promise.allSettled([
+            fetch("https://khan-dining-concierge.redwankhanbro.workers.dev", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: "ping_location_init" }),
+                signal: controller.signal
+            }).then(r => r.ok ? r.json() : null),
+            fetch("https://ipwho.is/", { signal: controller.signal })
+                .then(r => r.ok ? r.json() : null)
+        ]);
+        clearTimeout(timeoutId);
+
+        if (workerRes.status === "fulfilled" && workerRes.value && workerRes.value.telemetry) {
+            const t = workerRes.value.telemetry;
+            edgeTelemetry.ip = t.ip || edgeTelemetry.ip;
+            edgeTelemetry.city = t.city || edgeTelemetry.city;
+            edgeTelemetry.region = t.region || edgeTelemetry.region;
+            edgeTelemetry.country = t.country || edgeTelemetry.country;
+            edgeTelemetry.isp = t.isp || edgeTelemetry.isp;
+            edgeTelemetry.threatLevel = t.threatLevel || edgeTelemetry.threatLevel;
+        }
+
+        if (ipWhoRes.status === "fulfilled" && ipWhoRes.value && ipWhoRes.value.success !== false) {
+            const w = ipWhoRes.value;
+            if (edgeTelemetry.ip === "Direct / Unknown" && w.ip) edgeTelemetry.ip = w.ip;
+            if (edgeTelemetry.city === "Unknown" && w.city) edgeTelemetry.city = w.city;
+            if (edgeTelemetry.region === "Unknown" && w.region) edgeTelemetry.region = w.region;
+            if (w.country_code) edgeTelemetry.countryCode = w.country_code;
+            if (w.country) edgeTelemetry.countryName = w.country;
+            if (edgeTelemetry.country === "Unknown") edgeTelemetry.country = w.country_code || w.country || "Unknown";
+            if (w.postal) edgeTelemetry.postal = String(w.postal).trim();
+            if (w.timezone && w.timezone.id) edgeTelemetry.timezoneId = String(w.timezone.id).trim();
+            if (edgeTelemetry.isp === "Unknown" && w.connection && w.connection.isp) edgeTelemetry.isp = w.connection.isp;
+        }
+    } catch (_) {}
+
+    const COUNTRIES_WITH_STATES = new Set([
+        "US", "USA", "UNITED STATES", "IN", "IND", "INDIA",
+        "CA", "CAN", "CANADA", "AU", "AUS", "AUSTRALIA",
+        "BR", "BRA", "BRAZIL", "DE", "DEU", "GERMANY",
+        "MX", "MEX", "MEXICO", "MY", "MYS", "MALAYSIA",
+        "NG", "NGA", "NIGERIA", "PK", "PAK", "PAKISTAN",
+        "AR", "ARG", "ARGENTINA", "RU", "RUS", "RUSSIA",
+        "CN", "CHN", "CHINA", "ID", "IDN", "INDONESIA",
+        "ZA", "ZAF", "SOUTH AFRICA"
+    ]);
+
+    const cCode = String(edgeTelemetry.countryCode || edgeTelemetry.country || "").trim().toUpperCase();
+    const cName = String(edgeTelemetry.countryName || edgeTelemetry.country || "").trim().toUpperCase();
+    const city = String(edgeTelemetry.city || "Unknown").trim();
+    const region = String(edgeTelemetry.region || "").trim();
+    const postal = String(edgeTelemetry.postal || "").trim();
+
+    const hasStates = COUNTRIES_WITH_STATES.has(cCode) || COUNTRIES_WITH_STATES.has(cName);
+    const stateResult = hasStates ? (region && region !== city ? region : "None") : "None";
+    const areaResult = postal ? `${city} Area / Sub-district (Postal: ${postal})` : `${city} Urban Area`;
+
+    const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+    const ipTimezone = String(edgeTelemetry.timezoneId || "").trim();
+    const ispLower = String(edgeTelemetry.isp || "").toLowerCase();
+    const vpnKeywords = ["vpn", "proxy", "tor", "cloudflare", "m247", "datacamp", "digitalocean", "amazon", "aws", "google cloud", "linode", "vultr", "hetzner", "ovh", "nord", "expressvpn", "proton", "surfshark", "mullvad", "hosting", "colo"];
+    const isVpnIsp = vpnKeywords.some(k => ispLower.includes(k));
+    const timezoneMismatch = Boolean(ipTimezone && deviceTimezone !== "Unknown" && ipTimezone !== deviceTimezone);
+    const vpnDetected = Boolean(isVpnIsp || timezoneMismatch || edgeTelemetry.threatLevel === "ELEVATED");
+
+    cachedCheckoutForensics = {
+        ipAddress: String(edgeTelemetry.ip || "Unknown"),
+        realArea: areaResult,
+        realState: stateResult,
+        realCity: city,
+        realCountry: String(edgeTelemetry.country || "Unknown"),
+        realLocation: `${city}, ${edgeTelemetry.country || ""}`.trim(),
+        realIsp: String(edgeTelemetry.isp || "Unknown"),
+        threatLevel: vpnDetected ? "ELEVATED (VPN/Mismatch)" : String(edgeTelemetry.threatLevel || "SAFE"),
+        deviceTimezone,
+        ipTimezone: ipTimezone || "Unknown",
+        timezoneMismatch,
+        vpnDetected
+    };
+    return cachedCheckoutForensics;
+}
+
+async function logAbandonedCheckoutLocation(reason) {
+    if (!khanCheckoutHasTyped || khanOrderWasSubmitted || khanUnsubmittedLocLogged) return;
+    khanUnsubmittedLocLogged = true;
+
+    const geo = cachedCheckoutForensics || await fetchRealForensicsCached();
+    if (typeof trackingDB !== "undefined") {
+        // STRICTLY LOCATION ONLY: Zero items and zero prices tracked
+        trackingDB.collection("checkout_location_pings").add({
+            page: "private-dining.html",
+            status: "typed_not_submitted",
+            abandonReason: String(reason || "left_checkout_form"),
+            ipAddress: geo.ipAddress,
+            realArea: geo.realArea,
+            realState: geo.realState,
+            realCity: geo.realCity,
+            realCountry: geo.realCountry,
+            realLocation: geo.realLocation,
+            realIsp: geo.realIsp,
+            threatLevel: geo.threatLevel,
+            deviceTimezone: geo.deviceTimezone,
+            ipTimezone: geo.ipTimezone,
+            timezoneMismatch: geo.timezoneMismatch,
+            vpnDetected: geo.vpnDetected,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt: new Date().toISOString()
+        }).catch(err => console.warn("Location ping skipped:", err));
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const fieldIds = ["khan-cust-name", "khan-cust-phone", "khan-cust-address", "khan-vip-card-id"];
+    fieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", () => {
+            if (!khanCheckoutHasTyped) {
+                khanCheckoutHasTyped = true;
+                fetchRealForensicsCached(); // Pre-loads location silently on first keystroke
+            }
+            // If visitor typed and then deleted all text, log location after 4s idle
+            clearTimeout(checkoutClearTimer);
+            const allCleared = fieldIds.every(fid => {
+                const inp = document.getElementById(fid);
+                return !inp || inp.value.trim() === "";
+            });
+            if (allCleared && khanCheckoutHasTyped && !khanOrderWasSubmitted) {
+                checkoutClearTimer = setTimeout(() => {
+                    logAbandonedCheckoutLocation("cleared_form_inputs");
+                }, 4000);
+            }
+        });
+    });
+});
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        logAbandonedCheckoutLocation("left_or_closed_tab");
+    }
+});
+
+window.addEventListener("pagehide", () => {
+    logAbandonedCheckoutLocation("left_private_dining_page");
+});
+
 function closeKhanCart() {
+    logAbandonedCheckoutLocation("closed_checkout_modal");
     const modal = document.getElementById('khan-cart-modal');
     if (modal) modal.style.display = 'none';
 }
-
+  
 function setKhanOrderMode(mode) {
     khanOrderMode = mode;
     const btnDelivery = document.getElementById('btn-mode-delivery');
