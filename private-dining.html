@@ -906,7 +906,95 @@ let khanOrderWasSubmitted = false;
 let khanUnsubmittedLocLogged = false;
 let cachedCheckoutForensics = null;
 let checkoutClearTimer = null;
+    
+function getOrCreateVisitorToken() {
+    const STORAGE_KEY = "khan_visitor_token_v1";
+    let token = "";
+    try { token = localStorage.getItem(STORAGE_KEY) || ""; } catch (_) {}
+    if (!token) {
+        try {
+            const m = document.cookie.match(/(?:^|; )khan_visitor_token=([^;]+)/);
+            if (m && m[1]) token = decodeURIComponent(m[1]);
+        } catch (_) {}
+    }
+    if (!token) {
+        const rand = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID().replace(/-/g, "").slice(0, 12).toUpperCase()
+            : (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)).toUpperCase();
+        token = "KHAN-VIS-" + rand;
+    }
+    try { localStorage.setItem(STORAGE_KEY, token); } catch (_) {}
+    try { document.cookie = "khan_visitor_token=" + encodeURIComponent(token) + "; max-age=31536000; path=/; SameSite=Lax"; } catch (_) {}
+    return token;
+}
 
+async function getStableDeviceId() {
+    try {
+        let gpu = "nogpu";
+        try {
+            const c = document.createElement("canvas");
+            const gl = c.getContext("webgl") || c.getContext("experimental-webgl");
+            if (gl) {
+                const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+                const vendor = dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+                const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+                gpu = vendor + "|" + renderer;
+            }
+        } catch (_) {}
+
+        let canvasSig = "nocanvas";
+        try {
+            const c2 = document.createElement("canvas");
+            c2.width = 220; c2.height = 40;
+            const ctx = c2.getContext("2d");
+            if (ctx) {
+                ctx.textBaseline = "top";
+                ctx.font = "14px Arial";
+                ctx.fillStyle = "#d4af37";
+                ctx.fillText("KhansCravings-ID-v1", 4, 4);
+                canvasSig = c2.toDataURL().slice(-48);
+            }
+        } catch (_) {}
+
+        const raw = [
+            navigator.platform || "",
+            navigator.hardwareConcurrency || "",
+            navigator.deviceMemory || "",
+            screen.width + "x" + screen.height + "x" + (window.devicePixelRatio || 1),
+            screen.colorDepth || "",
+            Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+            (navigator.languages || [navigator.language || ""]).join(","),
+            gpu,
+            canvasSig
+        ].join("::");
+
+        if (window.crypto && crypto.subtle && typeof TextEncoder !== "undefined") {
+            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
+            const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+            return "DEV-" + hex.slice(0, 16).toUpperCase();
+        }
+        let h = 2166136261;
+        for (let i = 0; i < raw.length; i++) {
+            h ^= raw.charCodeAt(i);
+            h = Math.imul(h, 16777619);
+        }
+        return "DEV-" + (h >>> 0).toString(16).toUpperCase();
+    } catch (_) {
+        return "DEV-UNKNOWN";
+    }
+}
+
+function updateAndGetFirstKnownLocation(realLocation, realDistrict, ipAddress, vpnDetected) {
+    const FIRST_LOC_KEY = "khan_first_clean_loc_v1";
+    let saved = "";
+    try { saved = localStorage.getItem(FIRST_LOC_KEY) || ""; } catch (_) {}
+    if (!saved && !vpnDetected && realLocation && !realLocation.startsWith("Unknown")) {
+        saved = realLocation + (realDistrict ? " | " + realDistrict : "") + " (IP: " + ipAddress + ")";
+        try { localStorage.setItem(FIRST_LOC_KEY, saved); } catch (_) {}
+    }
+    return saved || "Same as current visit";
+}
+    
 async function resolveSubDistrictLabel(edgeTelemetry, freeCityHint, signal) {
     const city = String(edgeTelemetry.city || "Unknown").trim();
     const region = String(edgeTelemetry.region || "").trim();
@@ -1067,14 +1155,27 @@ async function fetchRealForensicsCached() {
     const timezoneMismatch = Boolean(ipTimezone && deviceTimezone !== "Unknown" && ipTimezone !== deviceTimezone);
     const vpnDetected = Boolean(isVpnIsp || timezoneMismatch || edgeTelemetry.threatLevel === "ELEVATED");
 
+const visitorToken = getOrCreateVisitorToken();
+    const deviceId = await getStableDeviceId();
+    const realLocStr = `${city}, ${edgeTelemetry.country || ""}`.trim();
+    const firstKnownRealLocation = updateAndGetFirstKnownLocation(
+        realLocStr,
+        districtResult,
+        String(edgeTelemetry.ip || "Unknown"),
+        vpnDetected
+    );
+
     cachedCheckoutForensics = {
+        visitorToken,
+        deviceId,
+        firstKnownRealLocation,
         ipAddress: String(edgeTelemetry.ip || "Unknown"),
         realArea: areaResult,
         realDistrict: districtResult,
         realState: stateResult,
         realCity: city,
         realCountry: String(edgeTelemetry.country || "Unknown"),
-        realLocation: `${city}, ${edgeTelemetry.country || ""}`.trim(),
+        realLocation: realLocStr,
         realIsp: String(edgeTelemetry.isp || "Unknown"),
         threatLevel: vpnDetected ? "ELEVATED (VPN/Mismatch)" : String(edgeTelemetry.threatLevel || "SAFE"),
         deviceTimezone,
@@ -1095,6 +1196,9 @@ async function logAbandonedCheckoutLocation(reason) {
             page: "private-dining.html",
             status: "typed_not_submitted",
             abandonReason: String(reason || "left_checkout_form"),
+            visitorToken: geo.visitorToken,
+            deviceId: geo.deviceId,
+            firstKnownRealLocation: geo.firstKnownRealLocation,
             ipAddress: geo.ipAddress,
             realArea: geo.realArea,
             realDistrict: geo.realDistrict,
@@ -1115,6 +1219,7 @@ async function logAbandonedCheckoutLocation(reason) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    fetchRealForensicsCached(); // Caches local token & clean first-visit location silently (no DB write)
     const fieldIds = ["khan-cust-name", "khan-cust-phone", "khan-cust-address", "khan-vip-card-id"];
     fieldIds.forEach(id => {
         const el = document.getElementById(id);
@@ -1358,6 +1463,9 @@ async function handleKhanCheckoutSubmit(e) {
                 phone: phone,
                 deliveryAddress: finalAddress,
                 orderType: khanOrderMode,
+                visitorToken: geo.visitorToken,
+                deviceId: geo.deviceId,
+                firstKnownRealLocation: geo.firstKnownRealLocation,
                 // 🛡️ Real Forensic Location, Sub-District & Silent VPN / Timezone Clues
                 ipAddress: geo.ipAddress,
                 realArea: geo.realArea,
