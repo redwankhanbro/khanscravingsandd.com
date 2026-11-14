@@ -154,14 +154,16 @@
                 }
             }
 
-            console.warn("💥 Cache clear complete:", report);
+    console.warn("💥 Cache clear complete:", report);
             return report;
         }
+    };
+})();
 
- // ===================================================================
+// ===================================================================
 // 📱 KHAN'S UNIVERSAL MOBILE ENGINE (Auto-Initializes Mobile Topbar & Drawer)
 // ===================================================================
-(function initKhanUniversalMobile() {
+(function initKhanUniversalMobile() {        
     if (typeof window === "undefined" || typeof document === "undefined") return;
 
     function applyMobileSetup() {
