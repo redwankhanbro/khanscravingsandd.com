@@ -456,58 +456,65 @@
     </main>
 
     <!-- 🛒 Shopping Bag Checkout Counter System Scripts -->
-    <script>
-        // Retrieve the current persistent cart array baseline or seed a fresh empty database layout
-        let activeCartItems = JSON.parse(localStorage.getItem('khans_cart_vault')) || [];
-        
-        // Dynamically initialize your sidebar counter text node on fresh page rendering loops
-        if (document.getElementById('sidebar-cart-counter')) {
-            document.getElementById('sidebar-cart-counter').innerText = activeCartItems.length + (activeCartItems.length === 1 ? ' Item' : ' Items');
+  <script>
+        function readCartArray() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem('khans_cart_vault') || '[]');
+                if (Array.isArray(parsed)) return parsed;
+                if (parsed && typeof parsed === 'object') {
+                    return Object.values(parsed).filter(item => item && item.name);
+                }
+                return [];
+            } catch (e) {
+                return [];
+            }
         }
 
-       // EXACT OBJECT-BASED MATRICES TO CORRECT ID RENDERING ON CART PAGE
-     function addToCart(productId, productName, productPrice) {
-        // Read the exact same matching storage key variable used by see your-cart.html
-        // We use an Object {} fallback instead of an Array [] fallback to keep data structured
-        let currentCartInstance = {};
-        try {
-            currentCartInstance = JSON.parse(localStorage.getItem('khans_cart_vault')) || {};
-            if (Array.isArray(currentCartInstance)) { currentCartInstance = {}; } // Reset old array blocks
-        } catch(e) {
-            currentCartInstance = {};
+        function refreshSidebarCartCount(cartArr) {
+            const totalItems = cartArr.reduce((sum, item) => sum + (parseInt(item.quantity, 10) || 1), 0);
+            const el = document.getElementById('sidebar-cart-counter');
+            if (el) el.innerText = totalItems + (totalItems === 1 ? ' Item' : ' Items');
         }
 
-        const quantity = 1;
-        const unitPrice = parseFloat(productPrice) || 0;
+        refreshSidebarCartCount(readCartArray());
 
-        // If item already exists in local storage map, just increase its quantity loop
-        if (currentCartInstance[productId]) {
-            currentCartInstance[productId].quantity += quantity;
-        } else {
-            // Securely create the object record structured exactly how cart.html reads it!
-            currentCartInstance[productId] = {
-                id: productId,
-                name: String(productName),
-                price: unitPrice,
-                quantity: quantity
-            };
-        }
+        function addToCart(productId, productName, productPrice) {
+            // Auto-read dish name & price from clicked .food-card if called as addToCart()
+            if (!productName && typeof event !== 'undefined' && event && event.target) {
+                const card = event.target.closest('.food-card');
+                if (card) {
+                    const h3 = card.querySelector('h3');
+                    const priceEl = card.querySelector('.price');
+                    productName = h3 ? h3.innerText.trim() : 'Signature Dish';
+                    productPrice = priceEl ? parseFloat(priceEl.innerText.replace(/[^0-9.]/g, '')) : 0;
+                    productId = 'FOOD-' + productName.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 18);
+                }
+            }
 
-        // Lock the updated object back securely inside the persistent browser local memory
-        localStorage.setItem('khans_cart_vault', JSON.stringify(currentCartInstance));
+            if (!productName) return;
+            const unitPrice = parseFloat(productPrice) || 0;
+            const activeCart = readCartArray();
+            const existing = activeCart.find(item => String(item.id) === String(productId) || item.name === productName);
 
-        // Instantly refresh your bottom-left sidebar counter text row badge safely
-        const count = Object.keys(currentCartInstance).length;
-        if (document.getElementById('sidebar-cart-counter')) {
-            document.getElementById('sidebar-cart-counter').innerText = count + (count === 1 ? ' Item' : ' Items');
-        }
-        
-        // Fire your alert notification block confirming capture success loop parameters
-        alert(`✨ ${productName} [ID: ${productId}] has been appended to your select bin ledger!`);
-        
-        // Dynamic analytical click stream hook tracker (Dispatches event to your Firebase console live)
-        if (typeof window.logUserAction === "function") {
-            window.logUserAction(`Added item to cart: ${productName}`);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity, 10) || 1) + 1;
+            } else {
+                activeCart.push({
+                    id: String(productId || ('FOOD-' + Date.now())),
+                    name: String(productName),
+                    price: unitPrice,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('khans_cart_vault', JSON.stringify(activeCart));
+            refreshSidebarCartCount(activeCart);
+
+            alert(`✨ ${productName} [ID: ${productId}] has been appended to your select bin ledger!`);
+
+            if (typeof window.logUserAction === "function") {
+                window.logUserAction(`Added item to cart: ${productName}`);
+            }
         }
     </script>    
 
