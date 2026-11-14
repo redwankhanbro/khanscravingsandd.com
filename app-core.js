@@ -157,5 +157,74 @@
             console.warn("💥 Cache clear complete:", report);
             return report;
         }
-    };
-})();
+
+ // ===================================================================
+// 📱 KHAN'S UNIVERSAL MOBILE ENGINE (Auto-Initializes Mobile Topbar & Drawer)
+// ===================================================================
+(function initKhanUniversalMobile() {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
+    function applyMobileSetup() {
+        // 1. Ensure correct viewport (fixes width=width-device-width typo)
+        let vp = document.querySelector('meta[name="viewport"]');
+        if (!vp) {
+            vp = document.createElement('meta');
+            vp.name = 'viewport';
+            document.head.appendChild(vp);
+        }
+        vp.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0';
+
+        // 2. Automatically link mobile.css if not already in head
+        if (!document.getElementById('khan-mobile-stylesheet')) {
+            const link = document.createElement('link');
+            link.id = 'khan-mobile-stylesheet';
+            link.rel = 'stylesheet';
+            link.href = 'mobile.css';
+            document.head.appendChild(link);
+        }
+
+        // 3. Automatically inject Mobile Top Header Bar if missing
+        if (!document.querySelector('.mobile-top-nav-bar')) {
+            const header = document.createElement('header');
+            header.className = 'mobile-top-nav-bar';
+            header.innerHTML = `
+                <a href="index.html" class="mobile-brand-title">👑 Khan's Cravings</a>
+                <button type="button" class="mobile-menu-btn" onclick="window.KhanMobileNav.toggle()">☰ Menu</button>
+            `;
+            document.body.insertBefore(header, document.body.firstChild);
+        }
+
+        // 4. Automatically inject Backdrop for tap-to-close
+        if (!document.getElementById('mobile-nav-backdrop')) {
+            const backdrop = document.createElement('div');
+            backdrop.id = 'mobile-nav-backdrop';
+            backdrop.onclick = () => window.KhanMobileNav.close();
+            document.body.appendChild(backdrop);
+        }
+
+        // 5. Global Mobile Drawer Controller
+        window.KhanMobileNav = {
+            open() {
+                document.querySelector('.sidebar')?.classList.add('mobile-open');
+                const b = document.getElementById('mobile-nav-backdrop');
+                if (b) b.style.display = 'block';
+            },
+            close() {
+                document.querySelector('.sidebar')?.classList.remove('mobile-open');
+                const b = document.getElementById('mobile-nav-backdrop');
+                if (b) b.style.display = 'none';
+            },
+            toggle() {
+                const s = document.querySelector('.sidebar');
+                if (s && s.classList.contains('mobile-open')) this.close();
+                else this.open();
+            }
+        };
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyMobileSetup);
+    } else {
+        applyMobileSetup();
+    }
+})();       
