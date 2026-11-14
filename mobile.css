@@ -1,1 +1,337 @@
+/* =================================================================== */
+/* 👑 KHAN'S CRAVINGS - UNIVERSAL RESPONSIVE MOBILE ARCHITECTURE       */
+/* 100% PRESERVES LAPTOP & DESKTOP DESIGN (Zero Changes to Laptops)    */
+/* =================================================================== */
 
+/* Desktop defaults: Hide mobile nav elements on laptops */
+.mobile-top-nav-bar { display: none !important; }
+.sidebar-close-btn { display: none !important; }
+#mobile-nav-backdrop { display: none !important; }
+
+/* 📱 MOBILE VIEWPORT MATRIX (Screens <= 992px) */
+@media screen and (max-width: 992px) {
+    /* 1. Global Viewport & Body Flow */
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* 2. Universal Sticky Top Luxury Header Bar for Phones */
+    .mobile-top-nav-bar {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        background: #080808 !important;
+        border-bottom: 1px solid #222 !important;
+        padding: 12px 16px !important;
+        position: sticky !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        z-index: 99999 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
+    }
+
+    .mobile-brand-title {
+        margin: 0 !important;
+        font-size: 15px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        color: #FF6B01 !important;
+        text-decoration: none !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+
+    .mobile-menu-btn {
+        background: #14151f !important;
+        border: 1px solid #333 !important;
+        color: #fff !important;
+        padding: 6px 12px !important;
+        border-radius: 6px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        outline: none !important;
+    }
+
+    /* 3. Universal Slide-Out Sidebar Drawer */
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: -300px !important;
+        width: 280px !important;
+        height: 100vh !important;
+        background: #07070a !important;
+        border-right: 1px solid #222 !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.85) !important;
+        z-index: 100002 !important;
+        box-sizing: border-box !important;
+        padding: 24px 18px !important;
+        overflow-y: auto !important;
+    }
+
+    .sidebar.mobile-open {
+        left: 0 !important;
+    }
+
+    .sidebar-close-btn {
+        display: block !important;
+        background: none !important;
+        border: none !important;
+        color: #aaa !important;
+        font-size: 28px !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        outline: none !important;
+    }
+
+    #mobile-nav-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: rgba(0,0,0,0.75) !important;
+        backdrop-filter: blur(4px) !important;
+        z-index: 100001 !important;
+    }
+
+    /* 4. Universal Full-Width Content Container */
+    .content,
+    main.content,
+    div.content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        padding: 20px 14px 90px 14px !important;
+        overflow-x: hidden !important;
+    }
+
+    /* 5. Typography Scaling */
+    .page-title,
+    .section-title,
+    .about-title,
+    .category-title {
+        font-size: 20px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 20px !important;
+        padding-left: 10px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .section-heading,
+    .page-header h2 {
+        font-size: 16px !important;
+        margin-bottom: 15px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    /* 6. Universal Card Containers Across All Pages */
+    .block-section,
+    .section-block,
+    .premium-signup-box,
+    .about-section,
+    .booking-box,
+    .checkout-box,
+    .festival-hub,
+    .top-booking-box {
+        padding: 18px 14px !important;
+        border-radius: 10px !important;
+        margin-bottom: 20px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 7. ALL SITE GRIDS TO SINGLE COLUMN ON PHONES */
+    .grid,
+    .grid-3,
+    .table-grid-mesh,
+    .column-form-grid,
+    .schedule-grid,
+    .vip-grid,
+    .checkout-grid,
+    .service-grid,
+    .product-grid,
+    .offers-matrix,
+    .events-grid,
+    .facility-grid,
+    .dashboard-grid,
+    .split-layout-row,
+    .showcase-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 8. Food Cards, Images & Details */
+    .food-card,
+    .tier-form-card,
+    .table-node-card,
+    .schedule-day-card,
+    .vip-card,
+    .method-card,
+    .service-row-node {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+    }
+
+    .food-img-container,
+    .food-img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 220px !important;
+        object-fit: cover !important;
+    }
+
+    .price-row {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .btn-cart,
+    .btn-submit,
+    .btn-signup-submit,
+    .btn-booking-submit,
+    .btn-festival,
+    .btn-see-other,
+    .btn-place-order {
+        width: 100% !important;
+        padding: 12px 14px !important;
+        font-size: 13px !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+    }
+
+    /* 9. ALL SITE FORMS TO SINGLE COLUMN */
+    .signup-form,
+    .booking-form,
+    .checkout-form,
+    .festival-form,
+    .card-inner-form,
+    .card-form,
+    .club-form,
+    .bbq-checkout-form,
+    .registry-form,
+    .vip-form,
+    .discount-form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .form-group,
+    .form-group.full-width,
+    .code-row {
+        width: 100% !important;
+        grid-column: span 1 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+    }
+
+    input, select, textarea {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        font-size: 14px !important;
+        padding: 10px 12px !important;
+    }
+
+    /* 10. Settlement Desk & Checkout Cart */
+    .pay-methods {
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    .desk-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 12px 0 !important;
+    }
+
+    .qty-price {
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+
+    /* 11. Floating Cart & Modals */
+    #khan-cart-floating-btn,
+    .cart-status {
+        bottom: 16px !important;
+        right: 14px !important;
+        padding: 10px 16px !important;
+        font-size: 12px !important;
+    }
+
+    #khan-cart-modal > div,
+    #inspector-overlay-window > div,
+    .modal-overlay > div,
+    .modal-layer > div {
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 20px 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 12. Chatbot Container */
+    #khans-extracted-chatbot-panel {
+        padding: 18px 14px !important;
+        margin: 15px auto !important;
+        max-width: 100% !important;
+    }
+
+    #panel-msg-stream {
+        height: 280px !important;
+    }
+
+    /* 13. Floor Status Scroller Tray */
+    .table-scroll-tray {
+        height: 300px !important;
+        padding: 8px !important;
+    }
+
+    .dropdown-toolbar-row {
+        justify-content: stretch !important;
+        padding-right: 0 !important;
+    }
+
+    .plus-btn-box {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        padding: 12px !important;
+    }
+
+    .plus-btn-box input {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
