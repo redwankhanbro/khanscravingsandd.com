@@ -1,28 +1,31 @@
 /**
  * 👑 KHAN'S CRAVINGS - SYSTEM ENGINE & STORAGE CORE
- * Fixed key allocation array to align directly with homepage buttons
+ * Array-unified storage matching see your-cart.html
  */
 (() => {
     "use strict";
 
-    // 🌟 MUST MATCH YOUR HOMEPAGE STORAGE KEY EXACTLY!
-    const STORE_KEY = "khans_cart_vault"; 
+    const STORE_KEY = "khans_cart_vault";
     const DRAFT_KEY = "khan_checkout_draft";
 
-
-    // ---------- 🛡️ SAFE STORAGE PARSING UTILITIES ----------
-    const safeParse = (raw, fallback = {}) => {
+    // Safely parse as Array (auto-converts legacy Object format if present)
+    const safeParse = (raw) => {
         try {
-            const parsed = JSON.parse(raw || "{}");
-            return (parsed && typeof parsed === "object" && !Array.isArray(parsed)) ? parsed : fallback;
+            const parsed = JSON.parse(raw || "[]");
+            if (Array.isArray(parsed)) return parsed;
+            if (parsed && typeof parsed === "object") {
+                return Object.values(parsed).filter(item => item && item.name);
+            }
+            return [];
         } catch {
-            return fallback;
+            return [];
         }
     };
 
     const save = (data) => {
         try {
-            localStorage.setItem(STORE_KEY, JSON.stringify(data));
+            const arr = Array.isArray(data) ? data : [];
+            localStorage.setItem(STORE_KEY, JSON.stringify(arr));
             return true;
         } catch (e) {
             console.error("[KhanEngine] Failed to write to localStorage:", e);
@@ -30,101 +33,90 @@
         }
     };
 
-    // ---------- 🎛️ PUBLIC MAIN CORE OPERATIONS ----------
     window.KhanEngine = {
-
-        /** Returns the full cart database object state */
         getCart() {
             return safeParse(localStorage.getItem(STORE_KEY));
         },
 
-        /** Returns how many unique items reside inside the database ledger rows */
         getDatabaseSize() {
             const cart = this.getCart();
-            const count = Object.keys(cart).length;
-            console.log(`📊 [DATABASE STATUS]: Active items = ${count}`);
+            console.log(`📊 [DATABASE STATUS]: Active items = ${cart.length}`);
             return cart;
         },
 
-        /** Fetch a single item block by its unique ID */
         getItem(id) {
-            return this.getCart()[id] || null;
+            return this.getCart().find(item => String(item.id) === String(id)) || null;
         },
 
-        /** Inserts a food selection item or cleanly increments quantity loops */
         insertItem(id, name, price, qty = 1) {
             if (!id || !name) {
                 console.warn("[KhanEngine] insertItem requires valid id and name params");
                 return false;
             }
-
             const cart = this.getCart();
             const quantity = Math.max(1, parseInt(qty, 10) || 1);
             const unitPrice = parseFloat(price) || 0;
+            const existing = cart.find(item => String(item.id) === String(id));
 
-            if (cart[id]) {
-                cart[id].quantity += quantity;
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity, 10) || 1) + quantity;
             } else {
-                cart[id] = {
-                    id: id,
+                cart.push({
+                    id: String(id),
                     name: String(name),
                     price: unitPrice,
                     quantity: quantity
-                };
+                });
             }
 
             const success = save(cart);
             if (success) {
-                console.log(`✅ [INSERT SUCCESS]: ${name} (ID: ${id}) updated in local storage grid.`);
+                console.log(`✅ [INSERT SUCCESS]: ${name} (ID: ${id}) updated in cart.`);
             }
             return success;
         },
 
-        /** Modifies the quantity matrix count. Setting qty to 0 invokes automatic row removal */
         updateQuantity(id, qty) {
             const cart = this.getCart();
-            if (!cart[id]) return false;
+            const item = cart.find(i => String(i.id) === String(id));
+            if (!item) return false;
 
             const newQty = parseInt(qty, 10);
             if (isNaN(newQty) || newQty <= 0) {
                 return this.removeItem(id);
             }
-
-            cart[id].quantity = newQty;
+            item.quantity = newQty;
             return save(cart);
         },
 
-        /** Removes a single item row from the database tracking canvas */
         removeItem(id) {
             const cart = this.getCart();
-            if (!cart[id]) return false;
-
-            delete cart[id];
-            const success = save(cart);
+            const next = cart.filter(i => String(i.id) !== String(id));
+            if (next.length === cart.length) return false;
+            const success = save(next);
             if (success) {
                 console.log(`🗑️ [DELETE SUCCESS]: Item ID ${id} cleared from basket.`);
             }
             return success;
         },
 
-        /** Wipes the local shopping cart register completely */
         clearCart() {
             localStorage.removeItem(STORE_KEY);
             console.log("🧹 Local cart register wiped clean.");
             return true;
         },
 
-        /** Computes active total values, line-item quantities, and grand pricing structures */
         getTotals() {
             const cart = this.getCart();
-            let itemCount = 0;
+            let itemCount = cart.length;
             let totalQuantity = 0;
             let totalPrice = 0;
 
-            for (const item of Object.values(cart)) {
-                itemCount += 1;
-                totalQuantity += item.quantity;
-                totalPrice += item.price * item.quantity;
+            for (const item of cart) {
+                const q = parseInt(item.quantity, 10) || 1;
+                const p = parseFloat(item.price) || 0;
+                totalQuantity += q;
+                totalPrice += p * q;
             }
 
             return {
@@ -134,15 +126,12 @@
             };
         },
 
-        /** Structural deep cache cleanup (Mimics WordPress optimization plugins) */
         async clearSystemCache() {
             console.log("🔄 Starting deep cache purge pass...");
             const report = [];
-
             localStorage.removeItem(STORE_KEY);
             localStorage.removeItem(DRAFT_KEY);
             report.push("Local database + checkout draft: FLUSHED");
-
             if ("caches" in window) {
                 try {
                     const names = await caches.keys();
@@ -153,8 +142,7 @@
                     console.warn(e);
                 }
             }
-
-    console.warn("💥 Cache clear complete:", report);
+            console.warn("💥 Cache clear complete:", report);
             return report;
         }
     };
