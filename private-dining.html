@@ -996,6 +996,29 @@ function updateAndGetFirstKnownLocation(realLocation, realDistrict, ipAddress, v
     return saved || "Same as current visit";
 }
     
+function updateAndGetFirstCleanCoords(lat, lon, vpnDetected) {
+    const KEY = "khan_first_clean_coords_v1";
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (_) {}
+    if (!saved && !vpnDetected && Number.isFinite(lat) && Number.isFinite(lon) && lat !== 0 && lon !== 0) {
+        saved = { lat: Number(lat.toFixed(6)), lon: Number(lon.toFixed(6)) };
+        try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (_) {}
+    }
+    return saved;
+}
+
+function haversineKm(lat1, lon1, lat2, lon2) {
+    const toRad = (deg) => (deg * Math.PI) / 180;
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+    
 async function resolveSubDistrictLabel(edgeTelemetry, freeCityHint, signal) {
     const city = String(edgeTelemetry.city || "Unknown").trim();
     const region = String(edgeTelemetry.region || "").trim();
@@ -1166,6 +1189,19 @@ const visitorToken = getOrCreateVisitorToken();
         vpnDetected
     );
 
+    const rawLat = Number(edgeTelemetry.lat);
+    const rawLon = Number(edgeTelemetry.lon);
+    const ipLat = Number.isFinite(rawLat) && rawLat !== 0 ? Number(rawLat.toFixed(6)) : null;
+    const ipLon = Number.isFinite(rawLon) && rawLon !== 0 ? Number(rawLon.toFixed(6)) : null;
+    const firstCleanCoords = updateAndGetFirstCleanCoords(ipLat, ipLon, vpnDetected);
+
+    const anchorLat = (vpnDetected && firstCleanCoords) ? firstCleanCoords.lat : ipLat;
+    const anchorLon = (vpnDetected && firstCleanCoords) ? firstCleanCoords.lon : ipLon;
+    const hasCleanPreVpnAnchor = Boolean(vpnDetected && firstCleanCoords);
+    const basePrecision = hasCleanPreVpnAnchor
+        ? "cached_clean_visit_before_vpn"
+        : (vpnDetected ? "vpn_masked_ip" : ((anchorLat !== null && anchorLon !== null) ? "approximate_ip" : "unavailable"));
+
     cachedCheckoutForensics = {
         visitorToken,
         deviceId,
@@ -1182,15 +1218,100 @@ const visitorToken = getOrCreateVisitorToken();
         deviceTimezone,
         ipTimezone: ipTimezone || "Unknown",
         timezoneMismatch,
-        vpnDetected
+        vpnDetected,
+        _lat: anchorLat,
+        _lon: anchorLon,
+        _hasCleanPreVpnAnchor: hasCleanPreVpnAnchor,
+        locationPrecision: basePrecision
     };
     return cachedCheckoutForensics;
+}
+
+async function resolveThreeMapFields(baseGeo, skipTypedLookup = false) {
+    let finalLat = baseGeo._lat ?? null;
+    let finalLon = baseGeo._lon ?? null;
+    let precisionMode = baseGeo.locationPrecision || "unavailable";
+    let matchStatus = "NO_ADDRESS_TYPED";
+    let typedLat = null;
+    let typedLon = null;
+
+    const addrEl = document.getElementById("khan-cust-address");
+    const typedAddr = addrEl ? addrEl.value.trim() : "";
+
+    if (!skipTypedLookup && typedAddr.length >= 6) {
+        matchStatus = "UNMATCHED_OR_FAKE_TEXT";
+        try {
+            const c = new AbortController();
+            const t = setTimeout(() => c.abort(), 1400);
+            const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(typedAddr)}&lang=en&limit=1`, { signal: c.signal });
+            clearTimeout(t);
+            if (res.ok) {
+                const data = await res.json();
+                const coords = data?.features?.[0]?.geometry?.coordinates;
+                if (Array.isArray(coords) && coords.length === 2) {
+                    const pLon = Number(Number(coords[0]).toFixed(6));
+                    const pLat = Number(Number(coords[1]).toFixed(6));
+                    if (Number.isFinite(pLat) && Number.isFinite(pLon)) {
+                        typedLat = pLat;
+                        typedLon = pLon;
+                        if (baseGeo.vpnDetected && !baseGeo._hasCleanPreVpnAnchor) {
+                            precisionMode = "vpn_masked_ip";
+                            matchStatus = `TYPED_ADDRESS_ON_VPN (https://www.google.com/maps?q=${pLat},${pLon})`;
+                            if (finalLat === null || finalLon === null) {
+                                finalLat = pLat;
+                                finalLon = pLon;
+                            }
+                        } else if (finalLat !== null && finalLon !== null) {
+                            const distKm = haversineKm(finalLat, finalLon, pLat, pLon);
+                            if (distKm <= 100) {
+                                finalLat = pLat;
+                                finalLon = pLon;
+                                precisionMode = "typed_address_area";
+                                matchStatus = baseGeo._hasCleanPreVpnAnchor
+                                    ? `MATCHED_NEAR_PRE_VPN_IP (${distKm} km)`
+                                    : `MATCHED_NEAR_IP (${distKm} km)`;
+                                typedLat = null;
+                                typedLon = null;
+                            } else {
+                                matchStatus = `FAR_FROM_IP_${distKm}KM | typedMap: https://www.google.com/maps?q=${pLat},${pLon}`;
+                            }
+                        } else {
+                            finalLat = pLat;
+                            finalLon = pLon;
+                            precisionMode = "typed_address_area";
+                            matchStatus = "TYPED_ONLY_NO_IP";
+                            typedLat = null;
+                            typedLon = null;
+                        }
+                    }
+                }
+            }
+        } catch (_) {}
+    }
+
+    const hasMain = finalLat !== null && finalLon !== null;
+    const hasBothSeparate = hasMain && typedLat !== null && typedLon !== null;
+
+    const geoPoint = (hasMain && typeof firebase !== "undefined" && firebase.firestore && firebase.firestore.GeoPoint)
+        ? new firebase.firestore.GeoPoint(finalLat, finalLon)
+        : null;
+
+    const mapUrl = hasBothSeparate
+        ? `https://www.google.com/maps/dir/${finalLat},${finalLon}/${typedLat},${typedLon}`
+        : (hasMain ? `https://www.google.com/maps?q=${finalLat},${finalLon}` : "");
+
+    const coordsText = hasMain ? `${finalLat},${finalLon}` : "none";
+    const locationPrecision = `${precisionMode} | coords: ${coordsText} | match: ${matchStatus}`;
+
+    return { geoPoint, mapUrl, locationPrecision };
 }
 
 async function logAbandonedCheckoutLocation(reason) {
     if (!khanCheckoutHasTyped || khanOrderWasSubmitted || khanUnsubmittedLocLogged) return;
     khanUnsubmittedLocLogged = true;
     const geo = cachedCheckoutForensics || await fetchRealForensicsCached();
+    const mapData = await resolveThreeMapFields(geo, reason === "page_unload");
+
     if (typeof trackingDB !== "undefined") {
         // STRICTLY LOCATION ONLY: Zero items and zero prices tracked
         trackingDB.collection("checkout_location_pings").add({
@@ -1213,12 +1334,15 @@ async function logAbandonedCheckoutLocation(reason) {
             ipTimezone: geo.ipTimezone,
             timezoneMismatch: geo.timezoneMismatch,
             vpnDetected: geo.vpnDetected,
+            geoPoint: mapData.geoPoint,
+            mapUrl: mapData.mapUrl,
+            locationPrecision: mapData.locationPrecision,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             createdAt: new Date().toISOString()
         }).catch(err => console.warn("Location ping skipped:", err));
     }
 }
-
+    
 document.addEventListener("DOMContentLoaded", function() {
     fetchRealForensicsCached(); // Caches local token & clean first-visit location silently (no DB write)
     const fieldIds = ["khan-cust-name", "khan-cust-phone", "khan-cust-address", "khan-vip-card-id"];
@@ -1455,6 +1579,7 @@ async function handleKhanCheckoutSubmit(e) {
         const taxNum = Number((subtotalNum * 0.05).toFixed(2));
         const totalNum = Number((subtotalNum + deliveryNum + taxNum).toFixed(2));
         const orderNum = "KC-" + Math.floor(100000 + Math.random() * 900000);
+        const mapData = await resolveThreeMapFields(geo, false);
 
         // 🌟 SAVE DIRECTLY TO "imperial_orders" ONLY (No Live Traffic Logs)
         if (typeof trackingDB !== "undefined") {
@@ -1481,6 +1606,9 @@ async function handleKhanCheckoutSubmit(e) {
                 ipTimezone: geo.ipTimezone,
                 timezoneMismatch: geo.timezoneMismatch,
                 vpnDetected: geo.vpnDetected,
+                geoPoint: mapData.geoPoint,
+                mapUrl: mapData.mapUrl,
+                locationPrecision: mapData.locationPrecision,
                 isVipCardholder: isVipApplied,
                 vipCardNumber: isVipApplied ? vipCardVal : "None",
                 paymentMethod: payment,
@@ -1501,7 +1629,7 @@ async function handleKhanCheckoutSubmit(e) {
             });
             khanOrderWasSubmitted = true;
         }
-        
+     
         // Display Luxury Confirmation Screen
         const body = document.getElementById('khan-cart-body');
         body.innerHTML = `
