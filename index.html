@@ -546,22 +546,81 @@
   const auth = firebase.auth();
   const trackingDB = db; // same database
 
-  // ========== TRAFFIC TRACKER ==========
-  function getSessionId() {
-    let id = sessionStorage.getItem("khan_traffic_session");
-    if (!id) {
-      id = "SESSION-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9);
-      sessionStorage.setItem("khan_traffic_session", id);
+ // Permanent Device Session ID (survives across dates, tabs & restarts; unique per physical device)
+  function getPermanentDeviceSignature() {
+    let canvasHint = "";
+    try {
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d");
+      if (ctx) {
+        ctx.font = "14px Arial";
+        ctx.fillText("KC-DEV", 2, 14);
+        canvasHint = c.toDataURL().slice(-32);
+      }
+    } catch (_) {}
+
+    const raw = [
+      screen.width + "x" + screen.height + "x" + screen.colorDepth,
+      navigator.hardwareConcurrency || "",
+      navigator.deviceMemory || "",
+      navigator.platform || "",
+      Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+      navigator.maxTouchPoints || 0,
+      canvasHint
+    ].join("|");
+
+    let h = 2166136261;
+    for (let i = 0; i < raw.length; i++) {
+      h ^= raw.charCodeAt(i);
+      h = Math.imul(h, 16777619);
     }
+    return (h >>> 0).toString(16).toUpperCase().padStart(8, "0");
+  }
+
+  function getSessionId() {
+    const STORAGE_KEY = "khan_perm_device_id_v1";
+    const COOKIE_KEY = "khan_perm_dev=";
+    let id = "";
+
+    try { id = localStorage.getItem(STORAGE_KEY) || ""; } catch (_) {}
+
+    if (!id) {
+      try {
+        const parts = document.cookie.split("; ");
+        const found = parts.find(row => row.startsWith(COOKIE_KEY));
+        if (found) id = decodeURIComponent(found.slice(COOKIE_KEY.length));
+      } catch (_) {}
+    }
+
+    if (!id) {
+      const sig = getPermanentDeviceSignature();
+      const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
+      id = "SESSION-" + sig + "-" + rand;
+    }
+
+    try { localStorage.setItem(STORAGE_KEY, id); } catch (_) {}
+    try {
+      document.cookie = COOKIE_KEY + encodeURIComponent(id) + "; max-age=315360000; path=/; SameSite=Lax";
+    } catch (_) {}
+
     return id;
   }
 
-  // Auto page view for index.html
+  function getLedgerDB() {
+    if (typeof trackingDB !== "undefined") return trackingDB;
+    if (typeof db !== "undefined") return db;
+    return null;
+  }
+
+  /** 1. Automatic page view */
   (function logPageView() {
-    const page = window.location.pathname.split("/").pop() || "index.html";
-    trackingDB.collection("live_traffic_ledger").add({
-      filePath: "/" + decodeURIComponent(page),
-      fullUrl: window.location.href,
+    const ledger = getLedgerDB();
+    if (!ledger) return;
+    const page = decodeURIComponent(window.location.pathname.split("/").pop() || "index.html");
+
+    ledger.collection("live_traffic_ledger").add({
+      filePath: "/" + page,
+      fullUrl: window.location.href.slice(0, 490),
       userAction: "page_view",
       sessionHash: getSessionId(),
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -569,17 +628,103 @@
     }).catch(err => console.error("Traffic log failed:", err));
   })();
 
-  // Call from buttons: onclick="logUserAction('Clicked Menu Hub')"
+  /** 2. Manual click / action logger (blocks any chatbot or checkout actions) */
   function logUserAction(actionDescription) {
-    const page = window.location.pathname.split("/").pop() || "index.html";
-    trackingDB.collection("live_traffic_ledger").add({
-      filePath: "/" + decodeURIComponent(page),
-      userAction: actionDescription,
+    const ledger = getLedgerDB();
+    if (!ledger) return;
+    const cleanAction = String(actionDescription || "interaction").replace(/\s+/g, " ").trim().slice(0, 140);
+    if (!cleanAction) return;
+
+    // Hard block: never allow chatbot or checkout actions inside live_traffic_ledger
+    if (/chatbot|used_chatbot|checkout|submit_order|khan-cust-|khan-vip-/i.test(cleanAction)) return;
+
+    const page = decodeURIComponent(window.location.pathname.split("/").pop() || "index.html");
+    ledger.collection("live_traffic_ledger").add({
+      filePath: "/" + page,
+      fullUrl: window.location.href.slice(0, 490),
+      userAction: cleanAction,
       sessionHash: getSessionId(),
+      userAgent: navigator.userAgent.slice(0, 120),
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(err => console.error("Action log failed:", err));
   }
 
+  /** 3. Automatic tracker for general page activities ONLY (excludes Chatbot, Checkout & Admin) */
+  (function initAllPageActivities() {
+    const pageStartMs = Date.now();
+    const scrollMilestones = new Set();
+    let exitLogged = false;
+
+    const EXCLUDED_ZONES = [
+      "#khans-extracted-chatbot-panel",
+      "#panel-msg-stream",
+      "#panel-user-input",
+      "[id*='chatbot']",
+      "[class*='chatbot']",
+      "#khan-checkout-form",
+      "#khan-cart-modal",
+      "#khan-submit-order-btn",
+      "form[id*='checkout']",
+      "#checkout-form",
+      "#khans-secure-gateway-overlay"
+    ].join(", ");
+
+    // Log general page clicks (nav links, menu items, dish buttons)
+    document.addEventListener("click", function (e) {
+      const target = e.target && e.target.closest("a, button, [role='button'], .btn, .food-card button");
+      if (!target) return;
+      if (target.closest(EXCLUDED_ZONES)) return;
+
+      const label = (target.getAttribute("aria-label") || target.innerText || target.value || target.id || "button")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 75);
+
+      const cardTitle = target.closest(".food-card, .dish-card")?.querySelector("h3, h4")?.innerText?.trim();
+      const prefix = target.tagName === "A" ? "clicked_link: " : "clicked_btn: ";
+      const desc = cardTitle ? `${prefix}${label} (${cardTitle.slice(0, 40)})` : `${prefix}${label}`;
+      logUserAction(desc);
+    }, true);
+
+    // Log general non-checkout select/toggle changes
+    document.addEventListener("change", function (e) {
+      const el = e.target;
+      if (!el || (el.tagName !== "SELECT" && el.type !== "checkbox" && el.type !== "radio")) return;
+      if (el.closest(EXCLUDED_ZONES)) return;
+
+      const val = el.type === "checkbox" ? (el.checked ? "ON" : "OFF") : String(el.value || "").slice(0, 40);
+      const name = el.id || el.name || "option";
+      logUserAction(`changed_${name}: ${val}`);
+    }, true);
+
+    // Log scroll milestones once each per page visit
+    window.addEventListener("scroll", function () {
+      const doc = document.documentElement;
+      const scrollable = doc.scrollHeight - window.innerHeight;
+      if (scrollable <= 50) return;
+      const pct = Math.round((window.scrollY / scrollable) * 100);
+      [25, 50, 75, 95].forEach(mark => {
+        if (pct >= mark && !scrollMilestones.has(mark)) {
+          scrollMilestones.add(mark);
+          logUserAction(mark === 95 ? "scrolled_bottom" : `scrolled_${mark}%`);
+        }
+      });
+    }, { passive: true });
+
+    // Log total time spent when visitor leaves or switches tab
+    function recordLeave() {
+      if (exitLogged) return;
+      const secs = Math.round((Date.now() - pageStartMs) / 1000);
+      if (secs < 2) return;
+      exitLogged = true;
+      logUserAction(`left_page (stayed ${secs}s)`);
+    }
+    window.addEventListener("pagehide", recordLeave);
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") recordLeave();
+    });
+  })();
+   
   // ========== ADMIN PANEL (open with #khanadmin) ==========
   const SECRET_ADMIN_HASH = "khanadmin";
 
