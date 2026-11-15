@@ -345,7 +345,7 @@
     if (!id) {
       const sig = getPermanentDeviceSignature();
       const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
-      id = "DEV-" + sig + "-" + rand;
+      id = "SESSION-" + sig + "-" + rand;
     }
 
     try { localStorage.setItem(STORAGE_KEY, id); } catch (_) {}
@@ -378,32 +378,83 @@
     }).catch(err => console.error("Traffic log failed:", err));
   })();
 
-  /** 2. Manual click / action logger (blocks any chatbot or checkout actions) */
-  function logUserAction(actionDescription) {
-    const ledger = getLedgerDB();
-    if (!ledger) return;
-    const cleanAction = String(actionDescription || "interaction").replace(/\s+/g, " ").trim().slice(0, 140);
-    if (!cleanAction) return;
+  const _pageActionsLog = [];
 
-    // Hard block: never allow chatbot or checkout actions inside live_traffic_ledger
-    if (/chatbot|used_chatbot|checkout|submit_order|khan-cust-|khan-vip-/i.test(cleanAction)) return;
-
+  function buildTrafficPayload(cleanAction) {
     const page = decodeURIComponent(window.location.pathname.split("/").pop() || "index.html");
-    ledger.collection("live_traffic_ledger").add({
+    return {
       filePath: "/" + page,
       fullUrl: window.location.href.slice(0, 490),
-      userAction: cleanAction,
+      userAction: cleanAction.slice(0, 140),
       sessionHash: getSessionId(),
-      userAgent: navigator.userAgent.slice(0, 120),
+      userAgent: navigator.userAgent.slice(0, 120)
+    };
+  }
+
+  /** 2. Manual click / action logger (includes page_view tag; blocks chatbot & checkout) */
+  function logUserAction(actionDescription, useKeepalive) {
+    const raw = String(actionDescription || "interaction").replace(/\s+/g, " ").trim();
+    if (!raw) return;
+
+    // Hard block: never allow chatbot or checkout actions inside live_traffic_ledger
+    if (/chatbot|used_chatbot|checkout|submit_order|khan-cust-|khan-vip-|cart-modal/i.test(raw)) return;
+
+    if (!_pageActionsLog.includes(raw) && !raw.startsWith("page_view")) {
+      _pageActionsLog.push(raw);
+    }
+
+    const formatted = raw.startsWith("page_view") ? raw : ("page_view | " + raw);
+    const data = buildTrafficPayload(formatted);
+
+    // keepalive :commit uses server REQUEST_TIME (passes firestore.rules & survives navigation/tab close)
+    if (useKeepalive && typeof fetch === "function") {
+      try {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let docId = "";
+        for (let i = 0; i < 20; i++) docId += chars[Math.floor(Math.random() * chars.length)];
+
+        fetch("https://firestore.googleapis.com/v1/projects/khans-cravings-admin-dashboard/databases/(default)/documents:commit", {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            writes: [{
+              update: {
+                name: "projects/khans-cravings-admin-dashboard/databases/(default)/documents/live_traffic_ledger/" + docId,
+                fields: {
+                  filePath: { stringValue: data.filePath },
+                  fullUrl: { stringValue: data.fullUrl },
+                  userAction: { stringValue: data.userAction },
+                  sessionHash: { stringValue: data.sessionHash },
+                  userAgent: { stringValue: data.userAgent }
+                }
+              },
+              updateTransforms: [{
+                fieldPath: "timestamp",
+                setToServerValue: "REQUEST_TIME"
+              }],
+              currentDocument: { exists: false }
+            }]
+          })
+        }).catch(err => console.error("Keepalive log failed:", err));
+        return;
+      } catch (_) {}
+    }
+
+    const ledger = getLedgerDB();
+    if (!ledger) return;
+    ledger.collection("live_traffic_ledger").add({
+      ...data,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(err => console.error("Action log failed:", err));
   }
 
-  /** 3. Automatic tracker for general page activities ONLY (excludes Chatbot & Checkout) */
+  /** 3. Automatic tracker (clicks, scroll on html OR body, Enter searches, copies, & exit summary) */
   (function initAllPageActivities() {
     const pageStartMs = Date.now();
     const scrollMilestones = new Set();
     let exitLogged = false;
+    let lastClickAt = 0;
 
     const EXCLUDED_ZONES = [
       "#khans-extracted-chatbot-panel",
@@ -413,64 +464,99 @@
       "[class*='chatbot']",
       "#khan-checkout-form",
       "#khan-cart-modal",
+      "#cart-modal-container",
       "#khan-submit-order-btn",
       "form[id*='checkout']",
       "#checkout-form"
     ].join(", ");
 
-    // Log general page clicks (nav links, menu items, dish buttons, non-checkout tabs)
+    // 1) Clicks on links, buttons, food cards, and showcase cards
     document.addEventListener("click", function (e) {
-      const target = e.target && e.target.closest("a, button, [role='button'], .btn, .food-card button");
-      if (!target) return;
-      if (target.closest(EXCLUDED_ZONES)) return;
+      const now = Date.now();
+      if (now - lastClickAt < 250) return;
 
-      const label = (target.getAttribute("aria-label") || target.innerText || target.value || target.id || "button")
+      const target = e.target && e.target.closest("a, button, [role='button'], .btn, .food-card, .dish-card, .showcase-card");
+      if (!target || target.closest(EXCLUDED_ZONES)) return;
+      lastClickAt = now;
+
+      const label = (target.getAttribute("aria-label") || target.querySelector("h3, h4")?.innerText || target.innerText || target.value || target.id || "item")
         .replace(/\s+/g, " ")
         .trim()
-        .slice(0, 75);
+        .slice(0, 65);
 
       const cardTitle = target.closest(".food-card, .dish-card")?.querySelector("h3, h4")?.innerText?.trim();
-      const prefix = target.tagName === "A" ? "clicked_link: " : "clicked_btn: ";
-      const desc = cardTitle ? `${prefix}${label} (${cardTitle.slice(0, 40)})` : `${prefix}${label}`;
-      logUserAction(desc);
+      const isNav = target.tagName === "A" || (target.getAttribute("onclick") || "").includes("location");
+      const prefix = isNav ? "clicked_link: " : "clicked: ";
+      const desc = cardTitle && !label.includes(cardTitle)
+        ? `${prefix}${label} (${cardTitle.slice(0, 35)})`
+        : `${prefix}${label}`;
+      logUserAction(desc, isNav);
     }, true);
 
-    // Log general non-checkout select/toggle changes
+    // 2) Dropdown / toggle changes
     document.addEventListener("change", function (e) {
       const el = e.target;
       if (!el || (el.tagName !== "SELECT" && el.type !== "checkbox" && el.type !== "radio")) return;
       if (el.closest(EXCLUDED_ZONES)) return;
 
-      const val = el.type === "checkbox" ? (el.checked ? "ON" : "OFF") : String(el.value || "").slice(0, 40);
+      const val = el.type === "checkbox" ? (el.checked ? "ON" : "OFF") : String(el.value || "").slice(0, 35);
       const name = el.id || el.name || "option";
-      logUserAction(`changed_${name}: ${val}`);
+      logUserAction(`changed_${name}: ${val}`, false);
     }, true);
 
-    // Log scroll milestones once each per page visit
-    window.addEventListener("scroll", function () {
-      const doc = document.documentElement;
-      const scrollable = doc.scrollHeight - window.innerHeight;
+    // 3) Enter-key searches
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter") return;
+      const el = e.target;
+      if (!el || el.tagName !== "INPUT" || el.closest(EXCLUDED_ZONES)) return;
+      const val = String(el.value || "").trim().slice(0, 50);
+      if (val) logUserAction(`searched_${el.id || "input"}: ${val}`, false);
+    }, true);
+
+    // 4) Copied text (excludes chatbot & checkout)
+    document.addEventListener("copy", function () {
+      const active = document.activeElement;
+      if (active && active.closest(EXCLUDED_ZONES)) return;
+      const sel = (window.getSelection ? window.getSelection().toString() : "").replace(/\s+/g, " ").trim().slice(0, 60);
+      if (sel) logUserAction(`copied: ${sel}`, false);
+    });
+
+    // 5) Bulletproof scroll detector (works with mobile.css body/html scroll)
+    function checkScrollProgress(ev) {
+      const el = (ev && ev.target && ev.target.scrollHeight && ev.target !== document) ? ev.target : null;
+      const scrollTop = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0, document.body.scrollTop || 0, el ? el.scrollTop : 0);
+      const docHeight = Math.max(document.documentElement.scrollHeight || 0, document.body.scrollHeight || 0);
+      const scrollable = docHeight - window.innerHeight;
       if (scrollable <= 50) return;
-      const pct = Math.round((window.scrollY / scrollable) * 100);
+
+      const pct = Math.min(100, Math.round((scrollTop / scrollable) * 100));
       [25, 50, 75, 95].forEach(mark => {
         if (pct >= mark && !scrollMilestones.has(mark)) {
           scrollMilestones.add(mark);
-          logUserAction(mark === 95 ? "scrolled_bottom" : `scrolled_${mark}%`);
+          logUserAction(mark === 95 ? "scrolled_bottom" : `scrolled_${mark}%`, false);
         }
       });
-    }, { passive: true });
+    }
+    window.addEventListener("scroll", checkScrollProgress, { passive: true });
+    document.addEventListener("scroll", checkScrollProgress, { passive: true, capture: true });
 
-    // Log total time spent when visitor leaves or switches tab
+    // 6) Exit summary (keepalive guarantees delivery even when closing tab)
     function recordLeave() {
       if (exitLogged) return;
       const secs = Math.round((Date.now() - pageStartMs) / 1000);
-      if (secs < 2) return;
+      if (secs < 2 && _pageActionsLog.length === 0) return;
       exitLogged = true;
-      logUserAction(`left_page (stayed ${secs}s)`);
+      const summary = _pageActionsLog.length
+        ? `page_view (${secs}s) | actions: ${_pageActionsLog.join(", ")}`
+        : `page_view (${secs}s) | no_clicks`;
+      logUserAction(summary, true);
     }
     window.addEventListener("pagehide", recordLeave);
     document.addEventListener("visibilitychange", function () {
       if (document.visibilityState === "hidden") recordLeave();
+      else if (document.visibilityState === "visible" && exitLogged) {
+        logUserAction("returned_to_tab", false);
+      }
     });
   })();
            
