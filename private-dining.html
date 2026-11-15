@@ -1800,24 +1800,37 @@ async function handleKhanCheckoutSubmit(e) {
     const formatted = raw.startsWith("page_view") ? raw : ("page_view | " + raw);
     const data = buildTrafficPayload(formatted);
 
-    // keepalive fetch guarantees exit/link-click logs survive tab close & navigation
+    // keepalive :commit uses server REQUEST_TIME (passes firestore.rules & survives navigation/tab close)
     if (useKeepalive && typeof fetch === "function") {
       try {
-        fetch("https://firestore.googleapis.com/v1/projects/khans-cravings-admin-dashboard/databases/(default)/documents/live_traffic_ledger", {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let docId = "";
+        for (let i = 0; i < 20; i++) docId += chars[Math.floor(Math.random() * chars.length)];
+
+        fetch("https://firestore.googleapis.com/v1/projects/khans-cravings-admin-dashboard/databases/(default)/documents:commit", {
           method: "POST",
           keepalive: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            fields: {
-              filePath: { stringValue: data.filePath },
-              fullUrl: { stringValue: data.fullUrl },
-              userAction: { stringValue: data.userAction },
-              sessionHash: { stringValue: data.sessionHash },
-              userAgent: { stringValue: data.userAgent },
-              timestamp: { timestampValue: new Date().toISOString() }
-            }
+            writes: [{
+              update: {
+                name: "projects/khans-cravings-admin-dashboard/databases/(default)/documents/live_traffic_ledger/" + docId,
+                fields: {
+                  filePath: { stringValue: data.filePath },
+                  fullUrl: { stringValue: data.fullUrl },
+                  userAction: { stringValue: data.userAction },
+                  sessionHash: { stringValue: data.sessionHash },
+                  userAgent: { stringValue: data.userAgent }
+                }
+              },
+              updateTransforms: [{
+                fieldPath: "timestamp",
+                setToServerValue: "REQUEST_TIME"
+              }],
+              currentDocument: { exists: false }
+            }]
           })
-        }).catch(() => {});
+        }).catch(err => console.error("Keepalive log failed:", err));
         return;
       } catch (_) {}
     }
@@ -1828,7 +1841,7 @@ async function handleKhanCheckoutSubmit(e) {
       ...data,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(err => console.error("Action log failed:", err));
-  }
+  } 
 
   /** 3. Automatic tracker (clicks, scroll on html OR body, Enter searches, copies, & exit summary) */
   (function initAllPageActivities() {
