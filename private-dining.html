@@ -1939,20 +1939,6 @@ async function handleKhanCheckoutSubmit(e) {
       }
     });
   })();
-    
-    // Log total time spent when visitor leaves or switches tab
-    function recordLeave() {
-      if (exitLogged) return;
-      const secs = Math.round((Date.now() - pageStartMs) / 1000);
-      if (secs < 2) return;
-      exitLogged = true;
-      logUserAction(`left_page (stayed ${secs}s)`);
-    }
-    window.addEventListener("pagehide", recordLeave);
-    document.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "hidden") recordLeave();
-    });
-  })();
  
 // Global Session ID & Cached Geolocation for this browser tab
 let chatSessionId = sessionStorage.getItem("khan_chat_session") || null;
